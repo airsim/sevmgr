@@ -1,10 +1,10 @@
-## test sub-directory of the TraDemGen project
+## test sub-directory of the Sevmgr project
 include $(top_srcdir)/Makefile.common
 
 MAINTAINERCLEANFILES = Makefile.in
 
 ##
-SUBDIRS = trademgen
+SUBDIRS = sevmgr
 
 EXTRA_DIST =
 ##

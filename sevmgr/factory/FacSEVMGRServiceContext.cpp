@@ -5,24 +5,24 @@
 #include <cassert>
 // StdAir
 #include <stdair/service/FacSupervisor.hpp>
-// TraDemGen
-#include <trademgen/factory/FacTRADEMGENServiceContext.hpp>
-#include <trademgen/service/TRADEMGEN_ServiceContext.hpp>
+// Sevmgr
+#include <sevmgr/factory/FacSEVMGRServiceContext.hpp>
+#include <sevmgr/service/SEVMGR_ServiceContext.hpp>
 
-namespace TRADEMGEN {
+namespace SEVMGR {
 
-  FacTRADEMGENServiceContext* FacTRADEMGENServiceContext::_instance = NULL;
+  FacSEVMGRServiceContext* FacSEVMGRServiceContext::_instance = NULL;
 
   // //////////////////////////////////////////////////////////////////////
-  FacTRADEMGENServiceContext::~FacTRADEMGENServiceContext () {
+  FacSEVMGRServiceContext::~FacSEVMGRServiceContext () {
     _instance = NULL;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  FacTRADEMGENServiceContext& FacTRADEMGENServiceContext::instance () {
+  FacSEVMGRServiceContext& FacSEVMGRServiceContext::instance () {
 
     if (_instance == NULL) {
-      _instance = new FacTRADEMGENServiceContext();
+      _instance = new FacSEVMGRServiceContext();
       assert (_instance != NULL);
       
       stdair::FacSupervisor::instance().registerServiceFactory (_instance);
@@ -31,10 +31,10 @@ namespace TRADEMGEN {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  TRADEMGEN_ServiceContext& FacTRADEMGENServiceContext::create () {
-    TRADEMGEN_ServiceContext* aServiceContext_ptr = NULL;
+  SEVMGR_ServiceContext& FacSEVMGRServiceContext::create () {
+    SEVMGR_ServiceContext* aServiceContext_ptr = NULL;
 
-    aServiceContext_ptr = new TRADEMGEN_ServiceContext ();
+    aServiceContext_ptr = new SEVMGR_ServiceContext ();
     assert (aServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

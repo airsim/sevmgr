@@ -14,15 +14,15 @@
 #include <stdair/basic/BasFileMgr.hpp>
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
-// TraDemGen
-#include <trademgen/TRADEMGEN_Service.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Service.hpp>
 
-namespace TRADEMGEN {
+namespace SEVMGR {
 
-  struct Trademgener {
+  struct PYEventQueueManager {
   public:
     /** Wrapper around the travel demand generation use case. */
-    std::string trademgen (const std::string& iQuery) {
+    std::string sevmgr() {
       std::ostringstream oStream;
 
       // Sanity check
@@ -35,33 +35,30 @@ namespace TRADEMGEN {
       try {
 
         // DEBUG
-        *_logOutputStream << "Python search for '" << iQuery << "'"
-                          << std::endl;
+        *_logOutputStream << "Default service" << std::endl;
       
-        if (_trademgenService == NULL) {
-          oStream << "The Trademgen service has not been initialised, "
-                         << "i.e., the init() method has not been called "
-                         << "correctly on the Trademgener object. Please "
-                         << "check that all the parameters are not empty and "
-                         << "point to actual files.";
+        if (_sevmgrService == NULL) {
+          oStream << "The Sevmgr service has not been initialised, "
+                  << "i.e., the init() method has not been called "
+                  << "correctly on the PYEventQueueManager object. Please "
+                  << "check that all the parameters are not empty and "
+                  << "point to actual files.";
           *_logOutputStream << oStream.str();
           return oStream.str();
         }
-        assert (_trademgenService != NULL);
+        assert (_sevmgrService != NULL);
         
-        // Do the trademgen
-        _trademgenService->displayAirlineListFromDB();
+        // Do the sevmgr
+        _sevmgrService->buildSampleBom();
 
         // DEBUG
-        *_logOutputStream << "Python search for '" << iQuery
-                          << "' returned '" << std::endl;
+        *_logOutputStream << "Default service returned" << std::endl;
 
         // DEBUG
-        *_logOutputStream << "TraDemGen output: "
-                          << oStream.str() << std::endl;
+        *_logOutputStream << "Sevmgr output: " << oStream.str() << std::endl;
 
-      } catch (const stdair::RootException& eTrademgenError) {
-        *_logOutputStream << "TraDemGen error: "  << eTrademgenError.what()
+      } catch (const stdair::RootException& eSevmgrError) {
+        *_logOutputStream << "Sevmgr error: "  << eSevmgrError.what()
                           << std::endl;
         
       } catch (const std::exception& eStdError) {
@@ -76,24 +73,23 @@ namespace TRADEMGEN {
 
   public:
     /** Default constructor. */
-    Trademgener() : _trademgenService (NULL), _logOutputStream (NULL) {
+    PYEventQueueManager() : _sevmgrService (NULL), _logOutputStream (NULL) {
     }
     
     /** Default copy constructor. */
-    Trademgener (const Trademgener& iTrademgener)
-      : _trademgenService (iTrademgener._trademgenService),
-        _logOutputStream (iTrademgener._logOutputStream) {
+    PYEventQueueManager (const PYEventQueueManager& iPYEventQueueManager)
+      : _sevmgrService (iPYEventQueueManager._sevmgrService),
+        _logOutputStream (iPYEventQueueManager._logOutputStream) {
     }
 
     /** Default constructor. */
-    ~Trademgener() {
-      _trademgenService = NULL;
+    ~PYEventQueueManager() {
+      _sevmgrService = NULL;
       _logOutputStream = NULL;
     }
     
     /** Wrapper around the search use case. */
     bool init (const std::string& iLogFilepath,
-               const stdair::Filename_T& iDemandInputFilename,
                const std::string& iDBUser, const std::string& iDBPasswd,
                const std::string& iDBHost, const std::string& iDBPort,
                const std::string& iDBDBName) {
@@ -125,14 +121,13 @@ namespace TRADEMGEN {
         // Initialise the context
         stdair::BasDBParams lDBParams (iDBUser, iDBPasswd, iDBHost, iDBPort,
                                        iDBDBName);
-        _trademgenService = new TRADEMGEN_Service (lLogParams, lDBParams,
-                                                   iDemandInputFilename);
+        _sevmgrService = new SEVMGR_Service (lLogParams, lDBParams);
         
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;
         
-      } catch (const stdair::RootException& eTrademgenError) {
-        *_logOutputStream << "Trademgen error: "  << eTrademgenError.what()
+      } catch (const stdair::RootException& eSevmgrError) {
+        *_logOutputStream << "Sevmgr error: "  << eSevmgrError.what()
                           << std::endl;
         
       } catch (const std::exception& eStdError) {
@@ -146,16 +141,16 @@ namespace TRADEMGEN {
     }
 
   private:
-    /** Handle on the Trademgen services (API). */
-    TRADEMGEN_Service* _trademgenService;
+    /** Handle on the Sevmgr services (API). */
+    SEVMGR_Service* _sevmgrService;
     std::ofstream* _logOutputStream;
   };
 
 }
 
 // /////////////////////////////////////////////////////////////
-BOOST_PYTHON_MODULE(libpytrademgen) {
-  boost::python::class_<TRADEMGEN::Trademgener> ("Trademgener")
-    .def ("trademgen", &TRADEMGEN::Trademgener::trademgen)
-    .def ("init", &TRADEMGEN::Trademgener::init);
+BOOST_PYTHON_MODULE(libpysevmgr) {
+  boost::python::class_<SEVMGR::PYEventQueueManager> ("PYEventQueueManager")
+    .def ("sevmgr", &SEVMGR::PYEventQueueManager::sevmgr)
+    .def ("init", &SEVMGR::PYEventQueueManager::init);
 }

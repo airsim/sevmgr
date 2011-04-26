@@ -1,14 +1,14 @@
 # sevmgr/batches
 include $(top_srcdir)/Makefile.common
+include $(srcdir)/sources.mk
 
 ##
 # Binaries (batches)
 bin_PROGRAMS = sevmgr
-generated_FILES = request.csv
 
 ##
 MAINTAINERCLEANFILES = Makefile.in
-CLEANFILES = $(generated_FILES) ${bin_PROGRAMS:%=%.log}
+CLEANFILES = $${bin_PROGRAMS:%=%.log}
 
 ##
 #

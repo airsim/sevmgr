@@ -1,5 +1,5 @@
-#ifndef __TRADEMGEN_SVC_TRADEMGENSERVICECONTEXT_HPP
-#define __TRADEMGEN_SVC_TRADEMGENSERVICECONTEXT_HPP
+#ifndef __SEVMGR_SVC_SEVMGRSERVICECONTEXT_HPP
+#define __SEVMGR_SVC_SEVMGRSERVICECONTEXT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -9,32 +9,23 @@
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_service_types.hpp>
-#include <stdair/basic/RandomGeneration.hpp>
-#include <stdair/bom/BookingRequestTypes.hpp>
 #include <stdair/service/ServiceAbstract.hpp>
-// TraDemGen
-#include <trademgen/TRADEMGEN_Types.hpp>
-#include <trademgen/basic/DemandCharacteristicsTypes.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 
-// Forward declarations
-namespace stdair {
-  struct DemandCharacteristics;
-  struct DemandDistribution;
-}
-  
-namespace TRADEMGEN {
+namespace SEVMGR {
 
   /**
-   * @brief Class holding the context of the Trademgen services.
+   * @brief Class holding the context of the Sevmgr services.
    */
-  class TRADEMGEN_ServiceContext : public stdair::ServiceAbstract {
+  class SEVMGR_ServiceContext : public stdair::ServiceAbstract {
     /**
-     * The TRADEMGEN_Service class should be the sole class to get
+     * The SEVMGR_Service class should be the sole class to get
      * access to ServiceContext content: general users do not want to
      * bother with a context interface.
      */
-    friend class TRADEMGEN_Service;
-    friend class FacTRADEMGENServiceContext;
+    friend class SEVMGR_Service;
+    friend class FacSEVMGRServiceContext;
     
   private:
     // ///////// Getters //////////
@@ -60,20 +51,6 @@ namespace TRADEMGEN {
       return _ownStdairService;
     }
 
-    /**
-     * Get the shared uniform generator.
-     */
-    stdair::RandomGeneration& getUniformGenerator() {
-      return _uniformGenerator;
-    }
-
-    /**
-     * Get the default POS distribution.
-     */
-    const POSProbabilityMass_T& getPOSProbabilityMass() const {
-      return _posProbabilityMass;
-    }
-
 
   private:
     // ///////// Setters //////////
@@ -90,12 +67,12 @@ namespace TRADEMGEN {
   private:
     // ///////// Display Methods //////////
     /**
-     * Display the short TRADEMGEN_ServiceContext content.
+     * Display the short SEVMGR_ServiceContext content.
      */
     const std::string shortDisplay() const;
     
     /**
-     * Display the full TRADEMGEN_ServiceContext content.
+     * Display the full SEVMGR_ServiceContext content.
      */
     const std::string display() const;
     
@@ -110,17 +87,17 @@ namespace TRADEMGEN {
     /**
      * Main constructor.
      */
-    TRADEMGEN_ServiceContext();
-    TRADEMGEN_ServiceContext (const std::string& iServiceName);
+    SEVMGR_ServiceContext();
+    SEVMGR_ServiceContext (const std::string& iServiceName);
     /**
      * Copy constructor (not to be used).
      */
-    TRADEMGEN_ServiceContext (const TRADEMGEN_ServiceContext&);
+    SEVMGR_ServiceContext (const SEVMGR_ServiceContext&);
 
     /**
      * Destructor.
      */
-    ~TRADEMGEN_ServiceContext();
+    ~SEVMGR_ServiceContext();
 
     /**
      * Clear the context (cabin capacity, bucket holder).
@@ -143,19 +120,8 @@ namespace TRADEMGEN {
 
   private:
     // ////////////// Attributes ////////////////
-    /**
-     * Shared generator for seeds and some other values.
-     *
-     * The state of the random generator, given as parameter, evolves
-     * each time a demand request is generated.
-     */
-    stdair::RandomGeneration _uniformGenerator;
-
-    /**
-     * POS probability mass, used when the POS is 'RoW'.
-     */
-    const POSProbabilityMass_T _posProbabilityMass;
+    // No attributes for now
   };
 
 }
-#endif // __TRADEMGEN_SVC_TRADEMGENSERVICECONTEXT_HPP
+#endif // __SEVMGR_SVC_SEVMGRSERVICECONTEXT_HPP

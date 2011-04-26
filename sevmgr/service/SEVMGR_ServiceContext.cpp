@@ -7,51 +7,47 @@
 // StdAir
 #include <stdair/STDAIR_Service.hpp>
 #include <stdair/basic/BasConst_General.hpp>
-// TraDemGen
-#include <trademgen/basic/BasConst_DemandGeneration.hpp>
-#include <trademgen/service/TRADEMGEN_ServiceContext.hpp>
+// SEvMgr
+#include <sevmgr/basic/BasConst_EventQueueManager.hpp>
+#include <sevmgr/service/SEVMGR_ServiceContext.hpp>
 
-namespace TRADEMGEN {
+namespace SEVMGR {
 
   // //////////////////////////////////////////////////////////////////////
-  TRADEMGEN_ServiceContext::TRADEMGEN_ServiceContext()
-    : _uniformGenerator (stdair::DEFAULT_RANDOM_SEED),
-      _posProbabilityMass (DEFAULT_POS_PROBALILITY_MASS) {
+  SEVMGR_ServiceContext::SEVMGR_ServiceContext() {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  TRADEMGEN_ServiceContext::
-  TRADEMGEN_ServiceContext (const std::string& iServiceName) 
-    : _uniformGenerator (stdair::DEFAULT_RANDOM_SEED),
-      _posProbabilityMass (DEFAULT_POS_PROBALILITY_MASS) {
+  SEVMGR_ServiceContext::
+  SEVMGR_ServiceContext (const std::string& iServiceName) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  TRADEMGEN_ServiceContext::~TRADEMGEN_ServiceContext() {
+  SEVMGR_ServiceContext::~SEVMGR_ServiceContext() {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string TRADEMGEN_ServiceContext::shortDisplay() const {
+  const std::string SEVMGR_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << "TRADEMGEN_ServiceContext -- Owns StdAir service: "
-         << _ownStdairService << " -- Generator: " << _uniformGenerator;
+    oStr << "SEVMGR_ServiceContext -- Owns StdAir service: "
+         << _ownStdairService;
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string TRADEMGEN_ServiceContext::display() const {
+  const std::string SEVMGR_ServiceContext::display() const {
     std::ostringstream oStr;
     oStr << shortDisplay();
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string TRADEMGEN_ServiceContext::describe() const {
+  const std::string SEVMGR_ServiceContext::describe() const {
     return shortDisplay();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void TRADEMGEN_ServiceContext::reset() {
+  void SEVMGR_ServiceContext::reset() {
     if (_ownStdairService == true) {
       _stdairService.reset();
     }

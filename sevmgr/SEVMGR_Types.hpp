@@ -1,17 +1,17 @@
-#ifndef __TRADEMGEN_TRADEMGEN_TYPES_HPP
-#define __TRADEMGEN_TRADEMGEN_TYPES_HPP
+#ifndef __SEVMGR_SEVMGR_TYPES_HPP
+#define __SEVMGR_SEVMGR_TYPES_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// TraDemGen
-#include <trademgen/TRADEMGEN_Exceptions.hpp>
+// Sevmgr
+#include <sevmgr/SEVMGR_Exceptions.hpp>
 
-namespace TRADEMGEN {
+namespace SEVMGR {
 
-  // //////// Type definitions specific to TraDemGen /////////
+  // //////// Type definitions specific to Sevmgr /////////
   // No specific type for now
   
 }
-#endif // __TRADEMGEN_TRADEMGEN_TYPES_HPP
+#endif // __SEVMGR_SEVMGR_TYPES_HPP
 
