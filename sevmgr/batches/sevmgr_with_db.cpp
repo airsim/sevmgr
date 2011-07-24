@@ -14,9 +14,9 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/basic/BasLogParams.hpp>
-// TraDemGen
-#include <trademgen/TRADEMGEN_Service.hpp>
-#include <trademgen/config/trademgen-paths.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Service.hpp>
+#include <sevmgr/config/sevmgr-paths.hpp>
 
 
 // //////// Type definitions ///////
@@ -25,20 +25,20 @@ typedef std::vector<std::string> WordList_T;
 
 // //////// Constants //////
 /** Default name and location for the log file. */
-const std::string K_TRADEMGEN_DEFAULT_LOG_FILENAME ("trademgen_with_db.log");
+const std::string K_SEVMGR_DEFAULT_LOG_FILENAME ("sevmgr_with_db.log");
 
 /** Default name and location for the (CSV) input file. */
-const std::string K_TRADEMGEN_DEFAULT_INPUT_FILENAME (STDAIR_SAMPLE_DIR "/demand01.csv");
+const std::string K_SEVMGR_DEFAULT_INPUT_FILENAME (STDAIR_SAMPLE_DIR "/demand01.csv");
 
 /** Default query string. */
-const std::string K_TRADEMGEN_DEFAULT_QUERY_STRING ("my good old query");
+const std::string K_SEVMGR_DEFAULT_QUERY_STRING ("my good old query");
 
 /** Default parameters for the database connection. */
-const std::string K_TRADEMGEN_DEFAULT_DB_USER ("dsim");
-const std::string K_TRADEMGEN_DEFAULT_DB_PASSWD ("dsim");
-const std::string K_TRADEMGEN_DEFAULT_DB_DBNAME ("sim_dsim");
-const std::string K_TRADEMGEN_DEFAULT_DB_HOST ("localhost");
-const std::string K_TRADEMGEN_DEFAULT_DB_PORT ("3306");
+const std::string K_SEVMGR_DEFAULT_DB_USER ("dsim");
+const std::string K_SEVMGR_DEFAULT_DB_PASSWD ("dsim");
+const std::string K_SEVMGR_DEFAULT_DB_DBNAME ("sim_dsim");
+const std::string K_SEVMGR_DEFAULT_DB_HOST ("localhost");
+const std::string K_SEVMGR_DEFAULT_DB_PORT ("3306");
 
 
 // //////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ template<class T> std::ostream& operator<< (std::ostream& os,
 }
 
 /** Early return status (so that it can be differentiated from an error). */
-const int K_TRADEMGEN_EARLY_RETURN_STATUS = 99;
+const int K_SEVMGR_EARLY_RETURN_STATUS = 99;
 
 /** Read and parse the command line options. */
 int readConfiguration (int argc, char* argv[], 
@@ -103,7 +103,7 @@ int readConfiguration (int argc, char* argv[],
 
   // Initialise the travel query string, if that one is empty
   if (ioQueryString.empty() == true) {
-    ioQueryString = K_TRADEMGEN_DEFAULT_QUERY_STRING;
+    ioQueryString = K_SEVMGR_DEFAULT_QUERY_STRING;
   }
   
   // Transform the query string into a list of words (STL strings)
@@ -122,25 +122,25 @@ int readConfiguration (int argc, char* argv[],
   boost::program_options::options_description config ("Configuration");
   config.add_options()
     ("input,i",
-     boost::program_options::value< std::string >(&ioInputFilename)->default_value(K_TRADEMGEN_DEFAULT_INPUT_FILENAME),
+     boost::program_options::value< std::string >(&ioInputFilename)->default_value(K_SEVMGR_DEFAULT_INPUT_FILENAME),
      "(CVS) input file for the demand distributions")
     ("log,l",
-     boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_TRADEMGEN_DEFAULT_LOG_FILENAME),
+     boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_SEVMGR_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
     ("user,u",
-     boost::program_options::value< std::string >(&ioDBUser)->default_value(K_TRADEMGEN_DEFAULT_DB_USER),
+     boost::program_options::value< std::string >(&ioDBUser)->default_value(K_SEVMGR_DEFAULT_DB_USER),
      "SQL database user (e.g., dsim)")
     ("passwd,p",
-     boost::program_options::value< std::string >(&ioDBPasswd)->default_value(K_TRADEMGEN_DEFAULT_DB_PASSWD),
+     boost::program_options::value< std::string >(&ioDBPasswd)->default_value(K_SEVMGR_DEFAULT_DB_PASSWD),
      "SQL database password (e.g., dsim)")
     ("host,H",
-     boost::program_options::value< std::string >(&ioDBHost)->default_value(K_TRADEMGEN_DEFAULT_DB_HOST),
+     boost::program_options::value< std::string >(&ioDBHost)->default_value(K_SEVMGR_DEFAULT_DB_HOST),
      "SQL database hostname (e.g., localhost)")
     ("port,P",
-     boost::program_options::value< std::string >(&ioDBPort)->default_value(K_TRADEMGEN_DEFAULT_DB_PORT),
+     boost::program_options::value< std::string >(&ioDBPort)->default_value(K_SEVMGR_DEFAULT_DB_PORT),
      "SQL database port (e.g., 3306)")
     ("dbname,m",
-     boost::program_options::value< std::string >(&ioDBDBName)->default_value(K_TRADEMGEN_DEFAULT_DB_DBNAME),
+     boost::program_options::value< std::string >(&ioDBDBName)->default_value(K_SEVMGR_DEFAULT_DB_DBNAME),
      "SQL database name (e.g., sim_dsim)")
     ("query,q",
      boost::program_options::value< WordList_T >(&lWordList)->multitoken(),
@@ -172,24 +172,24 @@ int readConfiguration (int argc, char* argv[],
     store (boost::program_options::command_line_parser (argc, argv).
 	   options (cmdline_options).positional(p).run(), vm);
 
-  std::ifstream ifs ("trademgen_with_db.cfg");
+  std::ifstream ifs ("sevmgr_with_db.cfg");
   boost::program_options::store (parse_config_file (ifs, config_file_options),
                                  vm);
   boost::program_options::notify (vm);
     
   if (vm.count ("help")) {
     std::cout << visible << std::endl;
-    return K_TRADEMGEN_EARLY_RETURN_STATUS;
+    return K_SEVMGR_EARLY_RETURN_STATUS;
   }
 
   if (vm.count ("version")) {
     std::cout << PACKAGE_NAME << ", version " << PACKAGE_VERSION << std::endl;
-    return K_TRADEMGEN_EARLY_RETURN_STATUS;
+    return K_SEVMGR_EARLY_RETURN_STATUS;
   }
 
   if (vm.count ("prefix")) {
     std::cout << "Installation prefix: " << PREFIXDIR << std::endl;
-    return K_TRADEMGEN_EARLY_RETURN_STATUS;
+    return K_SEVMGR_EARLY_RETURN_STATUS;
   }
 
   if (vm.count ("input")) {
@@ -261,7 +261,7 @@ int main (int argc, char* argv[]) {
     readConfiguration (argc, argv, lQuery, lInputFilename, lLogFilename,
                        lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName);
 
-  if (lOptionParserStatus == K_TRADEMGEN_EARLY_RETURN_STATUS) {
+  if (lOptionParserStatus == K_SEVMGR_EARLY_RETURN_STATUS) {
     return 0;
   }
   
@@ -275,13 +275,12 @@ int main (int argc, char* argv[]) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
   
-  // Initialise the TraDemGen service object
+  // Initialise the SEvMgr service object
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-  TRADEMGEN::TRADEMGEN_Service trademgenService (lLogParams, lDBParams,
-                                                 lInputFilename);
+  SEVMGR::SEVMGR_Service sevmgrService (lLogParams, lDBParams);
 
-  // Query the database
-  trademgenService.displayAirlineListFromDB();
+  // Display the BOM tree
+  sevmgrService.csvDisplay();
 
   // Close the Log outputFile
   logOutputFile.close();
