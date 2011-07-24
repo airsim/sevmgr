@@ -76,9 +76,6 @@ test "x$enable_exceptions" != xno && enable_exceptions=yes
 # Set the data directory for Sevmgr
 pkgdatadir="${datadir}/sevmgr"
 AC_SUBST(pkgdatadir)
-# Set the directory for data samples exported by Sevmgr
-sampledir="${pkgdatadir}/samples"
-AC_SUBST(sampledir)
 
 # Check for info pages
 AC_ARG_ENABLE(info-doc, 
@@ -326,8 +323,9 @@ AC_CONFIG_FILES(
 	sevmgr/dbadaptor/Makefile
 	sevmgr/command/Makefile
 	sevmgr/service/Makefile
-	sevmgr/core/Makefile
 	sevmgr/config/Makefile
+	sevmgr/config/sevmgr-paths.hpp
+	sevmgr/core/Makefile
 	sevmgr/batches/Makefile
 	sevmgr/python/Makefile
 	test/Makefile
