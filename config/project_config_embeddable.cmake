@@ -109,6 +109,11 @@ macro (set_project_options _build_doc)
     endif ()
   endforeach (_path_type)
 
+  # Define STDAIR_SAMPLE_DIR if the project is STDAIR
+  if ("${PROJECT_NAME}" STREQUAL "stdair")
+    set (STDAIR_SAMPLE_DIR ${INSTALL_SAMPLE_DIR})
+  endif ("${PROJECT_NAME}" STREQUAL "stdair")
+
   ##
   # Basic documentation (i.e., AUTHORS, NEWS, README, INSTALL)
   set (DOC_INSTALL_FILE INSTALL)
@@ -152,8 +157,6 @@ endmacro (store_in_cache)
 #####################################
 #
 macro (packaging_init _project_name)
-  include (InstallRequiredSystemLibraries)
-
   set (CPACK_PACKAGE_NAME "${_project_name}")
   set (CPACK_PACKAGE_DESCRIPTION "${PACKAGE_BRIEF}")
 endmacro (packaging_init)
@@ -211,7 +214,7 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
     "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
     CACHE INTERNAL "tarball basename")
   set (AUTOTOOLS_IGNRD "/tmp/;/tmp2/;/autom4te\\\\.cache/;autogen\\\\.sh$")
-  set (PACK_IGNRD "${CPACK_PACKAGE_NAME}\\\\.spec;/build/;\\\\.gz$;\\\\.bz2$")
+  set (PACK_IGNRD "${CMAKE_CURRENT_BINARY_DIR};${CPACK_PACKAGE_NAME}\\\\.spec;\\\\.gz$;\\\\.bz2$")
   set (EDIT_IGNRD "\\\\.swp$;\\\\.#;/#;~$")
   set (SCM_IGNRD 
     "/CVS/;/\\\\.svn/;/\\\\.bzr/;/\\\\.hg/;/\\\\.git/;\\\\.gitignore$")
@@ -221,6 +224,7 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
   #set (CPACK_SOURCE_IGNORE_DIRECTORY ${CPACK_SOURCE_IGNORE_FILES} .git)
 
   # Initialise the source package generator with the variables above
+  include (InstallRequiredSystemLibraries)
   include (CPack)
 
   # Add a 'dist' target, similar to what is given by GNU Autotools
@@ -228,7 +232,7 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
 
   ##
   # Reset the generator types for the binary packages. Indeed, the variable
-  # has been reset by "include (Cpack)".
+  # has been reset by "include (CPack)".
   set (CPACK_GENERATOR "${_package_type_list}")
 
 endmacro (packaging_set_other_options)
@@ -286,6 +290,10 @@ macro (get_external_libs)
     if (${_arg_lower} STREQUAL "stdair")
       get_stdair (${_arg_version})
     endif (${_arg_lower} STREQUAL "stdair")
+
+    if (${_arg_lower} STREQUAL "airrac")
+      get_airrac (${_arg_version})
+    endif (${_arg_lower} STREQUAL "airrac")
 
     if (${_arg_lower} STREQUAL "doxygen")
       get_doxygen (${_arg_version})
@@ -378,7 +386,7 @@ macro (get_boost)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS
-    program_options date_time iostreams serialization filesystem 
+    regex program_options date_time iostreams serialization filesystem 
     unit_test_framework python)
 
   # The first check is for the required components.
@@ -395,18 +403,19 @@ macro (get_boost)
 
     # Update the list of dependencies for the project
     list (APPEND PROJ_DEP_LIBS_FOR_LIB
-      ${Boost_IOSTREAMS_LIBRARY} ${Boost_SERIALIZATION_LIBRARY}
-      ${Boost_FILESYSTEM_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
-      ${Boost_PYTHON_LIBRARY})
-    list (APPEND PROJ_DEP_LIBS_FOR_BIN ${Boost_PROGRAM_OPTIONS_LIBRARY})
+      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
+	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PYTHON_LIBRARY})
+    list (APPEND PROJ_DEP_LIBS_FOR_BIN
+	  ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY})
     list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
     # For display purposes
     set (BOOST_REQUIRED_LIBS
-      ${Boost_IOSTREAMS_LIBRARY} ${Boost_SERIALIZATION_LIBRARY}
-      ${Boost_FILESYSTEM_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
-      ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-      ${Boost_PYTHON_LIBRARY})
+      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
+	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY}
+	  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${Boost_PYTHON_LIBRARY})
   endif (Boost_FOUND)
 
 endmacro (get_boost)
@@ -537,6 +546,38 @@ macro (get_stdair)
 
 endmacro (get_stdair)
 
+# ~~~~~~~~~~ AirRAC ~~~~~~~~~
+macro (get_airrac)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires AirRAC-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires AirRAC without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (AirRAC ${_required_version} REQUIRED
+	HINTS ${WITH_AIRRAC_PREFIX})
+  if (AirRAC_FOUND)
+    #
+    message (STATUS "Found AirRAC version: ${AIRRAC_VERSION}")
+
+    # Update the list of include directories for the project
+    include_directories (${AIRRAC_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRRAC_LIBRARIES})
+
+  else (AirRAC_FOUND)
+    set (ERROR_MSG "The AirRAC library cannot be found. If it is installed in")
+    set (ERROR_MSG "${ERROR_MSG} a in a non standard directory, just invoke")
+    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_AIRRAC_PREFIX=")
+    set (ERROR_MSG "${ERROR_MSG}<AirRAC install path> variable.")
+    message (FATAL_ERROR "${ERROR_MSG}")
+  endif (AirRAC_FOUND)
+
+endmacro (get_airrac)
+
 
 ##############################################
 ##           Build, Install, Export         ##
@@ -556,6 +597,8 @@ macro (init_build)
 	#set (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror")
 	set (CMAKE_CXX_FLAGS "-Wall -Werror")
   endif (NOT CMAKE_CXX_FLAGS)
+  # Tell the source code the version of Boost
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_VERSION=${Boost_VERSION}")
 
   #
   include_directories (BEFORE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
@@ -600,7 +643,8 @@ macro (set_install_directories)
   set (pkgdatadir    ${datarootdir}/${PACKAGE})
   set (sampledir     ${STDAIR_SAMPLE_DIR})
   set (docdir        ${datarootdir}/doc/${PACKAGE}-${PACKAGE_VERSION})
-  set (htmldir       ${docdir})
+  set (htmldir       ${docdir}/html)
+  set (pdfdir        ${htmldir})
   set (mandir        ${datarootdir}/man)
   set (infodir       ${datarootdir}/info)
   set (pkgincludedir ${includedir}/stdair)
@@ -1120,11 +1164,248 @@ endmacro (module_test_build_all)
 ###################################################################
 ##                         Documentation                         ##
 ###################################################################
+##
+# HTML pages and PDF reference manual
+##
+#
 macro (handle_html_doc)
   if (${INSTALL_DOC} STREQUAL "ON")
 	add_subdirectory (doc)
   endif (${INSTALL_DOC} STREQUAL "ON")
 endmacro (handle_html_doc)
+
+# Define the substitutes for the variables present in the Doxygen
+# configuration files. Note that PACKAGE, PACKAGE_NAME and PACKAGE_VERSION
+# are defined in the main CMakeLists.txt (of the top root directory).
+macro (doc_set_directories)
+  set (OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  set (top_srcdir ${CMAKE_SOURCE_DIR})
+  set (srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+endmacro (doc_set_directories)
+
+#
+macro (doc_add_web_pages)
+  # Set the documentation directories for the Doxygen configuration file
+  doc_set_directories()
+
+  # Convert the Doxygen configuration files (basically, just replace
+  # the @<variable>@ variables).
+  set (DOXYGEN_CFG_SRC doxygen_html.cfg.in)
+  set (DOXYGEN_CFG ${CMAKE_CURRENT_BINARY_DIR}/doxygen_html.cfg)
+  configure_file (${DOXYGEN_CFG_SRC} ${DOXYGEN_CFG} @ONLY)
+
+  ## Documentation sources
+  # (CSS) Style sheets
+  set (docstyles_DIR ${CMAKE_CURRENT_SOURCE_DIR}/styles)
+  set (style_SOURCES ${CPACK_PACKAGE_NAME}.css)
+  set (docstyles_SOURCES ${docstyles_DIR}/${style_SOURCES})
+  # Images
+  set (docimages_DIR ${CMAKE_CURRENT_SOURCE_DIR}/images)
+  set (image_SOURCES ${CPACK_PACKAGE_NAME}_logo.png sfx_logo.png favicon.ico)
+  set (docimages_SOURCES "")
+  foreach (_doc_img_src ${image_SOURCES})
+	list (APPEND docimages_SOURCES ${docimages_DIR}/${_doc_img_src})
+  endforeach (_doc_img_src ${image_SOURCES})
+  # Tutorial
+  FILE (GLOB doctutorial_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tutorial/*.doc)
+  # Local
+  FILE (GLOB doclocaldoc_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/local/*.doc)
+  FILE (GLOB doclocalhtml_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/local/*.html)
+  set (doclocal_SOURCES ${doclocaldoc_SOURCES} ${doclocalhtml_SOURCES})
+  # Aggregating all the documentation sources
+  set (doc_SOURCES ${doctutorial_SOURCES} ${doclocal_SOURCES}
+	${docstyles_SOURCES} ${docimages_SOURCES})
+
+  # Latex reference manual source (.tex file), generated by Doxygen
+  set (REFMAN refman)
+  set (TEX_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/latex)
+  set (REFMAN_TEX ${REFMAN}.tex)
+  set (REFMAN_TEX_FULL ${TEX_GEN_DIR}/${REFMAN_TEX})
+
+  # Add the build rule for Doxygen
+  set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/html/index.html)
+  add_custom_command (OUTPUT ${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL}
+	COMMAND ${DOXYGEN_EXECUTABLE} ARGS ${DOXYGEN_CFG}
+	DEPENDS ${DOXYGEN_CFG} ${doc_SOURCES}
+	COMMENT "Generating documentation with Doxygen, from '${DOXYGEN_CFG}'...")
+  # Add the 'doc' target, depending on the generated HTML documentation
+  add_custom_target (doc ALL DEPENDS ${DOXYGEN_OUTPUT})
+
+  ##
+  # Copy the needed files into the generated HTML directory
+  set (htmldoc_DIR ${CMAKE_CURRENT_BINARY_DIR}/html)
+  set (pdfdoc_DIR ${CMAKE_CURRENT_BINARY_DIR}/latex)
+
+  # (CSS) Style sheets
+  foreach (style_SRC ${style_SOURCES})
+	set (CSS_SRC_FULL_DIR ${docstyles_DIR}/${style_SRC})
+	set (CSS_GEN_FULL_DIR ${htmldoc_DIR}/${style_SRC})
+	add_custom_command (OUTPUT ${CSS_GEN_FULL_DIR}
+	  COMMAND ${CMAKE_COMMAND}
+	  ARGS -E copy ${CSS_SRC_FULL_DIR} ${CSS_GEN_FULL_DIR}
+	  DEPENDS ${DOXYGEN_OUTPUT} ${CSS_SRC_FULL_DIR}
+	  COMMENT "Copying style '${CSS_SRC_FULL_DIR}' into '${htmldoc_DIR}'...")
+	add_custom_target (css_${style_SRC} ALL DEPENDS ${CSS_GEN_FULL_DIR})
+  endforeach (style_SRC)
+
+  # Images
+  foreach (image_SRC ${image_SOURCES})
+	set (IMG_SRC_FULL_DIR ${docimages_DIR}/${image_SRC})
+	set (IMG_GEN_FULL_DIR ${htmldoc_DIR}/${image_SRC})
+	add_custom_command (OUTPUT ${IMG_GEN_FULL_DIR}
+	  COMMAND ${CMAKE_COMMAND} 
+	  ARGS -E copy ${IMG_SRC_FULL_DIR} ${IMG_GEN_FULL_DIR}
+	  DEPENDS ${DOXYGEN_OUTPUT} ${IMG_SRC_FULL_DIR}
+	  COMMENT "Copying image '${IMG_SRC_FULL_DIR}' into '${htmldoc_DIR}'...")
+	add_custom_target (img_${image_SRC} ALL DEPENDS ${IMG_GEN_FULL_DIR})
+  endforeach (image_SRC)
+
+  ##
+  # PDF, generated by (Pdf)Latex from the Latex source file, itself generated
+  # by Doxygen (see above)
+  set (REFMAN_IDX ${REFMAN}.idx)
+  set (REFMAN_IDX_FULL ${TEX_GEN_DIR}/${REFMAN_IDX})
+  set (REFMAN_PDF ${REFMAN}.pdf)
+  set (REFMAN_PDF_FULL ${TEX_GEN_DIR}/${REFMAN_PDF})
+  # Note the "|| echo" addition to the pdflatex command, as that latter returns
+  # as if there were an error.
+  add_custom_command (OUTPUT ${REFMAN_IDX_FULL} ${REFMAN_PDF_FULL}
+	DEPENDS ${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL}
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "First PDF generation done."
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} makeindex -q ${REFMAN_IDX}
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "Second PDF generation done."
+	COMMENT "Generating PDF Reference Manual ('${REFMAN_PDF}')..."
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} test -f ${REFMAN_PDF} || echo "Warning: the PDF reference manual \\\('${REFMAN_PDF_FULL}'\\\) has failed to build. You can perform a simple re-build \\\('make' in the 'doc/latex' sub-directory\\\)."
+	COMMENT "Checking whether the PDF Reference Manual ('${REFMAN_PDF}') has been built...")
+  # Add the 'pdf' target, depending on the generated PDF manual
+  add_custom_target (pdf ALL DEPENDS ${REFMAN_PDF_FULL})
+
+  # Clean-up $build/html and $build/latex on 'make clean'
+  set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES 
+	${htmldoc_DIR} ${pdfdoc_DIR})
+
+  ##
+  # Installation of the HTML documentation
+  set (DOC_PATH share/doc/${PROJECT_NAME}-${CPACK_PACKAGE_VERSION})
+  # HTML pages
+  install (DIRECTORY ${htmldoc_DIR} DESTINATION ${DOC_PATH})
+  # PDF reference manual
+  # Note: the 'OPTIONAL' ensures that even when the PDF file fails to be
+  # generated, the install process does not complain. If the PDF build fails,
+  # a simple re-build ('make' in the 'doc/latex' sub-directory) is usually 
+  # enough.
+  install (FILES ${REFMAN_PDF_FULL} DESTINATION ${DOC_PATH}/html OPTIONAL)
+endmacro (doc_add_web_pages)
+
+##
+# Manual pages
+##
+macro (doc_add_man_pages)
+  # Specify the relative path where the manual pages are to be installed.
+  # That path is relative to the installation prefix. By default, the prefix
+  # is '/usr', and the manual page installation directory is therefore
+  # /usr/share/man
+  set (MAN_PATH "share/man")
+
+  # Specify the list of manual sections, e.g.:
+  #  * Section 1 (general commands)
+  #  * Section 3 (development)
+  set (man_section_list "")
+  foreach (_idx RANGE 1 9)
+    list (APPEND man_section_list ${_idx})
+  endforeach (_idx RANGE 1 9)
+
+  # Initialise the lists gathering information for each valid manual section
+  set (man_doxy_output_list "")
+  set (man_dir_list "")
+
+  # Parse the arguments
+  set (options "")
+  set (oneValueArgs "")
+
+  # Added one argument option for every manual section
+  foreach (man_sect ${man_section_list})
+    list (APPEND multiValueArgs MAN${man_sect})
+  endforeach (man_sect ${man_section_list})
+
+  # When available, use the convenient dedicated CMake function to parse
+  # the options. When not, the options must be parsed manually.
+  if (${CMAKE_VERSION} VERSION_GREATER 2.8.1)
+    cmake_parse_arguments (_man_arg "${options}" "${oneValueArgs}"
+      "${multiValueArgs}" ${ARGN})
+
+  else (${CMAKE_VERSION} VERSION_GREATER 2.8.1)
+    set (_current_section "")
+    set (_man_arg_MAN1 "")
+    set (_man_arg_MAN3 "")
+
+    foreach (_option_item ${ARGN})
+      string (REGEX MATCH "MAN([1-9])" _current_section_tmp "${_option_item}")
+      if ("${CMAKE_MATCH_1}" STREQUAL "")
+	list (APPEND _man_arg_MAN${_current_section} ${_option_item})
+      else ("${CMAKE_MATCH_1}" STREQUAL "")
+	set (_current_section "${CMAKE_MATCH_1}")
+      endif ("${CMAKE_MATCH_1}" STREQUAL "")
+    endforeach (_option_item ${ARGN})
+  endif (${CMAKE_VERSION} VERSION_GREATER 2.8.1)
+
+  # Set the documentation directories for the Doxygen configuration file
+  doc_set_directories()
+
+  # Browse all the manual sections
+  foreach (man_sect ${man_section_list})
+	# If the (current) macro was passed arguments for the current manual 
+	# section, process the generation of manual pages (with Doxygen).
+	if (NOT "${_man_arg_MAN${man_sect}}" STREQUAL "")
+
+	  # Specify in which sub-directory the manual pages are to be found
+	  set (man${man_sect}_DIR ${CMAKE_CURRENT_BINARY_DIR}/man${man_sect})
+	  # Add that sub-directory to the dedicated list
+	  list (APPEND man_dir_list ${man${man_sect}_DIR})
+
+	  # Convert the Doxygen configuration files (basically, just replace
+	  # the @<variable>@ variables).
+	  set (man_doxy_cfg doxygen_man${man_sect}.cfg)
+	  set (DOXYGEN_CFG${man_sect}_SRC ${man_doxy_cfg}.in)
+	  set (DOXYGEN_CFG${man_sect} ${CMAKE_CURRENT_BINARY_DIR}/${man_doxy_cfg})
+	  configure_file (${DOXYGEN_CFG${man_sect}_SRC}
+		${DOXYGEN_CFG${man_sect}} @ONLY)
+
+	  # Manual page sources for the current manual section
+	  foreach (_doc_src ${_man_arg_MAN${man_sect}})
+		list (APPEND man${man_sect}_SOURCES ${_doc_src}.doc)
+	  endforeach (_doc_src ${_man_arg_MAN${man_sect}})
+
+	  # Add the build rule for Doxygen for section 1 manual pages
+	  set (DOXYGEN_OUTPUT${man_sect}
+		${man${man_sect}_DIR}/stdair-config.${man_sect})
+	  add_custom_command (OUTPUT ${DOXYGEN_OUTPUT${man_sect}}
+		COMMAND ${DOXYGEN_EXECUTABLE} ARGS ${DOXYGEN_CFG${man_sect}}
+		DEPENDS ${DOXYGEN_CFG${man_sect}} ${man${man_sect}_SOURCES}
+		COMMENT "Generating section ${man_sect} manual pages with Doxygen, from '${DOXYGEN_CFG${man_sect}}'...")
+
+	  # Add the current manual section output to the dedicated list,
+	  # so that it can then be added to the corresponding target (see below).
+	  list (APPEND man_doxy_output_list ${DOXYGEN_OUTPUT${man_sect}})
+
+	  # Specifiy what to do for the installation of the manual pages
+	  install (DIRECTORY "${man${man_sect}_DIR}" DESTINATION ${MAN_PATH})
+
+	endif (NOT "${_man_arg_MAN${man_sect}}" STREQUAL "")
+  endforeach (man_sect ${man_section_list})
+
+  # Add the 'man' target, depending on the generated manual page documentation
+  add_custom_target (man ALL DEPENDS ${man_doxy_output_list})
+
+  # Clean-up $build/man1 and $build/man3 on 'make clean'
+  set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES 
+	${man_dir_list})
+
+endmacro (doc_add_man_pages)
 
 
 ###################################################################
@@ -1278,6 +1559,20 @@ macro (display_stdair)
   endif (StdAir_FOUND)
 endmacro (display_stdair)
 
+# AirRAC
+macro (display_airrac)
+  if (AirRAC_FOUND)
+    message (STATUS)
+    message (STATUS "* AirRAC:")
+    message (STATUS "  - AIRRAC_VERSION ............. : ${AIRRAC_VERSION}")
+    message (STATUS "  - AIRRAC_BINARY_DIRS ......... : ${AIRRAC_BINARY_DIRS}")
+    message (STATUS "  - AIRRAC_EXECUTABLES ......... : ${AIRRAC_EXECUTABLES}")
+    message (STATUS "  - AIRRAC_LIBRARY_DIRS ........ : ${AIRRAC_LIBRARY_DIRS}")
+    message (STATUS "  - AIRRAC_LIBRARIES ........... : ${AIRRAC_LIBRARIES}")
+    message (STATUS "  - AIRRAC_INCLUDE_DIRS ........ : ${AIRRAC_INCLUDE_DIRS}")
+  endif (AirRAC_FOUND)
+endmacro (display_airrac)
+
 ##
 macro (display_status_all_modules)
   message (STATUS)
@@ -1362,6 +1657,7 @@ macro (display_status)
   display_mysql ()
   display_soci ()
   display_stdair ()
+  display_airrac ()
   #
   message (STATUS)
   message (STATUS "Change a value with: cmake -D<Variable>=<Value>" )
