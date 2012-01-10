@@ -1,5 +1,5 @@
-#ifndef __TRADEMGEN_BAS_BASCOMPARSERTYPES_HPP
-#define __TRADEMGEN_BAS_BASCOMPARSERTYPES_HPP
+#ifndef __SEVMGR_BAS_BASCOMPARSERTYPES_HPP
+#define __SEVMGR_BAS_BASCOMPARSERTYPES_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -18,7 +18,7 @@
 //#include <boost/spirit/home/classic/actor/push_back_actor.hpp>
 //#include <boost/spirit/home/classic/actor/assign_actor.hpp>
 
-namespace TRADEMGEN {
+namespace SEVMGR {
 
   // ///////////////////////////////////////////////////////////////////////
   //
@@ -75,4 +75,4 @@ namespace TRADEMGEN {
   typedef boost::spirit::classic::bounded<uint4_p_t, unsigned int> bounded4_p_t;
   typedef boost::spirit::classic::bounded<uint1_4_p_t, unsigned int> bounded1_4_p_t;
 }
-#endif // __TRADEMGEN_BAS_BASCOMPARSERTYPES_HPP
+#endif // __SEVMGR_BAS_BASCOMPARSERTYPES_HPP

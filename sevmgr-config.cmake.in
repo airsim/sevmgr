@@ -1,20 +1,22 @@
 #
-# Config file for the TraDemGen package. It defines the following variables:
-#  TRADEMGEN_INCLUDE_DIRS - include directories for TraDemGen
-#  TRADEMGEN_LIBRARY_DIRS - library directories for TraDemGen (normally not used!)
-#  TRADEMGEN_BINARY_DIRS  - binary directories for TraDemGen (normally not used!)
-#  TRADEMGEN_LIBRARIES    - libraries to link against
-#  TRADEMGEN_EXECUTABLES  - the TraDemGen binaries/executables
+# Config file for the SEvMgr package. It defines the following variables:
+#  SEVMGR_VERSION      - version of SEvMgr
+#  SEVMGR_INCLUDE_DIRS - include directories for SEvMgr
+#  SEVMGR_LIBRARY_DIRS - library directories for SEvMgr (normally not used!)
+#  SEVMGR_BINARY_DIRS  - binary directories for SEvMgr (normally not used!)
+#  SEVMGR_LIBRARIES    - libraries to link against
+#  SEVMGR_EXECUTABLES  - the SEvMgr binaries/executables
 
-# Tell the user project where to find TraDemGen headers and libraries
-set (TRADEMGEN_INCLUDE_DIRS "@TRADEMGEN_INCLUDE_DIRS@")
-set (TRADEMGEN_LIBRARY_DIRS "@TRADEMGEN_LIB_DIR@")
-set (TRADEMGEN_BINARY_DIRS "@TRADEMGEN_BIN_DIR@")
+# Tell the user project where to find SEvMgr headers and libraries
+set (SEVMGR_VERSION "@PACKAGE_VERSION@")
+set (SEVMGR_INCLUDE_DIRS "@SEVMGR_INCLUDE_DIRS@")
+set (SEVMGR_LIBRARY_DIRS "@SEVMGR_LIB_DIR@")
+set (SEVMGR_BINARY_DIRS "@SEVMGR_BIN_DIR@")
 
-# Library dependencies for TraDemGen (contains definitions for the TraDemGen IMPORTED
+# Library dependencies for SEvmgr (contains definitions for the SEvMgr IMPORTED
 # targets)
-include ("@TRADEMGEN_CMAKE_DIR@/trademgen-library-depends.cmake")
+include ("@SEVMGR_CMAKE_DIR@/sevmgr-library-depends.cmake")
 
-# These are the TraDemGen IMPORTED targets, created by trademgen-library-depends.cmake
-set (TRADEMGEN_LIBRARIES trademgenlib trademgenuicllib)
-set (TRADEMGEN_EXECUTABLES trademgen)
+# These are the SEvMgr IMPORTED targets, created by sevmgr-library-depends.cmake
+set (SEVMGR_LIBRARIES sevmgrlib)
+set (SEVMGR_EXECUTABLES sevmgr)
