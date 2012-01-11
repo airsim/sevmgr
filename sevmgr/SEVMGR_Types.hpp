@@ -4,13 +4,21 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
+// Boost
+#include <boost/shared_ptr.hpp>
 // Sevmgr
 #include <sevmgr/SEVMGR_Exceptions.hpp>
 
 namespace SEVMGR {
 
-  // //////// Type definitions specific to Sevmgr /////////
-  // No specific type for now
+  // Forward declarations
+  class SEVMGR_Service;
+
+  // //////// Type definitions specific to to Sevmgr /////////
+  /**
+   * (Smart) Pointer on the SEvMgr service handler.
+   */
+  typedef boost::shared_ptr<SEVMGR_Service> SEVMGR_ServicePtr_T;
   
 }
 #endif // __SEVMGR_SEVMGR_TYPES_HPP
