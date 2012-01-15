@@ -19,4 +19,4 @@ include ("@SEVMGR_CMAKE_DIR@/sevmgr-library-depends.cmake")
 
 # These are the SEvMgr IMPORTED targets, created by sevmgr-library-depends.cmake
 set (SEVMGR_LIBRARIES sevmgrlib)
-set (SEVMGR_EXECUTABLES sevmgr)
+set (SEVMGR_EXECUTABLES sevmgr sevmgr_demo)

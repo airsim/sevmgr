@@ -24,7 +24,7 @@
 
 // //////// Constants //////
 /** Default name and location for the log file. */
-const stdair::Filename_T K_SEVMGR_DEFAULT_LOG_FILENAME ("sevmgr.log");
+const stdair::Filename_T K_SEVMGR_DEFAULT_LOG_FILENAME ("sevmgr_demo.log");
 
 /** Early return status (so that it can be differentiated from an error). */
 const int K_SEVMGR_EARLY_RETURN_STATUS = 99;
