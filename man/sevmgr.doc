@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>sevmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-f|--for_schedule] [-i|--inventory <path-to-inventory-input-file>] [-s|--schedule <path-to-schedule-input-file>] [-o|--ond <path-to-ond-input-file>]  [-y|--yield <path-to-yield-input-file>] [-l|--log <path-to-output-log-file>]</tt>
+<b>sevmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-l|--log <path-to-output-log-file>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -21,31 +21,6 @@
  \b -h, \b --help<br>
     Produce that message and show usage.
 
- \b -b, \b --builtin<br>
-    The sample BOM tree can be either built-in or parsed from an input
-    file. That latter must then be given with either the -i/--inventory
-    option or the set of -s/--schedule, -o/--ond options.<br>
-
- \b -f, \b --for_schedule<br>
-    The BOM tree should be built from a schedule file (instead of from
-    an inventory dump).<br>
-
- \b -i, \b --inventory <path-to-input-file><br>
-    Path (absolute or relative) of the (CSV) input file specifying the
-    inventory (flight-date) details.<br>
-
- \b -s, \b --schedule <path-to-input-file><br>
-    Path (absolute or relative) of the (CSV) input file specifying the
-    network/schedule (flight-period) details.<br>
-
- \b -o, \b --ond <path-to-input-file><br>
-    Path (absolute or relative) of the (CSV) input file specifying the
-    O&D (origin/destination) details.<br>
-
- \b -y, \b --yield <path-to-input-file><br>
-    Path (absolute or relative) of the (CSV) input file specifying the
-    yield rule details.<br>
-
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.<br>
 
@@ -53,7 +28,7 @@ See the output of the <tt>`sevmgr --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b sevmgr_parseInventory(1), \b sevmgr-config(1), \b sevmgr-library(3)
+\b sevmgr_demo(1), \b sevmgr-config(1), \b sevmgr-library(3)
 
 
 \section sec_support SUPPORT

@@ -42,7 +42,8 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ##            Dependencies            ##
 ########################################
 #
-get_external_libs (git "boost 1.41" mysql "soci 3.0" "stdair 0.45" doxygen)
+get_external_libs (git "boost 1.41" readline mysql "soci 3.0"
+  "stdair 0.45" doxygen)
 
 
 ##############################################
@@ -72,6 +73,10 @@ install_basic_documentation ()
 ##########################################
 #
 handle_html_doc ()
+
+##
+# Subdirs
+add_subdirectory (man)
 
 
 #####################################

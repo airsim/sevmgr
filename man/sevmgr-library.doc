@@ -10,17 +10,17 @@
 
 \section sec_description DESCRIPTION
 
-SEvMgr is a C++ library of airline inventory management classes and
-functions, mainly targeting simulation purposes.
+SEvMgr is a C++ library of discrete event queue management classes and
+functions, exclusively targeting simulation purposes.
 
 SEvMgr makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the Boost
 (C++ Standard Extensions: http://www.boost.org) library is used.
 
 The library covers the following areas:
-- Inventory creation/dressing from a schedule
-- Distributed airline inventories
-- Codeshare and alliances
+- Booking and cancellation requests
+- Forecast and Optimisation notification requests
+- Simulation break-points
 
 \section sec_see_also SEE ALSO
 \b sevmgr(1), \b sevmgr_demo(1), \b sevmgr-config(1)

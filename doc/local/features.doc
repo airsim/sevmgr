@@ -6,21 +6,16 @@ categories. Many more features and functions exist and for these we refer to
 the reference documentation.
 
 
-\section ng_features Network generation
-- Network/graph generation
+\section bkg_features Booking management
+- Booking and cancellation requests
 
 
-\section ig_features Inventory generation
-- Inventory generation
+\section rms_features Revenue Management notification
+- Forecast and Optimisation notification requests
 
 
-\section ts_features Finding travel solutions
-- Matching of travel solutions with user requests
-
-
-\section di_features Distributed inventories
-- Inventory independent partitions
-- MPI-based distribution
+\section bkp_features Setting simulation break-points
+- Simulation break-points
 
 
 \section other_features Other features
