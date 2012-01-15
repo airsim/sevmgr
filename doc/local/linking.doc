@@ -1,0 +1,110 @@
+/*! 
+\page linking Linking with SEvMgr
+
+\section toc Table of Contents
+- \ref intro
+- \ref dependencies
+- \ref pkgconfig
+- \ref sevmgr_config
+- \ref autotools
+- \ref dynamiclinking
+
+
+\section intro Introduction
+
+There are two convenient methods of linking your
+programs with the SEvMgr library. The first one employs the \c
+`pkg-config' command (see <a href="http://pkgconfig.freedesktop.org/">
+http://pkgconfig.freedesktop.org/</a>), whereas the second one uses \c
+`sevmgr-config' script. These methods are shortly described below.
+
+\section dependencies Dependencies
+
+The SEvMgr library depends on several other C++ components.
+
+\subsection stdairdep StdAir
+Among them, as for now, only StdAir has been packaged. The support for StdAir
+is taken in charge by a dedicated M4 macro file (namely, <tt>`stdair.m4'</tt>), 
+from the configuration script (generated thanks to <tt>`configure.ac'</tt>).
+
+\image html sevmgr_dependencies.png "SEvMgr Dependencies"
+\image rtf sevmgr_dependencies.png "SEvMgr Dependencies"
+\image latex sevmgr_dependencies.png "SEvMgr Dependencies" width=15cm
+
+\section pkgconfig Using the pkg-config command
+
+\c `pkg-config' is a helper tool used when compiling applications and
+libraries. It helps you insert the correct compiler and linker
+options. The syntax of the \c `pkg-config' is as follows:
+
+\code
+pkg-config <options> <library_name>  
+\endcode
+
+For instance, assuming that you need to compile an SEvMgr based program
+<tt>`my_prog.cpp'</tt>, you should use the following command:
+
+\code
+g++ `pkg-config --cflags sevmgr` -o my_prog my_prog.cpp `pkg-config --libs sevmgr`
+\endcode  
+
+For more information see the \c `pkg-config' man pages.
+
+
+\section sevmgr_config Using the sevmgr-config script
+
+SEvMgr provides a shell script called \c `sevmgr-config`, which is
+installed by default in \c `$prefix/bin'
+(\c `/usr/local/bin') directory. It can be used to simplify
+compilation and linking of SEvMgr based programs. The usage of this
+script is quite similar to the usage of the \c `pkg-config' command.
+
+Assuming that you need to compile the program \c `my_prog.cpp'
+you can now do that with the following command:
+
+\code
+g++ `sevmgr-config --cflags` -o my_prog_opt my_prog.cpp `sevmgr-config --libs`
+\endcode
+
+A list of \c `sevmgr-config' options can be obtained by typing:
+
+\code
+sevmgr-config --help
+\endcode
+
+If the \c `sevmgr-config' command is not found by your shell, you should add
+its location \c `$prefix/bin' to the \c PATH environment variable, e.g.:
+
+\code
+export PATH=/usr/local/bin:$PATH
+\endcode
+
+
+\section autotools M4 macro for the GNU Autotools
+
+A M4 macro file is delivered with SEvMgr, namely `sevmgr.m4', which
+can be found in, e.g., `/usr/share/aclocal'. When used by a
+`configure' script, thanks to he <tt>`AM_PATH_SEvMgr'</tt> macro
+(specified in the M4 macro file), the following Makefile variables are
+then defined:
+- <tt>`SEvMgr_VERSION'</tt> (e.g., defined to 0.23.0)
+- <tt>`SEvMgr_CFLAGS'</tt> (e.g., defined to <tt>`-I${prefix}/include'</tt>)
+- <tt>`SEvMgr_LIBS'</tt> (e.g., defined to <tt>`-L${prefix}/lib -lsevmgr'</tt>)
+
+
+\section dynamiclinking Using SEvMgr with dynamic linking
+
+When using static linking some of the library routines in SEvMgr are
+copied into your executable program. This can lead to unnecessary
+large executables. To avoid having too large executable files you may
+use dynamic linking instead. Dynamic linking means that the actual
+linking is performed when the program is executed. This requires that
+the system is able to locate the shared SEvMgr library file during your
+program execution. If you install the SEvMgr library using a non-standard
+prefix, the \c `LD_LIBRARY_PATH' environment variable might be used to
+inform the linker of the dynamic library location, e.g.:
+\code
+export LD_LIBRARY_PATH=<SEvMgr installation prefix>/lib:$LD_LIBRARY_PATH
+\endcode
+
+*/
