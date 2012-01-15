@@ -43,7 +43,7 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-99.99.99 \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-0.2.0 \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DENABLE_TEST:BOOL=ON \
    ${LIBSUFFIX_4_CMAKE} ..
@@ -54,6 +54,9 @@ Then, as usual:
 * To install the library (libsevmgr*.so*) and the binary (sevmgr),
   just type:
   make install
+  cd ${INSTALL_BASEDIR}
+  rm -f sevmgr-stable && ln -s sevmgr-0.2.0 sevmgr-stable
+  cd -
 * To package the source files, type:
   make dist
 * To package the binary and the (HTML and PDF) documentation:
@@ -61,7 +64,7 @@ Then, as usual:
 * To run the local binary version:
   ./sevmgr/sevmgr -b
 * To run the installed version:
-  ${INSTALL_BASEDIR}/sevmgr-99.99.99/bin/sevmgr -b
+  ${INSTALL_BASEDIR}/sevmgr-stable/bin/sevmgr -b
 
 Denis Arnaud (January 2012)
 
