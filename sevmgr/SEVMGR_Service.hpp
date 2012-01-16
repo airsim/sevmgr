@@ -115,6 +115,11 @@ namespace SEVMGR {
     bool isQueueDone() const;
 
     /**
+     * Add an event to the queue.
+     */
+    void addEvent(stdair::EventStruct&) const;
+
+    /**
      * Reset the context of the demand streams for another demand generation
      * without having to reparse the demand input file.
      */
