@@ -37,6 +37,14 @@ namespace SEVMGR {
      * @param stdair::EventQueue& Reference on the top of the BOM tree.
      */
     static void reset (stdair::EventQueue&);
+
+    /**
+     * Add an event the event queue.
+     *
+     * @param stdair::EventQueue& Reference on the top of the BOM tree.
+     * @param stdair::EventStruct& Reference on the event to add to the queue.
+     */
+    static void addEvent (stdair::EventQueue&, stdair::EventStruct&);
   };
 
 }

@@ -28,4 +28,15 @@ namespace SEVMGR {
     ioEventQueue.reset();
   }
 
+  // ////////////////////////////////////////////////////////////////////
+  void EventQueueManager::addEvent (stdair::EventQueue& ioEventQueue,
+                                    stdair::EventStruct& iEventStruct) {
+
+    /**
+     * Add the event to the event queue.
+     */
+    ioEventQueue.addEvent(iEventStruct);
+  }
+
+
 }
