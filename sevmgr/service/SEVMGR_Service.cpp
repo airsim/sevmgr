@@ -268,4 +268,22 @@ namespace SEVMGR {
     // Delegate the call to the dedicated command
     EventQueueManager::reset (lQueue);
   }
+
+  // ////////////////////////////////////////////////////////////////////
+  void SEVMGR_Service::addEvent(stdair::EventStruct& iEventStruct) const {
+
+    // Retrieve the Sevmgr service context
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    // Retrieve the event queue object instance
+    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated command
+    EventQueueManager::addEvent (lQueue, iEventStruct);
+  }
 }
