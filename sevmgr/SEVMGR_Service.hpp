@@ -8,6 +8,7 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/bom/EventTypes.hpp>
+#include <stdair/bom/EventStruct.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -15,7 +16,6 @@ namespace stdair {
   struct ProgressStatusSet;
   struct BasLogParams;
   struct BasDBParams;
-  struct EventStruct;
 }
 
 namespace SEVMGR {
@@ -99,7 +99,7 @@ namespace SEVMGR {
      *   <li>That (first) event/element is then removed from the event
      *     queue</li>
      *   <li>The progress status is updated for the corresponding
-     *     demand stream.</li>
+     *     event generator.</li>
      * </ul>
      *
      * @return stdair::EventStruct A copy of the event structure,
@@ -131,11 +131,32 @@ namespace SEVMGR {
     void addEvent(stdair::EventStruct&) const;
 
     /**
-     * Reset the context of the demand streams for another demand generation
+     * Reset the context of the event generators for another event generation
      * without having to reparse the demand input file.
      */
     void reset() const;
 
+    /**
+     * Get the expected total number of events of one type (for the whole
+     * event queue).
+     *
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the expected total count is asked.
+     * @return const stdair::Count_T& Expected total count of such events for
+     * the whole event queue.
+     */
+    const stdair::Count_T& getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
+
+    /**
+     * Get the actual total number of events of one type (for the whole event
+     * queue).
+     *
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the actual total count is asked.
+     * @return const stdair::Count_T& Actual total number of such events for
+     * the whole event queue.
+     */
+    const stdair::Count_T& getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
 
   public:
     // //////////////// Display support methods /////////////////

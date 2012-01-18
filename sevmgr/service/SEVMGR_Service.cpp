@@ -287,6 +287,55 @@ namespace SEVMGR {
     EventQueueManager::addEvent (lQueue, iEventStruct);
   }
 
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& SEVMGR_Service::
+  getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType& iEventType) const {
+
+    // Retrieve the Sevmgr service context
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    const stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    
+    // Retrieve the event queue object instance
+    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated function
+    const stdair::Count_T& oExpectedTotalNumberOfRequestsToBeGenerated =
+      lQueue.getExpectedTotalNbOfEvents (iEventType);
+
+    //
+    return oExpectedTotalNumberOfRequestsToBeGenerated;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& SEVMGR_Service::
+  getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType& iEventType) const {
+
+    // Retrieve the Sevmgr service context
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    const stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    
+    // Retrieve the event queue object instance
+    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated function
+    const stdair::Count_T& oActualTotalNumberOfRequestsToBeGenerated =
+      lQueue.getActualTotalNbOfEvents (iEventType);
+
+    //
+    return oActualTotalNumberOfRequestsToBeGenerated;
+  }
+
+
   //////////////////////////////////////////////////////////////////////
   const stdair::STDAIR_Service& SEVMGR_Service::getSTDAIR_Service() const {
 
