@@ -286,4 +286,17 @@ namespace SEVMGR {
     // Delegate the call to the dedicated command
     EventQueueManager::addEvent (lQueue, iEventStruct);
   }
+
+  //////////////////////////////////////////////////////////////////////
+  const stdair::STDAIR_Service& SEVMGR_Service::getSTDAIR_Service() const {
+
+      // Retrieve the StdAir service context
+      assert (_sevmgrServiceContext != NULL);
+      const stdair::STDAIR_Service& lSTDAIR_Service =
+        _sevmgrServiceContext->getSTDAIR_Service();
+
+      //
+      return lSTDAIR_Service;
+  }
+ 
 }

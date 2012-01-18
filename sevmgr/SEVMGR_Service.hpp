@@ -115,6 +115,17 @@ namespace SEVMGR {
     bool isQueueDone() const;
 
     /**
+     * Add an event generator to the map holding the children of the queue.
+     * Be careful, this method is not implemented: its implementation is
+     * left to the appelant according the EventGenerator type.
+     *
+     * \note An instance of implementation of that method can be found in the
+     *       TraDemGen service.
+     */
+    template<class EventGenerator>
+    void addEventGenerator(EventGenerator& iEventGenerator) const;
+
+    /**
      * Add an event to the queue.
      */
     void addEvent(stdair::EventStruct&) const;
@@ -205,6 +216,15 @@ namespace SEVMGR {
      */
     void finalise();
 
+  private:
+    // ////////////////// Getters //////////////////    
+    /**
+     * Get the STDAIR service.
+     *
+     * \note Needed for the implementation of the addEventGenerator method
+     * method in the TraDemGen service.
+     */
+    const stdair::STDAIR_Service& getSTDAIR_Service() const;
     
   private:
     // ///////// Service Context /////////
