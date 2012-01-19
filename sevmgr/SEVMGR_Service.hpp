@@ -158,6 +158,25 @@ namespace SEVMGR {
      */
     const stdair::Count_T& getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
 
+    /**
+     * Set the actual total number of events (for the whole event queue).
+     *
+     * @param const stdair::Count_T& Total number of events.
+     */
+    void setActualTotalNbOfEvents (const stdair::Count_T&);
+
+    /**
+     * Update the progress status for the given event type (e.g., booking
+     * request, optimisation notification, schedule change, break point).
+     *
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the actual total count is updated.
+     * @return const stdair::Count_T& Expected Actual count of such events
+     * already generated
+     */
+    void updateStatus (const stdair::EventType::EN_EventType&,
+                       const stdair::Count_T&) const;
+
   public:
     // //////////////// Display support methods /////////////////
     /**
