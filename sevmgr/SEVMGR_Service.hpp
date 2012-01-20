@@ -12,7 +12,6 @@
 
 // Forward declarations
 namespace stdair {
-  class EventQueue;
   struct ProgressStatusSet;
   struct BasLogParams;
   struct BasDBParams;
@@ -108,13 +107,6 @@ namespace SEVMGR {
     stdair::ProgressStatusSet popEvent (stdair::EventStruct&) const;
 
     /**
-     * States whether the event queue has reached the end.
-     *
-     * For now, that method states whether the event queue is empty.
-     */
-    bool isQueueDone() const;
-
-    /**
      * Add an event generator to the map holding the children of the queue.
      * Be careful, this method is not implemented: its implementation is
      * left to the appelant according the EventGenerator type.
@@ -124,7 +116,7 @@ namespace SEVMGR {
      */
     template<class EventGenerator>
     void addEventGenerator(EventGenerator& iEventGenerator) const;
-
+    
     /**
      * Add an event to the queue.
      */
@@ -135,6 +127,73 @@ namespace SEVMGR {
      * without having to reparse the demand input file.
      */
     void reset() const;
+
+    /**
+     * Update the progress status for the given event type (e.g., booking
+     * request, optimisation notification, schedule change, break point).
+     *
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the actual total count is updated.
+     * @return const stdair::Count_T& Expected Actual count of such events
+     * already generated
+     */
+    void updateStatus (const stdair::EventType::EN_EventType&,
+                       const stdair::Count_T&) const;
+
+    /**
+     * Initialise the progress statuses for the given event type
+     * (e.g., request, snapshot).
+     *
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the actual total count is updated.
+     * @return const stdair::Count_T& Expected Actual count of such events
+     * already generated
+     */
+     void addStatus (const stdair::EventType::EN_EventType&,
+                     const stdair::Count_T&) const;
+
+    /**
+     * States whether the event queue has reached the end.
+     *
+     * For now, that method states whether the event queue is empty.
+     */
+    bool isQueueDone() const;
+
+    /**
+     * Extract an event generator from the map holding the children of the
+     * queue.
+     * Be careful, this method is not implemented: its implementation is
+     * left to the appelant according the EventGenerator type.
+     *
+     * \note An instance of implementation of that method can be found in the
+     *       TraDemGen service.
+     */
+    template<class EventGenerator, class Key>
+    EventGenerator& getEventGenerator(const Key& iKey) const;
+
+    /**
+     * Extract the event generator list from the map holding the children of the
+     * queue.
+     * Be careful, this method is not implemented: its implementation is
+     * left to the appelant according the EventGenerator type.
+     *
+     * \note An instance of implementation of that method can be found in the
+     *       TraDemGen service.
+     */
+    template<class EventGenerator>
+    const std::list<EventGenerator*> getEventGeneratorList() const;
+
+    /**
+     * Check whether there are DemandStream objects.
+     *
+     * Be careful, this method is not implemented: its implementation is
+     * left to the appelant according the EventGenerator type.
+     *
+     * \note An instance of implementation of that method can be found in the
+     *       TraDemGen service.
+     */
+    template<class EventGenerator>
+    bool hasEventGeneratorList() const;
 
     /**
      * Get the expected total number of events of one type (for the whole
@@ -165,18 +224,6 @@ namespace SEVMGR {
      */
     void setActualTotalNbOfEvents (const stdair::Count_T&);
 
-    /**
-     * Update the progress status for the given event type (e.g., booking
-     * request, optimisation notification, schedule change, break point).
-     *
-     * @param const stdair::EventType::EN_EventType& Type of the events for
-     * which the actual total count is updated.
-     * @return const stdair::Count_T& Expected Actual count of such events
-     * already generated
-     */
-    void updateStatus (const stdair::EventType::EN_EventType&,
-                       const stdair::Count_T&) const;
-
   public:
     // //////////////// Display support methods /////////////////
     /**
@@ -188,6 +235,13 @@ namespace SEVMGR {
      */
     std::string csvDisplay() const;
 
+    /**
+     * Display (dump in the returned string) the key of the event queue.
+     *
+     * @return std::string Output string in which the key is
+     *        logged/dumped.
+     */
+    std::string describeKey() const;
 
   private:
     // ////////////////// Constructors and Destructors //////////////////    

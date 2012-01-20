@@ -210,6 +210,29 @@ namespace SEVMGR {
     return stdair::BomDisplay::csvDisplay (lEventQueue);
   }
 
+  // //////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::describeKey() const {
+
+    // Retrieve the Sevmgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The Sevmgr service has "
+                                                    "not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+
+    // Retrieve the STDAIR service object from the (Sevmgr) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+
+    // Retrieve the event queue
+    stdair::EventQueue& lEventQueue = lSTDAIR_Service.getEventQueue();
+
+    // Delegate the key display to the dedicated function
+    return lEventQueue.describeKey();
+  }
+
   // ////////////////////////////////////////////////////////////////////
   stdair::ProgressStatusSet SEVMGR_Service::
   popEvent (stdair::EventStruct& ioEventStruct) const {
@@ -247,6 +270,26 @@ namespace SEVMGR {
     
     // Delegate the call to the dedicated function
     lQueue.updateStatus (iEventType, iEventCount);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void SEVMGR_Service::
+  addStatus (const stdair::EventType::EN_EventType& iEventType,
+                const stdair::Count_T& iEventCount) const {
+
+    // Retrieve the Sevmgr service context
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+
+    // Retrieve the event queue object instance
+    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated function
+    lQueue.addStatus (iEventType, iEventCount);
   }
 
   // ////////////////////////////////////////////////////////////////////
