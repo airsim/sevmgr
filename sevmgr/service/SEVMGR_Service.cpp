@@ -13,6 +13,7 @@
 #include <stdair/bom/BomDisplay.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/EventQueue.hpp>
+#include <stdair/bom/BookingRequestStruct.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Sevmgr
@@ -185,6 +186,29 @@ namespace SEVMGR {
 
     // Retrieve the event queue
     //stdair::EventQueue& lEventQueue = lSTDAIR_Service.getEventQueue();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  stdair::BookingRequestStruct SEVMGR_Service::buildBookingRequest(const bool isForCRS) {
+
+    // Retrieve the Sevmgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
+                                                    "not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+  
+    // Retrieve the STDAIR service object from the (SEvMgr) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    
+    // Delegate the booking request building to the dedicated service
+    stdair::BookingRequestStruct oBookingRequest =
+      lSTDAIR_Service.buildSampleBookingRequest (isForCRS);
+
+    return oBookingRequest;
   }
 
   // //////////////////////////////////////////////////////////////////////
