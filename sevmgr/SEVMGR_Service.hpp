@@ -15,6 +15,7 @@ namespace stdair {
   struct ProgressStatusSet;
   struct BasLogParams;
   struct BasDBParams;
+  struct BookingRequestStruct;
 }
 
 namespace SEVMGR {
@@ -87,6 +88,14 @@ namespace SEVMGR {
      * Build a sample BOM tree.
      */
     void buildSampleBom();
+
+    /**
+     * Build a BookingRequest structure (for test purposes).
+     *
+     * @return stdair::BookingRequestStruct The created BookingRequest
+     *         structure.
+     */ 
+    stdair::BookingRequestStruct buildBookingRequest(const bool isForCRS = false);
 
     /**
      * Pop the next coming (in time) event, and remove it from the
