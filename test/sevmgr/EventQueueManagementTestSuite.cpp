@@ -23,9 +23,7 @@
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/basic/BasFileMgr.hpp>
 #include <stdair/basic/ProgressStatusSet.hpp>
-#include <stdair/basic/BasConst_DefaultObject.hpp>
 #include <stdair/bom/EventStruct.hpp>
-#include <stdair/bom/EventQueue.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
 #include <stdair/bom/BookingRequestTypes.hpp>
 #include <stdair/service/Logger.hpp>
