@@ -45,8 +45,7 @@ namespace SEVMGR {
     /**
      * Describe the event queue key
      */
-    const std::string lEventQueueKeyStr =
-      iEventQueue.describeKey();
+    const std::string& lEventQueueKeyStr = iEventQueue.describeKey();
 
     //
     return lEventQueueKeyStr;
