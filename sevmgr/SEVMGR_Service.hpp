@@ -169,6 +169,11 @@ namespace SEVMGR {
     bool isQueueDone() const;
 
     /**
+     * Get the size of the queue.
+     */
+    const stdair::Count_T& getQueueSize() const;
+
+    /**
      * Extract an event generator from the map holding the children of the
      * queue.
      * Be careful, this method is not implemented: its implementation is
