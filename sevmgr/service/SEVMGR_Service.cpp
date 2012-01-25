@@ -259,10 +259,35 @@ namespace SEVMGR {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::
+  jsonExportEventObjects (const stdair::EventType::EN_EventType& iEventType) const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+  
+    // Retrieve the STDAIR service object from the (SEVMGR) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+
+    // Delegate the JSON export to the dedicated service
+    return lSTDAIR_Service.jsonExportEventObjects (iEventType);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   stdair::ProgressStatusSet SEVMGR_Service::
   popEvent (stdair::EventStruct& iEventStruct) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
@@ -283,6 +308,10 @@ namespace SEVMGR {
                 const stdair::Count_T& iEventCount) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
@@ -303,6 +332,10 @@ namespace SEVMGR {
              const stdair::Count_T& iEventCount) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
@@ -321,6 +354,10 @@ namespace SEVMGR {
   bool SEVMGR_Service::isQueueDone() const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -343,6 +380,10 @@ namespace SEVMGR {
   const stdair::Count_T& SEVMGR_Service::getQueueSize() const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -362,6 +403,10 @@ namespace SEVMGR {
   void SEVMGR_Service::reset() const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -380,6 +425,10 @@ namespace SEVMGR {
   void SEVMGR_Service::addEvent(stdair::EventStruct& iEventStruct) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -399,6 +448,10 @@ namespace SEVMGR {
   getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType& iEventType) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -420,6 +473,10 @@ namespace SEVMGR {
   getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType& iEventType) const {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -442,6 +499,10 @@ namespace SEVMGR {
   setActualTotalNbOfEvents (const stdair::Count_T& iActualTotalNbOfEvents) {
 
     // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
@@ -463,12 +524,16 @@ namespace SEVMGR {
   const stdair::STDAIR_Service& SEVMGR_Service::getSTDAIR_Service() const {
 
       // Retrieve the StdAir service context
-      assert (_sevmgrServiceContext != NULL);
-      const stdair::STDAIR_Service& lSTDAIR_Service =
-        _sevmgrServiceContext->getSTDAIR_Service();
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    const stdair::STDAIR_Service& lSTDAIR_Service =
+      _sevmgrServiceContext->getSTDAIR_Service();
 
-      //
-      return lSTDAIR_Service;
+    //
+    return lSTDAIR_Service;
   }
  
 }
