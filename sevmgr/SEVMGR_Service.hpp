@@ -257,6 +257,15 @@ namespace SEVMGR {
      */
     std::string describeKey() const;
 
+    /**
+     * Dump in the returned string and in JSON format the list of events of the
+     * given type.
+     *   
+     * @param const stdair::EventType::EN_EventType& Type of the events for
+     * which the json display is asked.
+     */
+    std::string jsonExportEventObjects (const stdair::EventType::EN_EventType&) const;
+
   private:
     // ////////////////// Constructors and Destructors //////////////////    
     /**

@@ -18,6 +18,9 @@
 #include <stdair/bom/EventQueue.hpp>
 #include <stdair/bom/BomDisplay.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/bom/BookingRequestStruct.hpp>
+#include <stdair/bom/BookingRequestTypes.hpp>
+#include <stdair/bom/EventStruct.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Service.hpp>
 #include <sevmgr/config/sevmgr-paths.hpp>
@@ -132,9 +135,86 @@ int main (int argc, char* argv[]) {
    */
   SEVMGR::SEVMGR_Service sevmgrService (lLogParams);
 
-  // Build a sample BOM tree (empty for now)
-  sevmgrService.buildSampleBom();
+  // Total number of events
+  stdair::Count_T lNbOfEvents (2);
+  sevmgrService.addStatus(stdair::EventType::BKG_REQ,
+                          lNbOfEvents);
 
+  // Create a shared pointer on a first booking request
+  // Date of the request (15-MAY-2011)
+  const stdair::BookingRequestStruct& lBookingRequest =
+    sevmgrService.buildBookingRequest ();
+
+  // TODO: understand why the following form does not work, knowing
+  // that:
+  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+  const stdair::BookingRequestPtr_T lBookingRequest_ptr =
+    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
+  
+  // Create an event structure
+  stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
+                                    lBookingRequest_ptr);
+
+  // Add the event into the queue
+  sevmgrService.addEvent(lEventStruct);
+
+  // Create a second shared pointer on a second booking request
+  // Date of the request (22-JAN-2010)
+  const bool isForCRS = true;
+  const stdair::BookingRequestStruct& lBookingRequestForCRS =
+    sevmgrService.buildBookingRequest (isForCRS);
+
+  // TODO: understand why the following form does not work, knowing
+  // that:
+  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+  const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
+    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
+  
+  // Create an event structure
+  stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
+                                          lBookingRequestForCRS_ptr);
+
+  // Add the event into the queue
+  sevmgrService.addEvent(lEventStructForCRS);
+
+  /**
+     Main loop.
+     <ul>
+     <li>Pop a request and describes it.</li>
+     </ul>
+  */
+  stdair::Count_T idx = 1;
+  while (sevmgrService.isQueueDone() == false) {
+    
+    // Pop the next event out of the event queue
+    stdair::EventStruct lEventStruct;
+    const stdair::ProgressStatusSet lPPS =
+      sevmgrService.popEvent (lEventStruct);
+
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Poped event "<< idx << ": '"
+                      << lEventStruct.describe() << "'.");
+    STDAIR_LOG_DEBUG ("Progresss status: " << lPPS.describe());
+      
+    // Extract the corresponding demand/booking request
+    const stdair::BookingRequestStruct& lPoppedRequest =
+      lEventStruct.getBookingRequest();
+    
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Poped booking request: '"
+                      << lPoppedRequest.describe() << "'.");
+
+    // Iterate
+    ++idx;
+  }
+
+  // DEBUG
+  STDAIR_LOG_DEBUG ("End of the simulation");
+  
   // Close the Log outputFile
   logOutputFile.close();
 
