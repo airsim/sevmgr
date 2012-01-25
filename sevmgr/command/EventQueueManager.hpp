@@ -33,18 +33,70 @@ namespace SEVMGR {
 
     /**
      * Empty the event queue.
-     *
-     * @param stdair::EventQueue& Reference on the top of the BOM tree.
      */
     static void reset (stdair::EventQueue&);
 
     /**
      * Add an event the event queue.
-     *
-     * @param stdair::EventQueue& Reference on the top of the BOM tree.
-     * @param stdair::EventStruct& Reference on the event to add to the queue.
      */
     static void addEvent (stdair::EventQueue&, stdair::EventStruct&);
+
+    /**
+     * Describe the event queue key
+     */
+    static const std::string describeKey(const stdair::EventQueue&);
+
+    /**
+     * Extract the first event fron the queue
+     */
+    static stdair::ProgressStatusSet popEvent (stdair::EventQueue&,
+                                               stdair::EventStruct&);
+    /**
+     * Update the status of the given event type with the given count
+     */
+    static void updateStatus (stdair::EventQueue&,
+                              const stdair::EventType::EN_EventType&,
+                              const stdair::Count_T&);
+     /**
+     * Add the status of the given event type and initialize it
+     * with the given count
+     */
+    static void addStatus (stdair::EventQueue&,
+                           const stdair::EventType::EN_EventType&,
+                           const stdair::Count_T&);
+
+    /**
+     * Check if the event queue is done
+     */
+    static bool isQueueDone(const stdair::EventQueue&);
+
+
+    /**
+     * Calculateswhether the size of the event queue
+     */
+    static const stdair::Count_T& getQueueSize(const stdair::EventQueue&);
+
+
+    /**
+     * Calculate the expected total number of events with the given type
+     */
+    static const stdair::Count_T&
+    getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
+                                                const stdair::EventType::EN_EventType&);
+
+    /**
+     * Calculate the actual total number of events with the given type
+     */
+    static const stdair::Count_T&
+    getActualTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
+                                              const stdair::EventType::EN_EventType&);
+
+    /**
+     * Set the actual total number of events in the queue
+     */
+    static void setActualTotalNbOfEvents (stdair::EventQueue&,
+                                          const stdair::Count_T& iActualTotalNbOfEvents);
+
   };
 
 }

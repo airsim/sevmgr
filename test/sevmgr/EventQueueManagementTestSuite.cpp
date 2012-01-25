@@ -100,6 +100,8 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
 
   // Total number of events
   stdair::Count_T lNbOfEvents (2);
+  sevmgrService.addStatus(stdair::EventType::BKG_REQ,
+                          lNbOfEvents);
 
   // Create a shared pointer on a first booking request
   // Date of the request (15-MAY-2011)
@@ -146,6 +148,13 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
   BOOST_REQUIRE_MESSAGE (sevmgrService.isQueueDone() == false,
                          "The event queue should not be empty at this step. "
                          << "Two insertions done.");
+  /** Does the queue size correspond to the actual number of events added? */
+  const stdair::Count_T lQueueSize =
+    sevmgrService.getQueueSize();
+  BOOST_REQUIRE_MESSAGE (lQueueSize == lNbOfEvents,
+                         "Actual size of the queue: " << sevmgrService.getQueueSize()
+                         << ". Expected size value: " << lNbOfEvents);
+
 
   /**
      Main loop.
@@ -164,6 +173,7 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
     // DEBUG
     STDAIR_LOG_DEBUG ("Poped event "<< idx << ": '"
                       << lEventStruct.describe() << "'.");
+    STDAIR_LOG_DEBUG ("Progresss status: " << lPPS.describe());
       
     // Extract the corresponding demand/booking request
     const stdair::BookingRequestStruct& lPoppedRequest =
