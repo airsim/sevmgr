@@ -115,6 +115,20 @@ namespace SEVMGR {
 
     //
     return lQueueSize;
+  }  
+
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& EventQueueManager::
+  getExpectedTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue) {
+
+    /**
+     * Calculate the expected total number of events with the given type
+     */
+    const stdair::Count_T& lExpectedTotalNumberOfEvents =
+      ioEventQueue.getExpectedTotalNbOfEvents ();
+
+    //
+    return lExpectedTotalNumberOfEvents;
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -130,6 +144,21 @@ namespace SEVMGR {
 
     //
     return lExpectedTotalNumberOfEvents;
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& EventQueueManager::
+  getActualTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue) {
+
+    /**
+     * Calculate the actual total number of events with the given type
+     */
+    const stdair::Count_T& lActualTotalNumberOfEvents =
+      ioEventQueue.getActualTotalNbOfEvents ();
+
+    //
+    return lActualTotalNumberOfEvents;
+
   }
 
   // ////////////////////////////////////////////////////////////////////

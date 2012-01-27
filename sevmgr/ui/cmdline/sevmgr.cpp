@@ -18,6 +18,10 @@
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/bom/BookingRequestStruct.hpp>
+#include <stdair/bom/BookingRequestTypes.hpp>
+#include <stdair/basic/ProgressStatusSet.hpp>
+#include <stdair/bom/EventStruct.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Service.hpp>
 #include <sevmgr/config/sevmgr-paths.hpp>
@@ -213,376 +217,6 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
   return oCommandType;
 }
 
-// //////////////////////////////////////////////////////////////////
-void parseFlightKey (const TokenList_T& iTokenList,
-                     stdair::AirlineCode_T& ioAirlineCode,
-                     stdair::FlightNumber_T& ioFlightNumber) {
-  // Interpret the user input
-  if (iTokenList.empty() == false) {
-
-    // Read the airline code
-    TokenList_T::const_iterator itTok = iTokenList.begin();
-    if (itTok->empty() == false) {
-      ioAirlineCode = *itTok;
-      boost::algorithm::to_upper (ioAirlineCode);
-    }
-
-    // Read the flight-number
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          ioFlightNumber = boost::lexical_cast<stdair::FlightNumber_T> (*itTok);
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The flight number ('" << *itTok
-                    << "') cannot be understood. "
-                    << "The default value (all) is kept."
-                    << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-  }
-}
-
-// //////////////////////////////////////////////////////////////////
-void parseFlightDateKey (const TokenList_T& iTokenList,
-                         stdair::AirlineCode_T& ioAirlineCode,
-                         stdair::FlightNumber_T& ioFlightNumber,
-                         stdair::Date_T& ioDepartureDate) {
-  //
-  const std::string kMonthStr[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-  //
-  unsigned short ioDepartureDateYear = ioDepartureDate.year();
-  unsigned short ioDepartureDateMonth = ioDepartureDate.month();
-  std::string ioDepartureDateMonthStr = kMonthStr[ioDepartureDateMonth-1];
-  unsigned short ioDepartureDateDay = ioDepartureDate.day();
-
-  // Interpret the user input
-  if (iTokenList.empty() == false) {
-
-    // Read the airline code
-    TokenList_T::const_iterator itTok = iTokenList.begin();
-    if (itTok->empty() == false) {
-      ioAirlineCode = *itTok;
-      boost::algorithm::to_upper (ioAirlineCode);
-    }
-
-    // Read the flight-number
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          ioFlightNumber = boost::lexical_cast<stdair::FlightNumber_T> (*itTok);
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The flight number ('" << *itTok
-                    << "') cannot be understood. "
-                    << "The default value (all) is kept."
-                    << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-
-    // Read the year for the departure date
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          ioDepartureDateYear = boost::lexical_cast<unsigned short> (*itTok);
-          if (ioDepartureDateYear < 100) {
-            ioDepartureDateYear += 2000;
-          }
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The year of the flight departure date ('" << *itTok
-                    << "') cannot be understood. The default value ("
-                    << ioDepartureDateYear << ") is kept. " << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-
-    // Read the month for the departure date
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          const boost::regex lMonthRegex ("^(\\d{1,2})$");
-          const bool isMonthANumber = regex_match (*itTok, lMonthRegex);
-        
-          if (isMonthANumber == true) {
-            const unsigned short lMonth =
-              boost::lexical_cast<unsigned short> (*itTok);
-            if (lMonth > 12) {
-              throw boost::bad_lexical_cast();
-            }
-            ioDepartureDateMonthStr = kMonthStr[lMonth-1];
-
-          } else {
-            const std::string lMonthStr (*itTok);
-            if (lMonthStr.size() < 3) {
-              throw boost::bad_lexical_cast();
-            }
-            std::string lMonthStr1 (lMonthStr.substr (0, 1));
-            boost::algorithm::to_upper (lMonthStr1);
-            std::string lMonthStr23 (lMonthStr.substr (1, 2));
-            boost::algorithm::to_lower (lMonthStr23);
-            ioDepartureDateMonthStr = lMonthStr1 + lMonthStr23;
-          }
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The month of the flight departure date ('" << *itTok
-                    << "') cannot be understood. The default value ("
-                    << ioDepartureDateMonthStr << ") is kept. " << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-
-    // Read the day for the departure date
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          ioDepartureDateDay = boost::lexical_cast<unsigned short> (*itTok);
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The day of the flight departure date ('" << *itTok
-                    << "') cannot be understood. The default value ("
-                    << ioDepartureDateDay << ") is kept. " << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-
-    // Re-compose the departure date
-    std::ostringstream lDepartureDateStr;
-    lDepartureDateStr << ioDepartureDateYear << "-" << ioDepartureDateMonthStr
-                      << "-" << ioDepartureDateDay;
-
-    try {
-
-      ioDepartureDate =
-        boost::gregorian::from_simple_string (lDepartureDateStr.str());
-
-    } catch (boost::gregorian::bad_month& eCast) {
-      std::cerr << "The flight departure date ('" << lDepartureDateStr.str()
-                << "') cannot be understood. The default value ("
-                << ioDepartureDate << ") is kept. " << std::endl;
-      return;
-    }
-    
-  }
-}
-
-// //////////////////////////////////////////////////////////////////
-void parseBookingClassKey (const TokenList_T& iTokenList,
-                           stdair::ClassCode_T& ioBookingClass,
-                           stdair::PartySize_T& ioPartySize,
-                           stdair::AirportCode_T& ioOrigin,
-                           stdair::AirportCode_T& ioDestination) {
-  // Interpret the user input
-  if (iTokenList.empty() == false) {
-
-    // Read the booking class
-    TokenList_T::const_iterator itTok = iTokenList.begin();
-    if (itTok->empty() == false) {
-      ioBookingClass = *itTok;
-      boost::algorithm::to_upper (ioBookingClass);
-    }
-      
-    // Read the party size
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        try {
-
-          ioPartySize = boost::lexical_cast<stdair::PartySize_T> (*itTok);
-
-        } catch (boost::bad_lexical_cast& eCast) {
-          std::cerr << "The party size ('" << *itTok
-                    << "') cannot be understood. The default value ("
-                    << ioPartySize << ") is kept." << std::endl;
-          return;
-        }
-      }
-
-    } else {
-      return;
-    }
-
-    // Read the origin
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        ioOrigin = *itTok;
-        boost::algorithm::to_upper (ioOrigin);
-      }
-
-    } else {
-      return;
-    }
-
-    // Read the destination
-    ++itTok;
-    if (itTok != iTokenList.end()) {
-
-      if (itTok->empty() == false) {
-        ioDestination = *itTok;
-        boost::algorithm::to_upper (ioDestination);
-      }
-
-    } else {
-      return;
-    }
-  }
-}
-
-// /////////////////////////////////////////////////////////
-std::string toString (const TokenList_T& iTokenList) {
-  std::ostringstream oStr;
-
-  // Re-create the string with all the tokens, trimmed by read-line
-  unsigned short idx = 0;
-  for (TokenList_T::const_iterator itTok = iTokenList.begin();
-       itTok != iTokenList.end(); ++itTok, ++idx) {
-    if (idx != 0) {
-      oStr << " ";
-    }
-    oStr << *itTok;
-  }
-
-  return oStr.str();
-}
-
-// /////////////////////////////////////////////////////////
-TokenList_T extractTokenList (const TokenList_T& iTokenList,
-                              const std::string& iRegularExpression) {
-  TokenList_T oTokenList;
-
-  // Re-create the string with all the tokens (which had been trimmed
-  // by read-line)
-  const std::string lFullLine = toString (iTokenList);
-
-  // See the caller for the regular expression
-  boost::regex expression (iRegularExpression);
-  
-  std::string::const_iterator start = lFullLine.begin();
-  std::string::const_iterator end = lFullLine.end();
-
-  boost::match_results<std::string::const_iterator> what;
-  boost::match_flag_type flags = boost::match_default | boost::format_sed; 
-  regex_search (start, end, what, expression, flags);
-  
-  // Put the matched strings in the list of tokens to be returned back
-  // to the caller
-  const unsigned short lMatchSetSize = what.size();
-  for (unsigned short matchIdx = 1; matchIdx != lMatchSetSize; ++matchIdx) {
-    const std::string lMatchedString (std::string (what[matchIdx].first,
-                                                   what[matchIdx].second));
-    //if (lMatchedString.empty() == false) {
-    oTokenList.push_back (lMatchedString);
-    //}
-  }
-
-  // DEBUG
-  // std::cout << "After (token list): " << oTokenList << std::endl;
-
-  return oTokenList;
-}    
-
-// /////////////////////////////////////////////////////////
-TokenList_T extractTokenListForFlight (const TokenList_T& iTokenList) {
-  /**
-   * Expected format:
-   *   line:            airline_code[ ]?flight_number departure_date
-   *   airline_code:    word (alpha{2,3})
-   *   flight_number:   number (digit{1,4})
-   */
-  const std::string lRegEx ("^([[:alpha:]]{2,3})?"
-                            "[[:space:]]*([[:digit:]]{1,4})?$");
-
-  //
-  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
-  return oTokenList;
-}    
-
-// /////////////////////////////////////////////////////////
-TokenList_T extractTokenListForFlightDate (const TokenList_T& iTokenList) {
-  /**
-   * Expected format:
-   *   line:            airline_code[ ]?flight_number departure_date
-   *   airline_code:    word (alpha{2,3})
-   *   flight_number:   number (digit{1,4})
-   *   departure_date:  year[/- ]?month[/- ]?day
-   *   year:            number (digit{2,4})
-   *   month:           (number (digit{1,2}) | word (alpha{3}))
-   *   day:             number (digit{1,2})
-   */
-  const std::string lRegEx("^([[:alpha:]]{2,3})?"
-                           "[[:space:]]*([[:digit:]]{1,4})?"
-                           "[/ ]*"
-                           "([[:digit:]]{2,4})?[/-]?[[:space:]]*"
-                           "([[:alpha:]]{3}|[[:digit:]]{1,2})?[/-]?[[:space:]]*"
-                           "([[:digit:]]{1,2})?$");
-
-  //
-  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
-  return oTokenList;
-}    
-
-// /////////////////////////////////////////////////////////
-TokenList_T extractTokenListForClass (const TokenList_T& iTokenList) {
-  /**
-   * Expected format:
-   *   line:            class_code party_size origin destination
-   *   class_code:      word (alpha)
-   *   party_size:      number (digit{1,3})
-   *   origin:          word (alpha{3})
-   *   destination:     word (alpha{3})
-   */
-  const std::string lRegEx ("^([[:alpha:]])?"
-                            "[[:space:]]*([[:digit:]]{1,3})?"
-                            "[[:space:]]*([[:alpha:]]{3})?"
-                            "[[:space:]]*([[:alpha:]]{3})?$");
-
-  //
-  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
-  return oTokenList;
-}    
-
-
 // ///////// M A I N ////////////
 int main (int argc, char* argv[]) {
 
@@ -590,20 +224,6 @@ int main (int argc, char* argv[]) {
   const unsigned int lHistorySize (100);
   const std::string lHistoryFilename ("sevmgr.hist");
   const std::string lHistoryBackupFilename ("sevmgr.hist.bak");
-
-  // Default parameters for the interactive session
-  stdair::AirlineCode_T lLastInteractiveAirlineCode;
-  stdair::FlightNumber_T lLastInteractiveFlightNumber;
-  stdair::Date_T lLastInteractiveDate;
-  stdair::AirlineCode_T lInteractiveAirlineCode;
-  stdair::FlightNumber_T lInteractiveFlightNumber;
-  stdair::Date_T lInteractiveDate;
-  stdair::AirportCode_T lInteractiveOrigin;
-  stdair::AirportCode_T lInteractiveDestination;
-  stdair::ClassCode_T lInteractiveBookingClass;
-  
-  // Parameters for the sale
-  std::string lSegmentDateKey;
 
   // Output log File
   stdair::Filename_T lLogFilename;
@@ -629,28 +249,58 @@ int main (int argc, char* argv[]) {
   STDAIR_LOG_DEBUG ("Welcome to SEvMgr");
 
   // Build the sample BOM tree for RMOL
-  sevmgrService.buildSampleBom();
+  sevmgrService.buildSampleBom();  
 
-  // Update the default parameters for the following interactive session
-  lInteractiveAirlineCode = "BA";
-  lInteractiveFlightNumber = 9;
-  lInteractiveDate = stdair::Date_T (2011, 06, 10);
-  lInteractiveBookingClass = "Q";
-  lInteractiveOrigin = "LHR";
-  lInteractiveDestination = "SYD";
+  // Total number of events
+  stdair::Count_T lNbOfEvents (2);
+  sevmgrService.addStatus(stdair::EventType::BKG_REQ,
+                          lNbOfEvents);
 
-  // Save the last state
-  lLastInteractiveAirlineCode = lInteractiveAirlineCode;
-  lLastInteractiveFlightNumber = lInteractiveFlightNumber;
-  lLastInteractiveDate = lInteractiveDate;
+  // Create a shared pointer on a first booking request
+  // Date of the request (15-MAY-2011)
+  const stdair::BookingRequestStruct& lBookingRequest =
+    sevmgrService.buildBookingRequest ();
+
+  // TODO: understand why the following form does not work, knowing
+  // that:
+  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+  const stdair::BookingRequestPtr_T lBookingRequest_ptr =
+    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
+  
+  // Create an event structure
+  stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
+                                    lBookingRequest_ptr);
+
+  // Add the event into the queue
+  sevmgrService.addEvent(lEventStruct);
+
+  // Create a second shared pointer on a second booking request
+  // Date of the request (22-JAN-2010)
+  const bool isForCRS = true;
+  const stdair::BookingRequestStruct& lBookingRequestForCRS =
+    sevmgrService.buildBookingRequest (isForCRS);
+
+  // TODO: understand why the following form does not work, knowing
+  // that:
+  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+  const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
+    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
+  
+  // Create an event structure
+  stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
+                                          lBookingRequestForCRS_ptr);
+
+  // Add the event into the queue
+  sevmgrService.addEvent(lEventStructForCRS);
 
   // DEBUG
   STDAIR_LOG_DEBUG ("====================================================");
   STDAIR_LOG_DEBUG ("=       Beginning of the interactive session       =");
   STDAIR_LOG_DEBUG ("====================================================");
-  STDAIR_LOG_DEBUG ("Last saved state: " << lLastInteractiveAirlineCode
-                    << lLastInteractiveFlightNumber << " / "
-                    << lLastInteractiveDate);
 
   // Initialise the GNU readline wrapper
   swift::SReadline lReader (lHistoryFilename, lHistorySize);
@@ -664,10 +314,7 @@ int main (int argc, char* argv[]) {
   while (lCommandType != Command_T::QUIT && EndOfInput == false) {
     // Prompt
     std::ostringstream oPromptStr;
-    oPromptStr << "sevmgr "
-               << lInteractiveAirlineCode << lInteractiveFlightNumber
-               << " / " << lInteractiveDate
-               << "> ";
+    oPromptStr << "sevmgr> ";
     // Call read-line, which will fill the list of tokens
     TokenList_T lTokenListByReadline;
     lUserInput = lReader.GetLine (oPromptStr.str(), lTokenListByReadline,
@@ -750,7 +397,29 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// Next ////////////////////////
     case Command_T::NEXT: {
       //
-      std::cout << "Next" << std::endl;
+      std::cout << "Next" << std::endl;  
+
+      // Get the next event from the event queue
+      stdair::EventStruct lEventStruct;
+      stdair::ProgressStatusSet lPPS = 
+	sevmgrService.popEvent (lEventStruct);
+      
+      // DEBUG 
+      std::ostringstream oEventStr;
+      oEventStr << "Poped event: '" << lEventStruct.describe() << "'."; 
+      std::cout << oEventStr.str() << std::endl;
+      STDAIR_LOG_DEBUG (oEventStr.str());
+      
+      // Extract the corresponding demand/booking request
+      const stdair::BookingRequestStruct& lPoppedRequest =
+	lEventStruct.getBookingRequest();
+    
+      // DEBUG   
+      std::ostringstream oBRStr;
+      oBRStr << "Poped booking request: '"  << lPoppedRequest.describe() 
+	     << "'."<< std::endl;
+      std::cout << oBRStr.str() <<std::endl;
+      STDAIR_LOG_DEBUG (oBRStr.str());
 
       //
       break;

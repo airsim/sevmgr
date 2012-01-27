@@ -445,6 +445,30 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& SEVMGR_Service::
+  getExpectedTotalNumberOfEventsToBeGenerated() const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    const stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    
+    // Retrieve the event queue object instance
+    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated function
+    return EventQueueManager::getExpectedTotalNumberOfEventsToBeGenerated (lQueue);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& SEVMGR_Service::
   getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType& iEventType) const {
 
     // Retrieve the SEvMgr service context
@@ -466,6 +490,31 @@ namespace SEVMGR {
     // Delegate the call to the dedicated function
     return EventQueueManager::getExpectedTotalNumberOfEventsToBeGenerated (lQueue,
                                                                            iEventType);
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  const stdair::Count_T& SEVMGR_Service::
+  getActualTotalNumberOfEventsToBeGenerated() const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the StdAir service context
+    const stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    
+    // Retrieve the event queue object instance
+    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    
+    // Delegate the call to the dedicated function
+    return EventQueueManager::getActualTotalNumberOfEventsToBeGenerated(lQueue);
+
   }
 
   // ////////////////////////////////////////////////////////////////////
