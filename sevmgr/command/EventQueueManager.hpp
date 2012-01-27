@@ -74,23 +74,34 @@ namespace SEVMGR {
     /**
      * Calculateswhether the size of the event queue
      */
-    static const stdair::Count_T& getQueueSize(const stdair::EventQueue&);
+    static const stdair::Count_T& getQueueSize(const stdair::EventQueue&); 
 
+    /**
+     * Calculate the expected total number of events
+     */
+    static const stdair::Count_T& 
+    getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&);
 
     /**
      * Calculate the expected total number of events with the given type
      */
     static const stdair::Count_T&
     getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
-                                                const stdair::EventType::EN_EventType&);
+                                                const stdair::EventType::EN_EventType&); 
+     
+    /**
+     * Calculate the actual total number of events
+     */
+    static const stdair::Count_T&
+    getActualTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&);
 
     /**
      * Calculate the actual total number of events with the given type
      */
     static const stdair::Count_T&
     getActualTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
-                                              const stdair::EventType::EN_EventType&);
-
+                                              const stdair::EventType::EN_EventType&);  
+  
     /**
      * Set the actual total number of events in the queue
      */

@@ -90,10 +90,34 @@ namespace SEVMGR {
     void buildSampleBom();
 
     /**
-     * Build a BookingRequest structure (for test purposes).
+     * Build a sample booking request structure.
      *
-     * @return stdair::BookingRequestStruct The created BookingRequest
-     *         structure.
+     * As of now (March 2011), the sample booking request is made of the
+     * following parameters:
+     * <ul>
+     *  <li>Return trip (inbound): LHR-SYD (POS: LHR, Channel: DN), </li>
+     *  <li>Departing 10-JUN-2011 around 8:00, staying 7 days</li>
+     *  <li>Requested on 15-MAY-2011 at 10:00</li>
+     *  <li>Economy cabin, 3 persons, FF member</li>
+     *  <li>WTP: 1000.0 EUR</li>
+     *  <li>Dis-utility: 100.0 EUR/hour</li>
+     * </ul>
+     *
+     * As of now (March 2011), the CRS-related booking request is made
+     * of the following parameters:
+     * <ul>
+     *  <li>Return trip (inbound): SIN-BKK (POS: SIN, Channel: IN), </li>
+     *  <li>Departing 30-JAN-2010 around 10:00, staying 7 days</li>
+     *  <li>Requested on 22-JAN-2010 at 10:00</li>
+     *  <li>Economy cabin, 3 persons, FF member</li>
+     *  <li>WTP: 1000.0 EUR</li>
+     *  <li>Dis-utility: 100.0 EUR/hour</li>
+     * </ul>
+     *
+     * \see stdair::CmdBomManager for more details.
+     *
+     * @param const bool isForCRS Whether the sample booking request is for CRS.
+     * @return BookingRequestStruct& Sample booking request structure.
      */ 
     stdair::BookingRequestStruct buildBookingRequest(const bool isForCRS = false);
 
@@ -207,29 +231,75 @@ namespace SEVMGR {
      *       TraDemGen service.
      */
     template<class EventGenerator>
-    bool hasEventGeneratorList() const;
+    bool hasEventGeneratorList() const;   
 
     /**
-     * Get the expected total number of events of one type (for the whole
-     * event queue).
+     * Get the expected number of events to be generated.
      *
-     * @param const stdair::EventType::EN_EventType& Type of the events for
-     * which the expected total count is asked.
-     * @return const stdair::Count_T& Expected total count of such events for
-     * the whole event queue.
+     * The getExpectedTotalNbOfEvents() method is called on the
+     * underlying EventQueue object, which keeps track of that number.
+     *
+     * \note That number usually corresponds to an expectation (i.e.,
+     *       the mean value of a random distribution), and may not be
+     *       accurate. The actual number will be known after calling
+     *       the generateFirstEvents() method for each event type
+     *       (e.g., booking request, optimisation notification, etc).
+     *
+     * @return const Count_T& Expected number of events to be generated.
      */
-    const stdair::Count_T& getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
+    const stdair::Count_T& getExpectedTotalNumberOfEventsToBeGenerated() const;
 
     /**
-     * Get the actual total number of events of one type (for the whole event
-     * queue).
+     * Get the expected number of events to be generated for the given
+     * event type.
      *
-     * @param const stdair::EventType::EN_EventType& Type of the events for
-     * which the actual total count is asked.
-     * @return const stdair::Count_T& Actual total number of such events for
-     * the whole event queue.
+     * The getExpectedTotalNbOfEvents() method is called on the
+     * underlying EventQueue object, which keeps track of that number.
+     *
+     * \note That number usually corresponds to an expectation (i.e.,
+     *       the mean value of a random distribution), and may not be
+     *       accurate. The actual number will be known after calling
+     *       the generateFirstEvents() method for each event type
+     *       (e.g., booking request, optimisation notification, etc).
+     *
+     * @param const EventType_T& Event type for which the number is calculated.
+     * @return const Count_T& Expected number of events to be generated.
+     */  
+    const stdair::Count_T& 
+    getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;  
+
+    /**
+     * Get the actual number of events to be generated for all the
+     * demand streams.
+     *
+     * The getActualTotalNbOfEvents() method is called on the
+     * underlying EventQueue object, which keeps track of that number.
+     *
+     * \note That number is being known after calling the
+     *       generateFirstEvents() method.
+     *
+     * @return const Count_T& Expected number of events to be generated.
      */
-    const stdair::Count_T& getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
+    const stdair::Count_T& getActualTotalNumberOfEventsToBeGenerated() const;
+
+    /**
+     * Get the expected number of events to be generated for the given
+     * event type.
+     *
+     * The getExpectedTotalNbOfEvents() method is called on the
+     * underlying EventQueue object, which keeps track of that number.
+     *
+     * \note That number usually corresponds to an expectation (i.e.,
+     *       the mean value of a random distribution), and may not be
+     *       accurate. The actual number will be known after calling
+     *       the generateFirstEvents() method for each event type
+     *       (e.g., booking request, optimisation notification, etc).
+     *
+     * @param const EventType_T& Event type for which the number is calculated.
+     * @return const Count_T& Expected number of events to be generated.
+     */
+    const stdair::Count_T& 
+    getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
 
     /**
      * Set the actual total number of events (for the whole event queue).
