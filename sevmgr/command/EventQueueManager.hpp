@@ -12,11 +12,13 @@
 
 // Forward declarations
 namespace stdair {
-  class EventQueue;
   struct ProgressStatusSet;
 }
 
 namespace SEVMGR {
+
+  // Forward declarations
+  class EventQueue;
 
   /**
    * @brief Utility class for Demand and DemandStream objects.
@@ -29,83 +31,83 @@ namespace SEVMGR {
     /**
      * Generate a sample BOM tree.
      */
-    static void buildSampleBom (stdair::EventQueue&);
+    static void buildSampleBom (EventQueue&);
 
     /**
      * Empty the event queue.
      */
-    static void reset (stdair::EventQueue&);
+    static void reset (EventQueue&);
 
     /**
      * Add an event the event queue.
      */
-    static void addEvent (stdair::EventQueue&, stdair::EventStruct&);
+    static void addEvent (EventQueue&, stdair::EventStruct&);
 
     /**
      * Describe the event queue key
      */
-    static const std::string describeKey(const stdair::EventQueue&);
+    static const std::string describeKey(const EventQueue&);
 
     /**
      * Extract the first event fron the queue
      */
-    static stdair::ProgressStatusSet popEvent (stdair::EventQueue&,
+    static stdair::ProgressStatusSet popEvent (EventQueue&,
                                                stdair::EventStruct&);
     /**
      * Update the status of the given event type with the given count
      */
-    static void updateStatus (stdair::EventQueue&,
+    static void updateStatus (EventQueue&,
                               const stdair::EventType::EN_EventType&,
                               const stdair::Count_T&);
      /**
      * Add the status of the given event type and initialize it
      * with the given count
      */
-    static void addStatus (stdair::EventQueue&,
+    static void addStatus (EventQueue&,
                            const stdair::EventType::EN_EventType&,
                            const stdair::Count_T&);
 
     /**
      * Check if the event queue is done
      */
-    static bool isQueueDone(const stdair::EventQueue&);
+    static bool isQueueDone(const EventQueue&);
 
 
     /**
      * Calculateswhether the size of the event queue
      */
-    static const stdair::Count_T& getQueueSize(const stdair::EventQueue&); 
+    static const stdair::Count_T& getQueueSize(const EventQueue&); 
 
     /**
      * Calculate the expected total number of events
      */
     static const stdair::Count_T& 
-    getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&);
+    getExpectedTotalNumberOfEventsToBeGenerated(const EventQueue&);
 
     /**
      * Calculate the expected total number of events with the given type
      */
     static const stdair::Count_T&
-    getExpectedTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
+    getExpectedTotalNumberOfEventsToBeGenerated(const EventQueue&,
                                                 const stdair::EventType::EN_EventType&); 
      
     /**
      * Calculate the actual total number of events
      */
     static const stdair::Count_T&
-    getActualTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&);
+    getActualTotalNumberOfEventsToBeGenerated(const EventQueue&);
 
     /**
      * Calculate the actual total number of events with the given type
      */
     static const stdair::Count_T&
-    getActualTotalNumberOfEventsToBeGenerated(const stdair::EventQueue&,
+    getActualTotalNumberOfEventsToBeGenerated(const EventQueue&,
                                               const stdair::EventType::EN_EventType&);  
   
     /**
      * Set the actual total number of events in the queue
      */
-    static void setActualTotalNbOfEvents (stdair::EventQueue&,
+    static void setActualTotalNbOfEvents (EventQueue&,
                                           const stdair::Count_T& iActualTotalNbOfEvents);
 
   };

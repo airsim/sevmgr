@@ -19,6 +19,9 @@ namespace SEVMGR {
    * (Smart) Pointer on the SEvMgr service handler.
    */
   typedef boost::shared_ptr<SEVMGR_Service> SEVMGR_ServicePtr_T;
+
+  /** Define an ID for an EventQueue object. */
+  typedef std::string EventQueueID_T;
   
 }
 #endif // __SEVMGR_SEVMGR_TYPES_HPP

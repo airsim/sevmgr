@@ -442,7 +442,7 @@ int main (int argc, char* argv[]) {
 
       // DEBUG: Display the flight-date after the sell
       const std::string& lCSVEventsDumpAfter =
-        sevmgrService.jsonExportEventObjects(stdair::EventType::BKG_REQ);
+        sevmgrService.jsonExportEventQueue ();
 
       // Display the events JSON string
       std::cout << lCSVEventsDumpAfter << std::endl;

@@ -22,6 +22,8 @@ namespace SEVMGR {
 
   /// Forward declarations
   class SEVMGR_ServiceContext;
+  class EventQueue; 
+  struct EventStruct;
   
   /**
    * @brief class holding the services related to Travel Demand Generation.
@@ -190,7 +192,13 @@ namespace SEVMGR {
      *
      * For now, that method states whether the event queue is empty.
      */
-    bool isQueueDone() const;
+    bool isQueueDone() const;  
+
+    /* @brief Get a reference on the EventQueue object.
+     *
+     * @return EventQueue& Reference on the EventQueue.
+     */
+    EventQueue& getEventQueue() const;
 
     /**
      * Get the size of the queue.
@@ -325,16 +333,13 @@ namespace SEVMGR {
      * @return std::string Output string in which the key is
      *        logged/dumped.
      */
-    std::string describeKey() const;
+    std::string describeKey() const; 
 
     /**
-     * Dump in the returned string and in JSON format the list of events of the
-     * given type.
-     *   
-     * @param const stdair::EventType::EN_EventType& Type of the events for
-     * which the json display is asked.
+     * Dump in the returned string and in JSON format the whole list of events 
+     * queue. 
      */
-    std::string jsonExportEventObjects (const stdair::EventType::EN_EventType&) const;
+    std::string jsonExportEventQueue () const;
 
   private:
     // ////////////////// Constructors and Destructors //////////////////    

@@ -10,9 +10,9 @@
 namespace SEVMGR {
 
   /** Default name for the SEVMGR_Service. */
-  // const std::string DEFAULT_SEVMGR_SERVICE_NAME = "sevmgr";
-  
-  /** Default key for the event queue manager. */
-  // extern const std::string DEFAULT_EVENT_QUEUE_KEY;
+  // const std::string DEFAULT_SEVMGR_SERVICE_NAME = "sevmgr";  
+
+  /** Default ID for the event queue. */
+  const EventQueueID_T DEFAULT_EVENT_QUEUE_ID ("EQ01");
 
 }
