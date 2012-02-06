@@ -377,9 +377,8 @@ namespace SEVMGR {
      */
     const unsigned int idx = 0;
     while (insertionSucceeded == false && idx != 1e3) {
-      // Retrieve the date-time stamp (expressed in milliseconds)
-      stdair::LongDuration_T lEventTimeStamp = ioEventStruct.getEventTimeStamp();
-      ++lEventTimeStamp;
+      // Increment the date-time stamp (expressed in milliseconds)
+      ioEventStruct.incrementEventTimeStamp();
 
       // Retry to insert into the event queue
       insertionSucceeded =

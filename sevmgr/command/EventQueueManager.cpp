@@ -30,7 +30,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   void EventQueueManager::addEvent (EventQueue& ioEventQueue,
-                                    stdair::EventStruct& iEventStruct) {
+                                     stdair::EventStruct& iEventStruct) {
 
     /**
      * Add the event to the event queue.
