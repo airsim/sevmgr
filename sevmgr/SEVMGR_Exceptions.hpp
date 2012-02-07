@@ -22,7 +22,15 @@ namespace SEVMGR {
      */
     SEvMgrException (const std::string& iWhat)
       : stdair::RootException (iWhat) {}
+  }; 
+
+  /** EventQueue. */
+  class EventQueueException : public SEvMgrException { 
+  public:
+    /** Constructor. */
+    EventQueueException (const std::string& iWhat) : SEvMgrException (iWhat) {}
   };
+
 
 }
 #endif // __SEVMGR_SEVMGR_EXCEPTIONS_HPP

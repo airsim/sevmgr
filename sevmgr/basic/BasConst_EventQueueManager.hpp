@@ -6,11 +6,13 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <string>
+//SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 
-namespace SEVMGR {
+namespace SEVMGR {  
 
-  /** Default key for the event queue manager. */
-  // extern const std::string DEFAULT_EVENT_QUEUE_KEY;
+  /** Default ID for the event queue. */
+  extern const EventQueueID_T DEFAULT_EVENT_QUEUE_ID;
 
 }
 #endif // __SEVMGR_BAS_BASCONST_EVENTQUEUEMANAGER_HPP

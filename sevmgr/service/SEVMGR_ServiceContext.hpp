@@ -13,7 +13,16 @@
 // SEvMgr
 #include <sevmgr/SEVMGR_Types.hpp>
 
-namespace SEVMGR {
+/// Forward declarations
+namespace stdair {
+  class FacBomManager;
+  template <typename BOM> class FacBom;
+}
+
+namespace SEVMGR { 
+
+  /// Forward declarations
+  class EventQueue;
 
   /**
    * @brief Class holding the context of the Sevmgr services.
@@ -49,7 +58,12 @@ namespace SEVMGR {
      */
     const bool getOwnStdairServiceFlag() const {
       return _ownStdairService;
-    }
+    }   
+
+    /**
+     * Get the pointer on the EventQueue instance.
+     */
+    EventQueue& getEventQueue() const;
 
 
   private:
@@ -88,7 +102,6 @@ namespace SEVMGR {
      * Main constructor.
      */
     SEVMGR_ServiceContext();
-    SEVMGR_ServiceContext (const std::string& iServiceName);
     /**
      * Copy constructor (not to be used).
      */
@@ -102,7 +115,24 @@ namespace SEVMGR {
     /**
      * Clear the context (cabin capacity, bucket holder).
      */
-    void reset();
+    void reset();    
+
+    /**
+     * Initialisation.
+     *
+     * That method is invoked from the constructors. It triggers, in
+     * turn, the initialisation of the BOM tree root and of the event
+     * queue.
+     */
+    void init();
+   
+    /**
+     * Initialisation.
+     *
+     * The EventQueue object is created by that method, and then
+     * stored within the service context.
+     */
+    void initEventQueue();
 
     
   private:
@@ -120,7 +150,10 @@ namespace SEVMGR {
 
   private:
     // ////////////// Attributes ////////////////
-    // No attributes for now
+    /**
+     * @brief EventQueue.
+     */
+    EventQueue* _eventQueue;
   };
 
 }

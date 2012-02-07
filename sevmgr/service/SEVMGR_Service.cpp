@@ -12,7 +12,6 @@
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/BomDisplay.hpp>
 #include <stdair/bom/EventStruct.hpp>
-#include <stdair/bom/EventQueue.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
@@ -22,6 +21,7 @@
 #include <sevmgr/command/EventQueueManager.hpp>
 #include <sevmgr/service/SEVMGR_ServiceContext.hpp>
 #include <sevmgr/SEVMGR_Service.hpp>
+#include <sevmgr/bom/EventQueue.hpp>
 
 namespace SEVMGR {
 
@@ -180,12 +180,8 @@ namespace SEVMGR {
 
     //SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
-    // Retrieve the STDAIR service object from the (SEvMgr) service context
-    //stdair::STDAIR_Service& lSTDAIR_Service =
-    // lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue
-    //stdair::EventQueue& lEventQueue = lSTDAIR_Service.getEventQueue();
+    //EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -215,6 +211,8 @@ namespace SEVMGR {
   // //////////////////////////////////////////////////////////////////////
   std::string SEVMGR_Service::csvDisplay() const {
 
+    std::ostringstream oStr;
+
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
@@ -222,17 +220,14 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
 
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
-
-    // Retrieve the STDAIR service object from the (SEvMgr) service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    //SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
     // Retrieve the event queue
-    stdair::EventQueue& lEventQueue = lSTDAIR_Service.getEventQueue();
+    //EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the BOM building to the dedicated command
-    return stdair::BomDisplay::csvDisplay (lEventQueue);
+    return oStr.str();
+    //stdair::BomDisplay::csvDisplay (lEventQueue);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -247,20 +242,18 @@ namespace SEVMGR {
 
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
-    // Retrieve the STDAIR service object from the (SEvMgr) service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue
-    stdair::EventQueue& lEventQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the key display to the dedicated command
     return EventQueueManager::describeKey(lEventQueue);
-  }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   std::string SEVMGR_Service::
-  jsonExportEventObjects (const stdair::EventType::EN_EventType& iEventType) const {
+  jsonExportEventQueue () const {  
+
+    std::ostringstream oStr;  
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
@@ -269,14 +262,16 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
 
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
-  
-    // Retrieve the STDAIR service object from the (SEVMGR) service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    /**SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
 
+    // Retrieve the event queue
+    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
+ 
     // Delegate the JSON export to the dedicated service
-    return lSTDAIR_Service.jsonExportEventObjects (iEventType);
+    return lSTDAIR_Service.jsonExportEventObject (iEventStruct);*/ 
+
+    return oStr.str();
+  
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -291,12 +286,8 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated command
     return EventQueueManager::popEvent(lQueue, iEventStruct);
@@ -315,12 +306,8 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated command
     EventQueueManager::updateStatus (lQueue, iEventType, iEventCount);
@@ -339,12 +326,8 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated function
     EventQueueManager::addStatus (lQueue, iEventType, iEventCount);
@@ -362,12 +345,8 @@ namespace SEVMGR {
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Calculates whether the event queue has been fully emptied
     const bool isQueueDone = EventQueueManager::isQueueDone(lQueue);
@@ -388,12 +367,8 @@ namespace SEVMGR {
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
-
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated command
     return EventQueueManager::getQueueSize(lQueue);
@@ -411,14 +386,27 @@ namespace SEVMGR {
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated command
     EventQueueManager::reset (lQueue);
+  }  
+
+  // //////////////////////////////////////////////////////////////////////
+  EventQueue& SEVMGR_Service::getEventQueue() const {  
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);  
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    return lSEVMGR_ServiceContext.getEventQueue();
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -433,11 +421,8 @@ namespace SEVMGR {
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
 
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated command
     EventQueueManager::addEvent (lQueue, iEventStruct);
@@ -455,13 +440,9 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
-
-    // Retrieve the StdAir service context
-    const stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated function
     return EventQueueManager::getExpectedTotalNumberOfEventsToBeGenerated (lQueue);
@@ -479,13 +460,9 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
-
-    // Retrieve the StdAir service context
-    const stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated function
     return EventQueueManager::getExpectedTotalNumberOfEventsToBeGenerated (lQueue,
@@ -504,13 +481,9 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
-
-    // Retrieve the StdAir service context
-    const stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated function
     return EventQueueManager::getActualTotalNumberOfEventsToBeGenerated(lQueue);
@@ -529,13 +502,9 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
-
-    // Retrieve the StdAir service context
-    const stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     
     // Retrieve the event queue object instance
-    const stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
     
     // Delegate the call to the dedicated function
     return EventQueueManager::getActualTotalNumberOfEventsToBeGenerated(lQueue,
@@ -555,13 +524,9 @@ namespace SEVMGR {
     assert (_sevmgrServiceContext != NULL);
     SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
       *_sevmgrServiceContext;
-
-    // Retrieve the StdAir service context
-    const stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
     
     // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service.getEventQueue();
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the call to the dedicated function
     EventQueueManager::setActualTotalNbOfEvents (lQueue,

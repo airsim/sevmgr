@@ -7,20 +7,20 @@
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/EventStruct.hpp>
-#include <stdair/bom/EventQueue.hpp>
 #include <stdair/service/Logger.hpp>
 // SEvMgr
+#include <sevmgr/bom/EventQueue.hpp>
 #include <sevmgr/command/EventQueueManager.hpp>
 
 namespace SEVMGR {
 
   // //////////////////////////////////////////////////////////////////////
   void EventQueueManager::
-  buildSampleBom (stdair::EventQueue& ioEventQueue) {
+  buildSampleBom (EventQueue& ioEventQueue) {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void EventQueueManager::reset (stdair::EventQueue& ioEventQueue) {
+  void EventQueueManager::reset (EventQueue& ioEventQueue) {
 
     /**
      * Reset the EventQueue object.
@@ -29,8 +29,8 @@ namespace SEVMGR {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void EventQueueManager::addEvent (stdair::EventQueue& ioEventQueue,
-                                    stdair::EventStruct& iEventStruct) {
+  void EventQueueManager::addEvent (EventQueue& ioEventQueue,
+                                     stdair::EventStruct& iEventStruct) {
 
     /**
      * Add the event to the event queue.
@@ -40,7 +40,7 @@ namespace SEVMGR {
 
   // //////////////////////////////////////////////////////////////////////
   const std::string EventQueueManager::
-  describeKey(const stdair::EventQueue& iEventQueue) {
+  describeKey(const EventQueue& iEventQueue) {
 
     /**
      * Describe the event queue key
@@ -53,7 +53,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   stdair::ProgressStatusSet EventQueueManager::
-  popEvent (stdair::EventQueue& ioEventQueue,
+  popEvent (EventQueue& ioEventQueue,
             stdair::EventStruct& iEventStruct) {
 
     /**
@@ -68,7 +68,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   void EventQueueManager::
-  updateStatus (stdair::EventQueue& ioEventQueue,
+  updateStatus (EventQueue& ioEventQueue,
                 const stdair::EventType::EN_EventType& iEventType,
                 const stdair::Count_T& iEventCount) {
     
@@ -80,7 +80,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   void EventQueueManager::
-  addStatus (stdair::EventQueue& ioEventQueue,
+  addStatus (EventQueue& ioEventQueue,
              const stdair::EventType::EN_EventType& iEventType,
              const stdair::Count_T& iEventCount) {
     
@@ -93,7 +93,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   bool EventQueueManager::
-  isQueueDone (const stdair::EventQueue& iEventQueue) {
+  isQueueDone (const EventQueue& iEventQueue) {
     
     /**
      * Check if the event queue is done
@@ -106,7 +106,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& EventQueueManager::
-  getQueueSize (const stdair::EventQueue& iEventQueue) {
+  getQueueSize (const EventQueue& iEventQueue) {
 
     /**
      * Calculates the size of the event queue
@@ -119,7 +119,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& EventQueueManager::
-  getExpectedTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue) {
+  getExpectedTotalNumberOfEventsToBeGenerated (const EventQueue& ioEventQueue) {
 
     /**
      * Calculate the expected total number of events with the given type
@@ -133,7 +133,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& EventQueueManager::
-  getExpectedTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue,
+  getExpectedTotalNumberOfEventsToBeGenerated (const EventQueue& ioEventQueue,
                                                const stdair::EventType::EN_EventType& iEventType) {
 
     /**
@@ -148,7 +148,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& EventQueueManager::
-  getActualTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue) {
+  getActualTotalNumberOfEventsToBeGenerated (const EventQueue& ioEventQueue) {
 
     /**
      * Calculate the actual total number of events with the given type
@@ -163,7 +163,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& EventQueueManager::
-  getActualTotalNumberOfEventsToBeGenerated (const stdair::EventQueue& ioEventQueue,
+  getActualTotalNumberOfEventsToBeGenerated (const EventQueue& ioEventQueue,
                                              const stdair::EventType::EN_EventType& iEventType) {
 
     /**
@@ -179,7 +179,7 @@ namespace SEVMGR {
   
   //////////////////////////////////////////////////////////////////////
   void EventQueueManager::
-  setActualTotalNbOfEvents (stdair::EventQueue& iEventQueue,
+  setActualTotalNbOfEvents (EventQueue& iEventQueue,
                             const stdair::Count_T& iActualTotalNbOfEvents) {
 
     /**
