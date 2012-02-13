@@ -23,7 +23,7 @@ namespace SEVMGR {
   /// Forward declarations
   class SEVMGR_ServiceContext;
   class EventQueue; 
-  struct EventStruct;
+  //struct EventStruct;
   
   /**
    * @brief class holding the services related to Travel Demand Generation.
@@ -87,9 +87,9 @@ namespace SEVMGR {
   public:
     // ////////////////// Business support methods //////////////////    
     /**
-     * Build a sample BOM tree.
+     * Build a sample event queue.
      */
-    void buildSampleBom();
+    void buildSampleQueue();
 
     /**
      * Build a sample booking request structure.
@@ -121,7 +121,7 @@ namespace SEVMGR {
      * @param const bool isForCRS Whether the sample booking request is for CRS.
      * @return BookingRequestStruct& Sample booking request structure.
      */ 
-    stdair::BookingRequestStruct buildBookingRequest(const bool isForCRS = false);
+    stdair::BookingRequestStruct buildSampleBookingRequest(const bool isForCRS = false);
 
     /**
      * Pop the next coming (in time) event, and remove it from the
@@ -318,14 +318,6 @@ namespace SEVMGR {
 
   public:
     // //////////////// Display support methods /////////////////
-    /**
-     * Recursively display (dump in the returned string) the objects
-     * of the BOM tree.
-     *
-     * @return std::string Output string in which the BOM tree is
-     *        logged/dumped.
-     */
-    std::string csvDisplay() const;
 
     /**
      * Display (dump in the returned string) the key of the event queue.
@@ -333,13 +325,26 @@ namespace SEVMGR {
      * @return std::string Output string in which the key is
      *        logged/dumped.
      */
-    std::string describeKey() const; 
+    std::string describeKey() const;   
+
+    /**
+     * Display (dump in the returned string) the event list of the event queue.
+     *
+     * @return std::string Output string in which the events are
+     *        logged/dumped.
+     */
+    std::string list () const; 
 
     /**
      * Dump in the returned string and in JSON format the whole list of events 
      * queue. 
      */
-    std::string jsonExportEventQueue () const;
+    std::string jsonExportEventQueue () const; 
+
+    /**
+     * Dump in the returned string and in JSON format the given event. 
+     */
+    std::string jsonExportEvent (const stdair::EventStruct&) const;
 
   private:
     // ////////////////// Constructors and Destructors //////////////////    

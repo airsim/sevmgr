@@ -169,24 +169,32 @@ namespace SEVMGR {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void SEVMGR_Service::buildSampleBom() {
+  void SEVMGR_Service::buildSampleQueue() {
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
                                                     "not been initialised");
     }
-    assert (_sevmgrServiceContext != NULL);
+    assert (_sevmgrServiceContext != NULL);   
 
-    //SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
 
-    // Retrieve the event queue
-    //EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
+    // Retrieve the StdAir service context
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      lSEVMGR_ServiceContext.getSTDAIR_ServicePtr(); 
+
+    // Retrieve the EventQueue
+    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
+    
+    // Delegate the building process to the dedicated command
+    EventQueueManager::buildSampleQueue (lSTDAIR_Service_ptr, lEventQueue);
+
   }
-
+ 
   // //////////////////////////////////////////////////////////////////////
   stdair::BookingRequestStruct SEVMGR_Service::
-  buildBookingRequest(const bool isForCRS) {
+  buildSampleBookingRequest(const bool isForCRS) {
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
@@ -195,39 +203,18 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
     
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
-  
-    // Retrieve the STDAIR service object from the (SEvMgr) service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lSEVMGR_ServiceContext.getSTDAIR_Service();
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
+
+    // Retrieve the StdAir service context
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      lSEVMGR_ServiceContext.getSTDAIR_ServicePtr(); 
     
     // Delegate the booking request building to the dedicated service
     stdair::BookingRequestStruct oBookingRequest =
-      lSTDAIR_Service.buildSampleBookingRequest (isForCRS);
+      EventQueueManager::buildSampleBookingRequest (lSTDAIR_Service_ptr, 
+						    isForCRS);
 
     return oBookingRequest;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  std::string SEVMGR_Service::csvDisplay() const {
-
-    std::ostringstream oStr;
-
-    // Retrieve the SEvMgr service context
-    if (_sevmgrServiceContext == NULL) {
-      throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
-                                                    "not been initialised");
-    }
-    assert (_sevmgrServiceContext != NULL);
-
-    //SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
-
-    // Retrieve the event queue
-    //EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
-
-    // Delegate the BOM building to the dedicated command
-    return oStr.str();
-    //stdair::BomDisplay::csvDisplay (lEventQueue);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -240,13 +227,32 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
 
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;  
 
     // Retrieve the event queue
     EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the key display to the dedicated command
     return EventQueueManager::describeKey(lEventQueue);
+  }  
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::list () const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
+                                                    "not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;  
+
+    // Retrieve the event queue
+    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue ();
+
+    // Delegate the key display to the dedicated command
+    return EventQueueManager::list (lEventQueue);
   } 
 
   // ////////////////////////////////////////////////////////////////////
@@ -262,13 +268,53 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
 
-    /**SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
 
     // Retrieve the event queue
-    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue();
+    const EventQueue& lEventQueue = 
+      lSEVMGR_ServiceContext.getEventQueue();
+
+    // Retrieve the event list
+    const stdair::EventList_T& lEventList = lEventQueue.getEventList();
+
+    // Browse the events
+    for (stdair::EventList_T::const_iterator itEvent = lEventList.begin();
+	 itEvent != lEventList.end(); ++itEvent) {
+      const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
+      assert (lEventListElement_ptr != NULL);
+      const stdair::EventListElement_T& lEventListElement = 
+	*lEventListElement_ptr;
+      const stdair::EventStruct& lEvent = lEventListElement.second;
  
+      // Delegate the JSON export to the dedicated service
+      oStr << jsonExportEvent (lEvent);
+    }
+
+    return oStr.str();
+  
+  }  
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::
+  jsonExportEvent (const stdair::EventStruct& iEvent) const {  
+
+    std::ostringstream oStr;  
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
+
+    // Retrieve the STDAIR service object from the (SEvMgr) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lSEVMGR_ServiceContext.getSTDAIR_Service();
+
     // Delegate the JSON export to the dedicated service
-    return lSTDAIR_Service.jsonExportEventObject (iEventStruct);*/ 
+    oStr << lSTDAIR_Service.jsonExportEventObject (iEvent);
 
     return oStr.str();
   

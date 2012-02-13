@@ -7,7 +7,9 @@
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/EventStruct.hpp>
+#include <stdair/bom/BookingRequestStruct.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/STDAIR_Service.hpp>
 // SEvMgr
 #include <sevmgr/bom/EventQueue.hpp>
 #include <sevmgr/command/EventQueueManager.hpp>
@@ -16,8 +18,67 @@ namespace SEVMGR {
 
   // //////////////////////////////////////////////////////////////////////
   void EventQueueManager::
-  buildSampleBom (EventQueue& ioEventQueue) {
+  buildSampleQueue (stdair::STDAIR_ServicePtr_T lSTDAIR_ServicePtr,
+		    EventQueue& ioEventQueue) { 
+
+    // Total number of events
+    stdair::Count_T lNbOfEvents (2);
+    addStatus(ioEventQueue, stdair::EventType::BKG_REQ, lNbOfEvents);
+
+    // Create a shared pointer on a first booking request
+    // Date of the request (15-MAY-2011)
+    const stdair::BookingRequestStruct& lBookingRequest =
+      buildSampleBookingRequest (lSTDAIR_ServicePtr);
+  
+    // TODO: understand why the following form does not work, knowing
+    // that:
+    // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+    // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+    //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+    const stdair::BookingRequestPtr_T lBookingRequest_ptr =
+      stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
+  
+    // Create an event structure
+    stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
+				      lBookingRequest_ptr);
+
+    // Add the event into the queue
+    addEvent(ioEventQueue, lEventStruct);
+
+    // Create a second shared pointer on a second booking request
+    // Date of the request (22-JAN-2010)
+    const bool isForCRS = true;
+    const stdair::BookingRequestStruct& lBookingRequestForCRS =
+      buildSampleBookingRequest (lSTDAIR_ServicePtr, isForCRS);
+    
+    // TODO: understand why the following form does not work, knowing
+    // that:
+    // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
+    // stdair::BookingRequestPtr_T oBookingRequest_ptr =
+    //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
+    const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
+      stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
+  
+    // Create an event structure
+    stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
+					    lBookingRequestForCRS_ptr);
+
+    // Add the event into the queue
+    addEvent(ioEventQueue, lEventStructForCRS);
+  } 
+
+  // //////////////////////////////////////////////////////////////////////
+  stdair::BookingRequestStruct EventQueueManager::
+  buildSampleBookingRequest(stdair::STDAIR_ServicePtr_T lSTDAIR_ServicePtr,
+			    const bool isForCRS) {
+    
+    // Delegate the booking request building to the dedicated service
+    stdair::BookingRequestStruct oBookingRequest =
+      lSTDAIR_ServicePtr->buildSampleBookingRequest (isForCRS);
+
+    return oBookingRequest;
   }
+
 
   // ////////////////////////////////////////////////////////////////////
   void EventQueueManager::reset (EventQueue& ioEventQueue) {
@@ -36,11 +97,24 @@ namespace SEVMGR {
      * Add the event to the event queue.
      */
     ioEventQueue.addEvent(iEventStruct);
+  } 
+
+  // //////////////////////////////////////////////////////////////////////
+  const std::string EventQueueManager::
+  list (const EventQueue& iEventQueue) {
+
+    /**
+     * Describe the event queue key
+     */
+    const std::string& lEventListStr = iEventQueue.list();
+
+    //
+    return lEventListStr;
   }
 
   // //////////////////////////////////////////////////////////////////////
   const std::string EventQueueManager::
-  describeKey(const EventQueue& iEventQueue) {
+  describeKey (const EventQueue& iEventQueue) {
 
     /**
      * Describe the event queue key
@@ -56,14 +130,27 @@ namespace SEVMGR {
   popEvent (EventQueue& ioEventQueue,
             stdair::EventStruct& iEventStruct) {
 
-    /**
-     * Extract the first event from the queue
-     */
-    const stdair::ProgressStatusSet& lProgressStatusSet =
-      ioEventQueue.popEvent (iEventStruct);
+    try {
+      /**
+       * Extract the first event from the queue
+       */
+      const stdair::ProgressStatusSet& lProgressStatusSet 
+	= ioEventQueue.popEvent (iEventStruct); 
 
-    //
-    return lProgressStatusSet;
+      //
+      return lProgressStatusSet;
+
+    } catch (EventQueueException& lEventQueueException) {
+
+      std::ostringstream oErrorMessage; 
+      oErrorMessage << "The event queue is empty: no event can be popped out.";   
+      std::cerr << oErrorMessage.str() << std::endl;
+      STDAIR_LOG_DEBUG(oErrorMessage.str());
+
+    }
+
+    // 
+    return stdair::ProgressStatusSet(stdair::EventType::BKG_REQ);
   }
 
   // ////////////////////////////////////////////////////////////////////
