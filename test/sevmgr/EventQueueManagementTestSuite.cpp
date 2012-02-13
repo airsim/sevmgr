@@ -85,74 +85,26 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
   SEVMGR::SEVMGR_Service sevmgrService (lLogParams);
 
-  /** Build a sample BOM tree.
-   * \note Do nothing for now.
-   */
-  sevmgrService.buildSampleBom();
-
   /** Is the queue empty? */
   const bool isQueueDone = sevmgrService.isQueueDone();
   BOOST_REQUIRE_MESSAGE (isQueueDone == true,
                          "The event queue should be empty at this step. No "
-                         << "insertion done.");
+                         << "insertion done.");  
 
-  // Total number of events
-  stdair::Count_T lNbOfEvents (2);
-  sevmgrService.addStatus(stdair::EventType::BKG_REQ,
-                          lNbOfEvents);
+  /**
+   * Build a sample event queue.
+   */
+  sevmgrService.buildSampleQueue (); 
 
-  // Create a shared pointer on a first booking request
-  // Date of the request (15-MAY-2011)
-  const stdair::BookingRequestStruct& lBookingRequest =
-    sevmgrService.buildBookingRequest ();
-
-  // TODO: understand why the following form does not work, knowing
-  // that:
-  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
-  const stdair::BookingRequestPtr_T lBookingRequest_ptr =
-    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
-  
-  // Create an event structure
-  stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
-                                    lBookingRequest_ptr);
-
-  // Add the event into the queue
-  sevmgrService.addEvent(lEventStruct);
-
-  // Create a second shared pointer on a second booking request
-  // Date of the request (22-JAN-2010)
-  const bool isForCRS = true;
-  const stdair::BookingRequestStruct& lBookingRequestForCRS =
-    sevmgrService.buildBookingRequest (isForCRS);
-
-  // TODO: understand why the following form does not work, knowing
-  // that:
-  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
-  const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
-    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
-  
-  // Create an event structure
-  stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
-                                          lBookingRequestForCRS_ptr);
-
-  // Add the event into the queue
-  sevmgrService.addEvent(lEventStructForCRS);
+  /**
+   * Get the size of the queue.
+   */
+  stdair::Count_T lNbOfEvents (sevmgrService.getQueueSize());
 
   /** Is the queue empty? */
   BOOST_REQUIRE_MESSAGE (sevmgrService.isQueueDone() == false,
                          "The event queue should not be empty at this step. "
                          << "Two insertions done.");
-  /** Does the queue size correspond to the actual number of events added? */
-  const stdair::Count_T lQueueSize =
-    sevmgrService.getQueueSize();
-  BOOST_REQUIRE_MESSAGE (lQueueSize == lNbOfEvents,
-                         "Actual size of the queue: " << sevmgrService.getQueueSize()
-                         << ". Expected size value: " << lNbOfEvents);
-
 
   /**
      Main loop.
@@ -187,7 +139,7 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
   
   // Compensate for the last iteration
   --idx;
-  // Compared the actual number of popped events with the expected one.
+  // Compared the actual number of popped events with the expected one. 
   BOOST_REQUIRE_MESSAGE (idx == lNbOfEvents,
                          "Actual number of requests in the queue: "
                          << idx << ". Expected value: " << lNbOfEvents);
@@ -199,11 +151,10 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
 
   STDAIR_LOG_DEBUG ("Re-added the events into the queue");
 
-  // Add again the two events into the queue
-  // Date of the request (15-MAY-2011)
-  sevmgrService.addEvent(lEventStruct);
-  // Date of the request (22-JAN-2010)
-  sevmgrService.addEvent(lEventStructForCRS);
+  // Add again the two events into the queue thanks to 
+  // sevmgrService.buildSampleQueue().
+  // Date of the requests: 22-JAN-2010 and 15-MAY-2011.
+  sevmgrService.buildSampleQueue ();
 
   // Pop the next event out of the event queue
   stdair::EventStruct lFirstEventStruct;

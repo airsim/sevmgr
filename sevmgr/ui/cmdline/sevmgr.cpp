@@ -223,7 +223,12 @@ int main (int argc, char* argv[]) {
   // Readline history
   const unsigned int lHistorySize (100);
   const std::string lHistoryFilename ("sevmgr.hist");
-  const std::string lHistoryBackupFilename ("sevmgr.hist.bak");
+  const std::string lHistoryBackupFilename ("sevmgr.hist.bak");  
+
+  // Default parameters for the interactive session
+  stdair::EventStruct lCurrentInteractiveEventStruct; 
+  stdair::DateTime_T lCurrentInteractiveDateTime; 
+  stdair::EventType::EN_EventType lCurrentInteractiveEventType;
 
   // Output log File
   stdair::Filename_T lLogFilename;
@@ -248,54 +253,11 @@ int main (int argc, char* argv[]) {
   // DEBUG
   STDAIR_LOG_DEBUG ("Welcome to SEvMgr");
 
-  // Build the sample BOM tree for RMOL
-  sevmgrService.buildSampleBom();  
+  // Build the sample event queue.
+  sevmgrService.buildSampleQueue();  
 
-  // Total number of events
-  stdair::Count_T lNbOfEvents (2);
-  sevmgrService.addStatus(stdair::EventType::BKG_REQ,
-                          lNbOfEvents);
-
-  // Create a shared pointer on a first booking request
-  // Date of the request (15-MAY-2011)
-  const stdair::BookingRequestStruct& lBookingRequest =
-    sevmgrService.buildBookingRequest ();
-
-  // TODO: understand why the following form does not work, knowing
-  // that:
-  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
-  const stdair::BookingRequestPtr_T lBookingRequest_ptr =
-    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
-  
-  // Create an event structure
-  stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
-                                    lBookingRequest_ptr);
-
-  // Add the event into the queue
-  sevmgrService.addEvent(lEventStruct);
-
-  // Create a second shared pointer on a second booking request
-  // Date of the request (22-JAN-2010)
-  const bool isForCRS = true;
-  const stdair::BookingRequestStruct& lBookingRequestForCRS =
-    sevmgrService.buildBookingRequest (isForCRS);
-
-  // TODO: understand why the following form does not work, knowing
-  // that:
-  // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-  // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-  //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
-  const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
-    stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
-  
-  // Create an event structure
-  stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
-                                          lBookingRequestForCRS_ptr);
-
-  // Add the event into the queue
-  sevmgrService.addEvent(lEventStructForCRS);
+  // Pop out the first event from the queue.
+  sevmgrService.popEvent(lCurrentInteractiveEventStruct);
 
   // DEBUG
   STDAIR_LOG_DEBUG ("====================================================");
@@ -311,10 +273,17 @@ int main (int argc, char* argv[]) {
   bool EndOfInput (false);
   Command_T::Type_T lCommandType (Command_T::NOP);
   
-  while (lCommandType != Command_T::QUIT && EndOfInput == false) {
+  while (lCommandType != Command_T::QUIT && EndOfInput == false) {  
+
+    // Update the interactive parameters which have not been updated yet
+    lCurrentInteractiveDateTime = lCurrentInteractiveEventStruct.getEventTime ();
+    lCurrentInteractiveEventType = lCurrentInteractiveEventStruct.getEventType ();
+
     // Prompt
     std::ostringstream oPromptStr;
-    oPromptStr << "sevmgr> ";
+    oPromptStr << "sevmgr " 
+	       << stdair::EventType::getTypeLabelAsString(lCurrentInteractiveEventType)
+	       << " / " << lCurrentInteractiveDateTime << "> " ;
     // Call read-line, which will fill the list of tokens
     TokenList_T lTokenListByReadline;
     lUserInput = lReader.GetLine (oPromptStr.str(), lTokenListByReadline,
@@ -370,7 +339,12 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// List /////////////////////////
     case Command_T::LIST: {
       //
-      std::cout << "List" << std::endl;
+      std::cout << "List" << std::endl;   
+
+      std::ostringstream oEventListStr;
+      oEventListStr << sevmgrService.list ();	
+      std::cout << oEventListStr.str() << std::endl;   
+      STDAIR_LOG_DEBUG (oEventListStr.str());
 
       //
       break;
@@ -388,7 +362,13 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// Display ////////////////////////
     case Command_T::DISPLAY: {
       //
-      std::cout << "Display" << std::endl;
+      std::cout << "Display" << std::endl;     
+
+      // DEBUG 
+      std::ostringstream oEventStr;
+      oEventStr << lCurrentInteractiveEventStruct.describe(); 
+      std::cout << oEventStr.str() << std::endl;
+      STDAIR_LOG_DEBUG (oEventStr.str());
 
       //
       break;
@@ -399,27 +379,29 @@ int main (int argc, char* argv[]) {
       //
       std::cout << "Next" << std::endl;  
 
+      if (sevmgrService.isQueueDone() == true) { 
+
+	// DEBUG 
+	std::ostringstream oEmptyQueueStr;
+	oEmptyQueueStr << "The event queue is empty: no event can be popped out.";
+	std::cout << oEmptyQueueStr.str() << std::endl;   
+	STDAIR_LOG_DEBUG (oEmptyQueueStr.str());
+
+	//
+	break;
+
+      }
+
       // Get the next event from the event queue
-      stdair::EventStruct lEventStruct;
       stdair::ProgressStatusSet lPPS = 
-	sevmgrService.popEvent (lEventStruct);
+	sevmgrService.popEvent (lCurrentInteractiveEventStruct);
       
       // DEBUG 
       std::ostringstream oEventStr;
-      oEventStr << "Poped event: '" << lEventStruct.describe() << "'."; 
+      oEventStr << "Poped event: '" 
+		<< lCurrentInteractiveEventStruct.describe() << "'."; 
       std::cout << oEventStr.str() << std::endl;
       STDAIR_LOG_DEBUG (oEventStr.str());
-      
-      // Extract the corresponding demand/booking request
-      const stdair::BookingRequestStruct& lPoppedRequest =
-	lEventStruct.getBookingRequest();
-    
-      // DEBUG   
-      std::ostringstream oBRStr;
-      oBRStr << "Poped booking request: '"  << lPoppedRequest.describe() 
-	     << "'."<< std::endl;
-      std::cout << oBRStr.str() <<std::endl;
-      STDAIR_LOG_DEBUG (oBRStr.str());
 
       //
       break;
@@ -440,13 +422,13 @@ int main (int argc, char* argv[]) {
       //
       std::cout << "JSON List" << std::endl;
 
-      // DEBUG: Display the flight-date after the sell
-      const std::string& lCSVEventsDumpAfter =
+      // Delegate the call to the dedicated service
+      const std::string& lCSVEventQueueDumpAfter =
         sevmgrService.jsonExportEventQueue ();
 
-      // Display the events JSON string
-      std::cout << lCSVEventsDumpAfter << std::endl;
-      STDAIR_LOG_DEBUG (lCSVEventsDumpAfter);
+      // DEBUG: Display the events queue JSON string
+      std::cout << lCSVEventQueueDumpAfter << std::endl;
+      STDAIR_LOG_DEBUG (lCSVEventQueueDumpAfter);
       
       break;
     } 
@@ -455,7 +437,15 @@ int main (int argc, char* argv[]) {
 
     case Command_T::JSON_DISPLAY: {      
       //
-      std::cout << "JSON Display" << std::endl;
+      std::cout << "JSON Display" << std::endl; 
+
+      // Delegate the call to the dedicated service
+      const std::string& lCSVEventDumpAfter =
+        sevmgrService.jsonExportEvent (lCurrentInteractiveEventStruct);
+
+      // DEBUG: Display the event JSON string
+      std::cout << lCSVEventDumpAfter << std::endl;
+      STDAIR_LOG_DEBUG (lCSVEventDumpAfter);
 
       //
       break;
