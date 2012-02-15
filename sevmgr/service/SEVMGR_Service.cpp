@@ -22,6 +22,7 @@
 #include <sevmgr/service/SEVMGR_ServiceContext.hpp>
 #include <sevmgr/SEVMGR_Service.hpp>
 #include <sevmgr/bom/EventQueue.hpp>
+#include <sevmgr/bom/BomJSONExport.hpp>
 
 namespace SEVMGR {
 
@@ -268,28 +269,19 @@ namespace SEVMGR {
     }
     assert (_sevmgrServiceContext != NULL);
 
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext; 
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;   
+
+    // Retrieve the StdAir service context
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      lSEVMGR_ServiceContext.getSTDAIR_ServicePtr(); 
 
     // Retrieve the event queue
     const EventQueue& lEventQueue = 
       lSEVMGR_ServiceContext.getEventQueue();
-
-    // Retrieve the event list
-    const stdair::EventList_T& lEventList = lEventQueue.getEventList();
-
-    // Browse the events
-    for (stdair::EventList_T::const_iterator itEvent = lEventList.begin();
-	 itEvent != lEventList.end(); ++itEvent) {
-      const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
-      assert (lEventListElement_ptr != NULL);
-      const stdair::EventListElement_T& lEventListElement = 
-	*lEventListElement_ptr;
-      const stdair::EventStruct& lEvent = lEventListElement.second;
  
-      // Delegate the JSON export to the dedicated service
-      oStr << jsonExportEvent (lEvent);
-    }
-
+    // Delegate the JSON export to the dedicated command
+    BomJSONExport::jsonExportEventQueue (lSTDAIR_Service_ptr, oStr, 
+					 lEventQueue);
     return oStr.str();
   
   }  
