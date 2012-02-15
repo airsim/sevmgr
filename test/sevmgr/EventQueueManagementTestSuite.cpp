@@ -124,14 +124,8 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
     STDAIR_LOG_DEBUG ("Poped event "<< idx << ": '"
                       << lEventStruct.describe() << "'.");
     STDAIR_LOG_DEBUG ("Progresss status: " << lPPS.describe());
-      
-    // Extract the corresponding demand/booking request
-    const stdair::BookingRequestStruct& lPoppedRequest =
-      lEventStruct.getBookingRequest();
-    
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Poped booking request: '"
-                      << lPoppedRequest.describe() << "'.");
+    STDAIR_LOG_DEBUG ("Poped event: '"
+                      << lEventStruct.describe() << "'.");
 
     // Iterate
     ++idx;
@@ -151,9 +145,10 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
 
   STDAIR_LOG_DEBUG ("Re-added the events into the queue");
 
-  // Add again the two events into the queue thanks to 
-  // sevmgrService.buildSampleQueue().
-  // Date of the requests: 22-JAN-2010 and 15-MAY-2011.
+  // Add again the four events into the queue thanks to 
+  // sevmgrService.buildSampleQueue(). 
+  // Dates of the break points: 21-JAN-2010 and 14-MAY-2011.
+  // Dates of the booking requests: 22-JAN-2010 and 15-MAY-2011.
   sevmgrService.buildSampleQueue ();
 
   // Pop the next event out of the event queue
@@ -161,18 +156,14 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
   const stdair::ProgressStatusSet lFirstPS =
     sevmgrService.popEvent (lFirstEventStruct);
   
-  // Extract the corresponding demand/booking request
-  const stdair::BookingRequestStruct& lFirstRequest =
-    lFirstEventStruct.getBookingRequest();
-  
-  // Extract the corresponding booking request date
-  const stdair::DateTime_T& lFirstRequestDateTime =
-    lFirstRequest.getRequestDateTime();
+  // Extract the corresponding date
+  const stdair::DateTime_T& lFirstEventDateTime =
+    lFirstEventStruct.getEventTime ();
   const stdair::Date_T& lFirstRequestDate =
-    lFirstRequestDateTime.date();
+    lFirstEventDateTime.date();
 
   /** Is the first event popped the first event in time? */
-  const stdair::Date_T lExpectedDate (2010, boost::gregorian::Jan, 22);
+  const stdair::Date_T lExpectedDate (2010, boost::gregorian::Jan, 21);
   BOOST_REQUIRE_MESSAGE (lFirstRequestDate == lExpectedDate,
                          "Date of the first event popped from the queue: "
                          << lFirstRequestDate << ". Should be: "

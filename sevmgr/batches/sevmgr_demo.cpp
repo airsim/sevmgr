@@ -156,14 +156,6 @@ int main (int argc, char* argv[]) {
     STDAIR_LOG_DEBUG ("Poped event "<< idx << ": '"
                       << lEventStruct.describe() << "'.");
     STDAIR_LOG_DEBUG ("Progresss status: " << lPPS.describe());
-      
-    // Extract the corresponding demand/booking request
-    const stdair::BookingRequestStruct& lPoppedRequest =
-      lEventStruct.getBookingRequest();
-    
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Poped booking request: '"
-                      << lPoppedRequest.describe() << "'.");
 
     // Iterate
     ++idx;
