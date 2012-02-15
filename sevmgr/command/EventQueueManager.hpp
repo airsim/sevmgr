@@ -7,6 +7,7 @@
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/command/CmdAbstract.hpp>
+#include <stdair/stdair_service_types.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Types.hpp>
 
@@ -29,10 +30,17 @@ namespace SEVMGR {
   private:
     // //////// Business methodes //////////
     /**
-     * Generate a sample BOM tree.
+     * Generate a sample event queue.
      */
-    static void buildSampleBom (EventQueue&);
+    static void buildSampleQueue (stdair::STDAIR_ServicePtr_T,
+				  EventQueue&); 
 
+    /**
+     * Build a sample booking request.
+     */
+    static stdair::BookingRequestStruct buildSampleBookingRequest(stdair::STDAIR_ServicePtr_T,
+								  const bool isForCRS = false);
+    
     /**
      * Empty the event queue.
      */
@@ -46,7 +54,12 @@ namespace SEVMGR {
     /**
      * Describe the event queue key
      */
-    static const std::string describeKey(const EventQueue&);
+    static const std::string describeKey (const EventQueue&);   
+
+    /**
+     * Describe the event list
+     */
+    static const std::string list (const EventQueue&);
 
     /**
      * Extract the first event fron the queue
@@ -70,7 +83,7 @@ namespace SEVMGR {
     /**
      * Check if the event queue is done
      */
-    static bool isQueueDone(const EventQueue&);
+    static bool isQueueDone (const EventQueue&);
 
 
     /**

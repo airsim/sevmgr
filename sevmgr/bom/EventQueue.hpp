@@ -86,39 +86,39 @@ namespace SEVMGR {
   public:
     // /////////// Getters ///////////////
     /** Get the event queue key. */
-    const Key_T& getKey() const {
+    const Key_T& getKey () const {
       return _key;
     }
 
     /** Get the parent object. */
-    BomAbstract* const getParent() const {
+    BomAbstract* const getParent () const {
       return _parent;
     } 
 
     /** Get the list of events. */
-    const stdair::EventList_T& getEventList() const {
+    const stdair::EventList_T& getEventList () const {
       return _eventList;
     }
     
     /** Get the map of children holders. */
-    const stdair::HolderMap_T& getHolderMap() const {
+    const stdair::HolderMap_T& getHolderMap () const {
       return _holderMap;
     }
     
     /** Get the overall progress status (for the whole event queue). */
-    const stdair::ProgressStatus& getStatus() const {
+    const stdair::ProgressStatus& getStatus () const {
       return _progressStatus;
     }
     /** Get the current number of events (for the whole event queue). */
-    const stdair::Count_T& getCurrentNbOfEvents() const {
+    const stdair::Count_T& getCurrentNbOfEvents () const {
       return _progressStatus.getCurrentNb();
     }
     /** Get the expected total number of events (for the whole event queue). */
-    const stdair::Count_T& getExpectedTotalNbOfEvents() const {
+    const stdair::Count_T& getExpectedTotalNbOfEvents () const {
       return _progressStatus.getExpectedNb();
     }
     /** Get the actual total number of events (for the whole event queue). */
-    const stdair::Count_T& getActualTotalNbOfEvents() const {
+    const stdair::Count_T& getActualTotalNbOfEvents () const {
       return _progressStatus.getActualNb();
     }
 
@@ -200,24 +200,29 @@ namespace SEVMGR {
     /**
      * Get the serialised version of the Business Object.
      */
-    std::string toString() const;
+    std::string toString () const; 
+
+    /**
+     * Get the event list decsription.
+     */
+    std::string list () const;
     
     /**
      * Get a string describing the  key.
      */
-    const std::string describeKey() const {
+    const std::string describeKey () const {
       return _key.toString();
     }
     
     /*
      * Display the full content of the event queue, with all its
-     * demand streams.
+     * event structure.
      *
      * That method can be very consuming (in time, CPU and memory)
-     * when there are a lot of demand streams (e.g., several hundreds
+     * when there are a lot of event structures (e.g., several hundreds
      * of thousands). Call it only for debug purposes.
     */
-    std::string display() const;
+    std::string display () const;
     
     
   public:
@@ -226,7 +231,7 @@ namespace SEVMGR {
      * Reset the event queue.
      * <br>The event queue is fully emptied.
      */
-    void reset();
+    void reset ();
     
     /**
      * Pop the next coming (in time) event, and remove it from the
@@ -270,7 +275,7 @@ namespace SEVMGR {
      *
      * For now, that method states whether the event queue is empty.
      */
-    bool isQueueDone() const;
+    bool isQueueDone () const;
 
     /**
      * Initialise the progress statuses for the given event 
@@ -325,7 +330,7 @@ namespace SEVMGR {
      *       streams.</li>
      * </ul>
      */
-    stdair::ProgressPercentage_T calculateProgress() const {
+    stdair::ProgressPercentage_T calculateProgress () const {
       return _progressStatus.progress();
     }
 
@@ -339,16 +344,16 @@ namespace SEVMGR {
      *       streams.</li>
      * </ul>
      */
-    stdair::ProgressPercentage_T calculateProgress(const stdair::EventType::EN_EventType&)const;
+    stdair::ProgressPercentage_T calculateProgress (const stdair::EventType::EN_EventType&)const;
 
 
   public:
     // ////////// Debug methods /////////
     /** Queue size */
-    stdair::Count_T getQueueSize() const;
+    stdair::Count_T getQueueSize () const;
 
     /** Is queue empty */
-    bool isQueueEmpty() const;
+    bool isQueueEmpty () const;
 
     
   protected:
@@ -358,10 +363,10 @@ namespace SEVMGR {
     /** Default copy constructor. */
     EventQueue (const EventQueue&);
     /** Destructor. */
-    ~EventQueue();
+    ~EventQueue ();
   private:
     /** Default constructor. */
-    EventQueue();
+    EventQueue ();
     
 
   protected:

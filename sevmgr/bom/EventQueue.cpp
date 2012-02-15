@@ -56,28 +56,50 @@ namespace SEVMGR {
     std::ostringstream oStr;
 
     oStr << toString();
+
+    return oStr.str();
+  } 
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string EventQueue::list () const {
+    std::ostringstream oStr;  
+    oStr << describeKey () << "\n" 
+	 << toString() << "\n";
+
+    // Browse the events
+    for (stdair::EventList_T::const_iterator itEvent = _eventList.begin();
+	 itEvent != _eventList.end(); ++itEvent) {
+      const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
+      assert (lEventListElement_ptr != NULL);
+      const stdair::EventListElement_T& lEventListElement = 
+	*lEventListElement_ptr;
+      const stdair::EventStruct& lEvent = lEventListElement.second;
+ 
+      // Delegate the JSON export to the dedicated service
+      oStr << lEvent.describe() << "\n";
+    }
     
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  stdair::Count_T EventQueue::getQueueSize() const {
+  stdair::Count_T EventQueue::getQueueSize () const {
     return _eventList.size();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  bool EventQueue::isQueueEmpty() const {
+  bool EventQueue::isQueueEmpty () const {
     return _eventList.empty();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  bool EventQueue::isQueueDone() const {
+  bool EventQueue::isQueueDone () const {
     const bool isQueueEmpty = _eventList.empty();
     return isQueueEmpty;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void EventQueue::reset() {
+  void EventQueue::reset () {
     // Reset only the current number of events, not the expected one
     _progressStatus.reset();
     
