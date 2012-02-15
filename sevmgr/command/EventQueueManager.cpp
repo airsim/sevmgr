@@ -8,6 +8,7 @@
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
+#include <stdair/bom/BreakPointStruct.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // SEvMgr
@@ -21,9 +22,9 @@ namespace SEVMGR {
   buildSampleQueue (stdair::STDAIR_ServicePtr_T lSTDAIR_ServicePtr,
 		    EventQueue& ioEventQueue) { 
 
-    // Total number of events
-    stdair::Count_T lNbOfEvents (2);
-    addStatus(ioEventQueue, stdair::EventType::BKG_REQ, lNbOfEvents);
+    // Total number of booking requests into the queue
+    stdair::Count_T lNbOfBookingRequests (2);   
+    addStatus(ioEventQueue, stdair::EventType::BKG_REQ, lNbOfBookingRequests);
 
     // Create a shared pointer on a first booking request
     // Date of the request (15-MAY-2011)
@@ -64,7 +65,50 @@ namespace SEVMGR {
 					    lBookingRequestForCRS_ptr);
 
     // Add the event into the queue
-    addEvent(ioEventQueue, lEventStructForCRS);
+    addEvent(ioEventQueue, lEventStructForCRS); 
+
+    // Total number of break points into the queue
+    stdair::Count_T lNbOfBreakPoints (2);   
+    addStatus(ioEventQueue, stdair::EventType::BRK_PT, lNbOfBreakPoints);
+
+    // Create a shared pointer on a second break point
+    // Date of the break point (21-JAN-2010)
+    const stdair::Date_T lBP1Date (2010, boost::gregorian::Jan, 21);
+    // Time of the break point (00:00)
+    const stdair::Duration_T lBP1Time (0, 0, 0);
+    // Date-time of the break point  (made of the date and time above)
+    const stdair::DateTime_T lBP1DateTime (lBP1Date, lBP1Time);
+
+    // TODO: understand why the form above does not work.
+    const stdair::BreakPointPtr_T lBreakPoint1_ptr =
+      stdair::BreakPointPtr_T(new stdair::BreakPointStruct(lBP1DateTime));
+   
+    // Create an event structure
+    stdair::EventStruct lEventBreakPoint1 (stdair::EventType::BRK_PT,
+					   lBreakPoint1_ptr);
+
+    // Add the event into the queue
+    addEvent(ioEventQueue, lEventBreakPoint1); 
+
+    // Create a shared pointer on a second break point
+    // Date of the break point (14-MAY-2011)
+    const stdair::Date_T lBP2Date (2011, boost::gregorian::May, 14);
+    // Time of the break point (00:00)
+    const stdair::Duration_T lBP2Time (0, 0, 0);
+    // Date-time of the break point  (made of the date and time above)
+    const stdair::DateTime_T lBP2DateTime (lBP2Date, lBP2Time);
+
+    // TODO: understand why the form above does not work.
+    const stdair::BreakPointPtr_T lBreakPoint2_ptr =
+      stdair::BreakPointPtr_T(new stdair::BreakPointStruct(lBP2DateTime));
+   
+    // Create an event structure
+    stdair::EventStruct lEventBreakPoint2 (stdair::EventType::BRK_PT,
+					   lBreakPoint2_ptr); 
+
+    // Add the event into the queue
+    addEvent(ioEventQueue, lEventBreakPoint2);
+
   } 
 
   // //////////////////////////////////////////////////////////////////////
