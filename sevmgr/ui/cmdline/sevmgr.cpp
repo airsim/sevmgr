@@ -395,11 +395,11 @@ int main (int argc, char* argv[]) {
       // Get the next event from the event queue
       stdair::ProgressStatusSet lPPS = 
 	sevmgrService.popEvent (lCurrentInteractiveEventStruct);
-      
+
       // DEBUG 
       std::ostringstream oEventStr;
       oEventStr << "Poped event: '" 
-		<< lCurrentInteractiveEventStruct.describe() << "'."; 
+		<< lCurrentInteractiveEventStruct.describe() << "'.";
       std::cout << oEventStr.str() << std::endl;
       STDAIR_LOG_DEBUG (oEventStr.str());
 
@@ -412,6 +412,25 @@ int main (int argc, char* argv[]) {
       //
       std::cout << "Run" << std::endl;
 
+      // Delegate the call to the dedicated service
+      sevmgrService.run (lCurrentInteractiveEventStruct);
+      lCurrentInteractiveEventType = lCurrentInteractiveEventStruct.getEventType ();
+
+      // DEBUG 
+      if (lCurrentInteractiveEventType == stdair::EventType::BRK_PT) {
+        std::ostringstream oBreakPointStr;
+        oBreakPointStr << "Break point found. Stop at: '" 
+                       << lCurrentInteractiveEventStruct.describe() << "'.";
+        std::cout << oBreakPointStr.str() << std::endl;
+        STDAIR_LOG_DEBUG (oBreakPointStr.str());
+      } else {
+        std::ostringstream oNoBreakPointStr;
+        oNoBreakPointStr << "No break point found. All the events have been played.\n"
+                         << "The current event is the last one.";
+        std::cout << oNoBreakPointStr.str() << std::endl;
+        STDAIR_LOG_DEBUG (oNoBreakPointStr.str());
+      }
+                
       //
       break;
     }     

@@ -5,6 +5,7 @@
 #include <cassert>
 // StdAir
 #include <stdair/basic/ProgressStatusSet.hpp>
+#include <stdair/basic/EventType.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
@@ -178,14 +179,20 @@ namespace SEVMGR {
       /**
        * Extract the first event from the queue
        */
-      const stdair::ProgressStatusSet& lProgressStatusSet 
-	= ioEventQueue.popEvent (iEventStruct); 
+      const stdair::ProgressStatusSet& lProgressStatusSet
+        = ioEventQueue.popEvent (iEventStruct);
+      
+      // DEBUG 
+      std::ostringstream oEventStr;
+      oEventStr << "Poped event: '" 
+		<< iEventStruct.describe() << "'."; 
+      STDAIR_LOG_DEBUG (oEventStr.str());
 
       //
       return lProgressStatusSet;
 
     } catch (EventQueueException& lEventQueueException) {
-
+      // DEBUG 
       std::ostringstream oErrorMessage; 
       oErrorMessage << "The event queue is empty: no event can be popped out.";   
       std::cerr << oErrorMessage.str() << std::endl;
@@ -195,6 +202,26 @@ namespace SEVMGR {
 
     // 
     return stdair::ProgressStatusSet(stdair::EventType::BKG_REQ);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void EventQueueManager::run (EventQueue& ioEventQueue,
+                               stdair::EventStruct& iEventStruct) {
+
+    // Default event type
+    stdair::EventType::EN_EventType lEventType = stdair::EventType::BKG_REQ;  
+
+    // While no break point has been encountered, keep on extracting events
+    while (ioEventQueue.isQueueDone() == false
+           && lEventType != stdair::EventType::BRK_PT) {
+      /**
+       * Extract the first event from the queue
+       */
+      ioEventQueue.popEvent (iEventStruct);
+      lEventType = iEventStruct.getEventType();
+      
+    }
+
   }
 
   // ////////////////////////////////////////////////////////////////////

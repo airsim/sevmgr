@@ -66,6 +66,11 @@ namespace SEVMGR {
      */
     static stdair::ProgressStatusSet popEvent (EventQueue&,
                                                stdair::EventStruct&);
+
+    /**
+     * Played all events and stopped when the first break point was encountered
+     */
+    static void run (EventQueue&, stdair::EventStruct&);
     /**
      * Update the status of the given event type with the given count
      */

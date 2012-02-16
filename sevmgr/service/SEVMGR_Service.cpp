@@ -333,6 +333,26 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   void SEVMGR_Service::
+  run (stdair::EventStruct& iEventStruct) const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;
+
+    // Retrieve the event queue object instance
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
+    
+    // Delegate the call to the dedicated command
+    EventQueueManager::run (lQueue, iEventStruct);
+    
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void SEVMGR_Service::
   updateStatus (const stdair::EventType::EN_EventType& iEventType,
                 const stdair::Count_T& iEventCount) const {
 

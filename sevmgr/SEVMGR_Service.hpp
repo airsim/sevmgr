@@ -141,6 +141,16 @@ namespace SEVMGR {
      */
     stdair::ProgressStatusSet popEvent (stdair::EventStruct&) const;
 
+
+    /**
+     * Played all events and stopped when the first break point was encountered.
+     *
+     * @return stdair::EventStruct A copy of the break point which came first
+     *   in time within the event queue. If no break point was
+     *   encountered, return a copy of the last event within the event queue.
+     */
+    void run (stdair::EventStruct&) const;
+
     /**
      * Add an event generator to the map holding the children of the queue.
      * Be careful, this method is not implemented: its implementation is
