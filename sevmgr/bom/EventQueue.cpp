@@ -411,5 +411,34 @@ namespace SEVMGR {
 
     return insertionSucceeded;
   }
+  
+  // //////////////////////////////////////////////////////////////////////
+  bool EventQueue::hasEventDateTime (const stdair::DateTime_T& iDateTime) {
+
+    bool hasSearchEventBeenSucessful = true;
+
+    /**
+     * Compute the number of milliseconds between the
+     * date-time of the event and DEFAULT_EVENT_OLDEST_DATETIME
+     * (as of Feb. 2011, that date is set to Jan. 1, 2010).
+     */
+    const stdair::Duration_T lDuration =
+      iDateTime - stdair::DEFAULT_EVENT_OLDEST_DATETIME;
+    const stdair::LongDuration_T lDateTimeStamp =
+      lDuration.total_milliseconds();
+
+    // Searches the container for an element with iDateTime as key
+    stdair::EventList_T::iterator itEvent =
+      _eventList.find (lDateTimeStamp);
+
+    // An iterator to map::end means the specified key has not found in the
+    // container.
+    if (itEvent == _eventList.end()) {
+      hasSearchEventBeenSucessful = false;
+    }
+
+    return hasSearchEventBeenSucessful;
+
+  }
 
 }

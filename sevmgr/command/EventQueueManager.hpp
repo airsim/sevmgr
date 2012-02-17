@@ -66,6 +66,30 @@ namespace SEVMGR {
      */
     static stdair::ProgressStatusSet popEvent (EventQueue&,
                                                stdair::EventStruct&);
+
+    /**
+     * Played all events and stopped when the first break point was encountered
+     */
+    static void run (EventQueue&, stdair::EventStruct&);
+
+    /**
+     * 
+     * Selected the event with the given date time, if such event existed.
+     * 
+     * @param EventQueue& Queue containing all the events.
+     * @return stdair::EventStruct A copy of the event with the given date time.
+     *   If no event with the given DateTime was encountered, no copy are
+     *   returned.
+     * @param const stdair::DateTime_T Date time of the event to be returned. 
+     * @return bool States whether an event with the given date time had been
+     *   encountered and thus returned.
+     *
+     * /Note All events occuring before the selected one are played.
+     *   Thus, the copy returned is the copy of the current first event of
+     *   the queue.
+     */
+    static bool select (EventQueue&, stdair::EventStruct&, const stdair::DateTime_T&);
+    
     /**
      * Update the status of the given event type with the given count
      */
