@@ -6,6 +6,7 @@
 // StdAir
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/basic/EventType.hpp>
+#include <stdair/basic/BasConst_Event.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
@@ -221,6 +222,38 @@ namespace SEVMGR {
       lEventType = iEventStruct.getEventType();
       
     }
+
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  bool EventQueueManager::select (EventQueue& ioEventQueue,
+                                  stdair::EventStruct& iEventStruct,
+                                  const stdair::DateTime_T& iDateTime) {
+
+    // Search if an event has the given key
+    const bool hasResearchBeenSuccessful =
+      ioEventQueue.hasEventDateTime (iDateTime);
+
+    // If no event has the given hey, return
+    if (hasResearchBeenSuccessful == false) {
+      return hasResearchBeenSuccessful;
+    }
+    assert (hasResearchBeenSuccessful == true);
+
+    // Default date time
+    stdair::DateTime_T lDateTime = stdair::DEFAULT_EVENT_OLDEST_DATETIME;
+
+    // While the event with the given key has not been retrieved, keep on
+    // extracting events
+    while (ioEventQueue.isQueueDone() == false
+           && lDateTime != iDateTime) {
+      ioEventQueue.popEvent (iEventStruct);
+      lDateTime = iEventStruct.getEventTime ();
+           
+    }
+
+    assert (lDateTime == iDateTime);
+    return hasResearchBeenSuccessful;
 
   }
 

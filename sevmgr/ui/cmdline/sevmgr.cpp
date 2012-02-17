@@ -169,6 +169,213 @@ void initReadline (swift::SReadline& ioInputReader) {
 }
 
 // //////////////////////////////////////////////////////////////////
+void parseEventDateTime (const TokenList_T& iTokenList,
+                         stdair::Date_T& ioEventDate,
+                         stdair::Duration_T& ioEventTime) {
+  //
+  const std::string kMonthStr[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+  //
+  unsigned short ioEventDateYear = ioEventDate.year();
+  unsigned short ioEventDateMonth = ioEventDate.month();
+  std::string ioEventDateMonthStr = kMonthStr[ioEventDateMonth-1];
+  unsigned short ioEventDateDay = ioEventDate.day();
+  //
+  unsigned short ioEventTimeHours = ioEventTime.hours();
+  unsigned short ioEventTimeMinutes = ioEventTime.minutes();
+  unsigned short ioEventTimeSeconds = ioEventTime.seconds();
+
+  // Interpret the user input
+  if (iTokenList.empty() == false) {
+    
+    // Read the date year
+    TokenList_T::const_iterator itTok = iTokenList.begin();
+
+    // Read the year for the event date
+    if (itTok != iTokenList.end()) {
+
+      if (itTok->empty() == false) {
+        try {
+          
+          ioEventDateYear = boost::lexical_cast<unsigned short> (*itTok);
+          if (ioEventDateYear < 100) {
+            ioEventDateYear += 2000;
+          }
+          
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The year of the event date ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventDateYear << ") is kept. " << std::endl;
+          return;
+        }
+      }
+      
+    } else {
+      return;
+    }
+  
+    // Read the month for the event date
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+
+      if (itTok->empty() == false) {
+        try {
+
+          const boost::regex lMonthRegex ("^(\\d{1,2})$");
+          const bool isMonthANumber = regex_match (*itTok, lMonthRegex);
+        
+          if (isMonthANumber == true) {
+            const unsigned short lMonth =
+              boost::lexical_cast<unsigned short> (*itTok);
+            if (lMonth > 12) {
+              throw boost::bad_lexical_cast();
+            }
+            ioEventDateMonthStr = kMonthStr[lMonth-1];
+
+        } else {
+            const std::string lMonthStr (*itTok);
+            if (lMonthStr.size() < 3) {
+              throw boost::bad_lexical_cast();
+            }
+            std::string lMonthStr1 (lMonthStr.substr (0, 1));
+            boost::algorithm::to_upper (lMonthStr1);
+            std::string lMonthStr23 (lMonthStr.substr (1, 2));
+            boost::algorithm::to_lower (lMonthStr23);
+            ioEventDateMonthStr = lMonthStr1 + lMonthStr23;
+          }
+
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The month of the event date ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventDateMonthStr << ") is kept. " << std::endl;
+          return;
+        }
+      }
+    }
+
+    // Read the day for the event date
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+    
+      if (itTok->empty() == false) {
+        try {
+          
+          ioEventDateDay = boost::lexical_cast<unsigned short> (*itTok);
+
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The day of the event date ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventDateDay << ") is kept. " << std::endl;
+          return;
+        }
+      }
+
+    } else {
+      return;
+    }
+
+    // Re-compose the event date
+    std::ostringstream lEventDateStr;
+    lEventDateStr << ioEventDateYear << "-" << ioEventDateMonthStr
+                  << "-" << ioEventDateDay;
+
+    try {
+
+      ioEventDate =
+        boost::gregorian::from_simple_string (lEventDateStr.str());
+    
+    } catch (boost::gregorian::bad_month& eCast) {
+      std::cerr << "The event date ('" << lEventDateStr.str()
+                << "') cannot be understood. The default value ("
+                << ioEventDate << ") is kept. " << std::endl;
+      return;
+    }
+
+    // Read the hours of the event time
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+
+      if (itTok->empty() == false) {
+        try {
+          
+          ioEventTimeHours = boost::lexical_cast<unsigned short> (*itTok);
+          
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The hours of the event time ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventTimeHours << ") is kept. " << std::endl;
+          return;
+        }
+      }
+      
+    } else {
+      return;
+    }
+
+    // Read the minutes of the event time
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+
+      if (itTok->empty() == false) {
+        try {
+          
+          ioEventTimeMinutes = boost::lexical_cast<unsigned short> (*itTok);
+          
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The minutes of the event time ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventTimeMinutes << ") is kept. " << std::endl;
+          return;
+        }
+      }
+      
+    } else {
+      return;
+    }
+
+    // Read the seconds of the event time
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+
+      if (itTok->empty() == false) {
+        try {
+          
+          ioEventTimeSeconds = boost::lexical_cast<unsigned short> (*itTok);
+          
+        } catch (boost::bad_lexical_cast& eCast) {
+          std::cerr << "The seconds of the event time ('" << *itTok
+                    << "') cannot be understood. The default value ("
+                    << ioEventTimeSeconds << ") is kept. " << std::endl;
+          return;
+        }
+      }
+      
+    } else {
+      return;
+    }
+
+    // Re-compose the event time
+    std::ostringstream lEventTimeStr;
+    lEventTimeStr << ioEventTimeHours << ":" << ioEventTimeMinutes
+                  << ":" << ioEventTimeSeconds;
+
+    try {
+
+      ioEventTime =
+        boost::posix_time::duration_from_string (lEventTimeStr.str());
+    
+    } catch (boost::gregorian::bad_month& eCast) {
+      std::cerr << "The event time ('" << lEventTimeStr.str()
+                << "') cannot be understood. The default value ("
+                << ioEventTime << ") is kept. " << std::endl;
+      return;
+    }
+    
+  }
+ 
+}
+
+// //////////////////////////////////////////////////////////////////
 Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
   Command_T::Type_T oCommandType = Command_T::LAST_VALUE;
 
@@ -216,6 +423,85 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
   return oCommandType;
 }
+
+// /////////////////////////////////////////////////////////
+std::string toString (const TokenList_T& iTokenList) {
+  std::ostringstream oStr;
+
+  // Re-create the string with all the tokens, trimmed by read-line
+  unsigned short idx = 0;
+  for (TokenList_T::const_iterator itTok = iTokenList.begin();
+       itTok != iTokenList.end(); ++itTok, ++idx) {
+    if (idx != 0) {
+      oStr << " ";
+    }
+    oStr << *itTok;
+  }
+
+  return oStr.str();
+}
+
+// /////////////////////////////////////////////////////////
+TokenList_T extractTokenList (const TokenList_T& iTokenList,
+                              const std::string& iRegularExpression) {
+  TokenList_T oTokenList;
+
+  // Re-create the string with all the tokens (which had been trimmed
+  // by read-line)
+  const std::string lFullLine = toString (iTokenList);
+
+  // See the caller for the regular expression
+  boost::regex expression (iRegularExpression);
+  
+  std::string::const_iterator start = lFullLine.begin();
+  std::string::const_iterator end = lFullLine.end();
+
+  boost::match_results<std::string::const_iterator> what;
+  boost::match_flag_type flags = boost::match_default | boost::format_sed; 
+  regex_search (start, end, what, expression, flags);
+  
+  // Put the matched strings in the list of tokens to be returned back
+  // to the caller
+  const unsigned short lMatchSetSize = what.size();
+  for (unsigned short matchIdx = 1; matchIdx != lMatchSetSize; ++matchIdx) {
+    const std::string lMatchedString (std::string (what[matchIdx].first,
+                                                   what[matchIdx].second));
+    //if (lMatchedString.empty() == false) {
+    oTokenList.push_back (lMatchedString);
+    //}
+  }
+
+  // DEBUG
+  // std::cout << "After (token list): " << oTokenList << std::endl;
+
+  return oTokenList;
+}    
+
+// /////////////////////////////////////////////////////////
+TokenList_T extractTokenListForDateTime (const TokenList_T& iTokenList) {
+  /**
+   * Expected format:
+   *   line:    date time
+   *   date:    year[/- ]?month[/- ]?day
+   *   year:    number (digit{2,4})
+   *   month:   (number (digit{1,2}) | word (alpha{3}))
+   *   day:     number (digit{1,2})
+   *   time:    hour[:- ]?minute[:- ]?second
+   *   hour:    number (digit{1,2})
+   *   minute:  (number (digit{1,2}) | word (alpha{3}))
+   *   seconde: number (digit{1,2})
+   */
+  const std::string lRegEx("^([[:digit:]]{2,4})?[/-]?[[:space:]]*"
+                           "([[:alpha:]]{3}|[[:digit:]]{1,2})?[/-]?[[:space:]]*"
+                           "([[:digit:]]{1,2})?[[:space:]]*"
+                           "([[:digit:]]{1,2})?[:-]?[[:space:]]*"
+                           "([[:alpha:]]{3}|[[:digit:]]{1,2})?[:-]?[[:space:]]*"
+                           "([[:digit:]]{1,2})?[[:space:]]*$");
+
+  //
+  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
+  return oTokenList;
+}    
 
 // ///////// M A I N ////////////
 int main (int argc, char* argv[]) {
@@ -311,7 +597,9 @@ int main (int argc, char* argv[]) {
       std::cout << " quit" << "\t\t" << "Quit the application" << std::endl;
       std::cout << " list" << "\t\t" << "List events" << std::endl;
       std::cout << " select" << "\t\t"
-                << "Select an event to become the current one" << std::endl;
+                << "Select an event into the 'list' to become the current one. For instance, try the command:\n"
+                << "\t\t  'select 2011-May-14 00:00:00'"
+                << std::endl;
       std::cout << " display" << "\t"
                 << "Display the current event" << std::endl;
       std::cout << " next" << "\t\t"
@@ -352,8 +640,26 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////////// Select ////////////////////////
     case Command_T::SELECT: {
+
       //
-      std::cout << "Select" << std::endl;
+      TokenList_T lTokenList = extractTokenListForDateTime (lTokenListByReadline);
+      stdair::Date_T lUserDate = lCurrentInteractiveDateTime.date();
+      stdair::Duration_T lUserTime = lCurrentInteractiveDateTime.time_of_day();
+      parseEventDateTime (lTokenList, lUserDate, lUserTime);
+      
+      std::cout << "Try to select event: "
+                << lUserDate << " " << lUserTime
+                << std::endl;
+
+      const stdair::DateTime_T lUserDateTime =
+        boost::posix_time::ptime (lUserDate, lUserTime);
+
+      const bool hasSelectBeenSuccessful =
+        sevmgrService.select (lCurrentInteractiveEventStruct,
+                              lUserDateTime);
+
+      std::cout << "Selection successful: "
+                << hasSelectBeenSuccessful << std::endl;
 
       //
       break;

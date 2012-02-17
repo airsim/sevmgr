@@ -9,6 +9,7 @@
 #include <string>
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_date_time_types.hpp>
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/basic/EventType.hpp>
 #include <stdair/bom/BomAbstract.hpp>
@@ -269,6 +270,11 @@ namespace SEVMGR {
      *        location where it has been inserted in the event queue.
      */
     bool addEvent (stdair::EventStruct&);
+
+    /**
+     * Find the event with the given date time, if such event existed.
+     */
+    bool hasEventDateTime (const stdair::DateTime_T&);
 
     /**
      * States whether the event queue has reached the end.

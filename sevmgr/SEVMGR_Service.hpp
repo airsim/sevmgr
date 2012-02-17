@@ -152,6 +152,23 @@ namespace SEVMGR {
     void run (stdair::EventStruct&) const;
 
     /**
+     * Selected the event with the given date time, if such event existed.
+     *
+     * @return stdair::EventStruct A copy of the event with the given date time.
+     *   If no event with the given DateTime was encountered, no copy are
+     *   returned.
+     * @param const stdair::DateTime_T Date time of the event to be returned. 
+     * @return bool States whether an event with the given date time had been
+     *   encountered and thus returned.
+     *
+     * /Note All events occuring before the selected one are played.
+     *   Thus, the copy returned is the copy of the current first event of
+     *   the queue.
+     */
+    bool select (stdair::EventStruct&,
+                 const stdair::DateTime_T&) const;
+
+    /**
      * Add an event generator to the map holding the children of the queue.
      * Be careful, this method is not implemented: its implementation is
      * left to the appelant according the EventGenerator type.
