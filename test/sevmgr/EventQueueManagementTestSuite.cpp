@@ -179,6 +179,47 @@ BOOST_AUTO_TEST_CASE (sevmgr_simple_simulation_test) {
                          "The event queue has been reset: it should be empty "
                          << "at this step.");
 
+  STDAIR_LOG_DEBUG ("Re-added the events into the queue one more time");
+
+  // Add again the four events into the queue thanks to 
+  // sevmgrService.buildSampleQueue(). 
+  // Dates of the break points: 21-JAN-2010 and 14-MAY-2011.
+  // Dates of the booking requests: 22-JAN-2010 and 15-MAY-2011.
+  sevmgrService.buildSampleQueue ();
+
+  /** Run to find the two break points: the default sample queue contains
+   *  two break points.*/
+  stdair::EventStruct lBreakPointStruct;
+  sevmgrService.run(lBreakPointStruct);
+  stdair::EventType::EN_EventType lBreakPointType =
+    lBreakPointStruct.getEventType();
+
+  /** Is it a break point? */
+  BOOST_REQUIRE_MESSAGE (lBreakPointType == stdair::EventType::BRK_PT,
+                         "The last event poppped from the queue should be a "
+                         << "break point.");
+
+  sevmgrService.run(lBreakPointStruct);
+  lBreakPointType = lBreakPointStruct.getEventType();
+  
+  /** Is it a break point? */
+  BOOST_REQUIRE_MESSAGE (lBreakPointType == stdair::EventType::BRK_PT,
+                         "The last event poppped from the queue should be a "
+                         << "break point.");
+
+  // Extract the corresponding date
+  const stdair::DateTime_T& lBPDateTime =
+    lBreakPointStruct.getEventTime ();
+  const stdair::Date_T& lBPDate =
+    lBPDateTime.date();
+
+  /** Is it the expected break-point? */
+  const stdair::Date_T lExpectedBPDate (2011, boost::gregorian::May, 14);
+  BOOST_REQUIRE_MESSAGE (lBPDate == lExpectedBPDate,
+                         "Date of the second break point popped from the queue: "
+                         << lBPDate << ". Should be: "
+                         << lExpectedBPDate << ".");
+
   // DEBUG
   STDAIR_LOG_DEBUG ("End of the simulation");
 
