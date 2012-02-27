@@ -22,11 +22,11 @@
 #include <stdair/bom/BookingRequestTypes.hpp>
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/bom/EventStruct.hpp>
+// GNU Readline Wrapper
+#include <stdair/ui/cmdline/SReadline.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Service.hpp>
 #include <sevmgr/config/sevmgr-paths.hpp>
-// GNU Readline Wrapper
-#include <sevmgr/ui/cmdline/SReadline.hpp>
 
 // //////// Constants //////
 /**
@@ -155,11 +155,13 @@ void initReadline (swift::SReadline& ioInputReader) {
   // - "identifiers"
   // - special identifier %file - means to perform a file name completion
   Completers.push_back ("help");
-  Completers.push_back ("list %airline_code %flight_number");
-  Completers.push_back ("select %airline_code %flight_number %flight_date");
+  Completers.push_back ("list");
+  Completers.push_back ("select %date %time");
   Completers.push_back ("display");
   Completers.push_back ("next");
   Completers.push_back ("run");
+  Completers.push_back ("json_list");
+  Completers.push_back ("json_display");
   Completers.push_back ("quit");
 
 
@@ -536,9 +538,6 @@ int main (int argc, char* argv[]) {
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
   SEVMGR::SEVMGR_Service sevmgrService (lLogParams);
 
-  // DEBUG
-  STDAIR_LOG_DEBUG ("Welcome to SEvMgr");
-
   // Build the sample event queue.
   sevmgrService.buildSampleQueue();  
 
@@ -595,7 +594,7 @@ int main (int argc, char* argv[]) {
       std::cout << "Commands: " << std::endl;
       std::cout << " help" << "\t\t" << "Display this help" << std::endl;
       std::cout << " quit" << "\t\t" << "Quit the application" << std::endl;
-      std::cout << " list" << "\t\t" << "List events" << std::endl;
+      std::cout << " list" << "\t\t" << "List events in the queue" << std::endl;
       std::cout << " select" << "\t\t"
                 << "Select an event into the 'list' to become the current one. For instance, try the command:\n"
                 << "\t\t  'select 2011-May-14 00:00:00'"
@@ -610,7 +609,7 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << " \nDebug Commands" << std::endl;
       std::cout << " json_list" << "\t"
-                << "List events in a JSON format"
+                << "List events in the queue in a JSON format"
                 << std::endl;
       std::cout << " json_display" << "\t"
                 << "Display the current event in a JSON format"

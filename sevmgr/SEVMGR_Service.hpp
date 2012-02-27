@@ -6,6 +6,7 @@
 // //////////////////////////////////////////////////////////////////////
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_json.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/bom/EventTypes.hpp>
 #include <stdair/bom/EventStruct.hpp>
@@ -360,7 +361,19 @@ namespace SEVMGR {
      * @return std::string Output string in which the events are
      *        logged/dumped.
      */
-    std::string list () const; 
+    std::string list () const;
+    
+  public:
+    // //////////////// Export support methods /////////////////
+    /**
+     * Dispatch the JSon command string to the corresponding service.
+     * 
+     * @param const stdair::JSONString& Input string which contained the JSon
+     *        command string.
+     * @return std::string Output string in which the asking objects are
+     *         logged/dumped with a JSon format.
+     */
+    std::string jsonHandler (const stdair::JSONString&) const;
 
     /**
      * Dump in the returned string and in JSON format the whole list of events 
