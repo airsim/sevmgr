@@ -9,10 +9,12 @@
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/BasConst_General.hpp>
+#include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/BomDisplay.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/BookingRequestStruct.hpp>
+#include <stdair/bom/BomJSONImport.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Sevmgr
@@ -254,7 +256,55 @@ namespace SEVMGR {
 
     // Delegate the key display to the dedicated command
     return EventQueueManager::list (lEventQueue);
-  } 
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::
+  jsonHandler (const stdair::JSONString& iJSONString) const {
+
+    //
+    // Extract from the JSON-ified string the command
+    //
+    stdair::JSonCommand::EN_JSonCommand lEN_JSonCommand;
+    const bool hasCommandBeenRetrieved =
+      stdair::BomJSONImport::jsonImportCommand (iJSONString,
+                                                lEN_JSonCommand);
+    
+    if (hasCommandBeenRetrieved == false) {
+      // Return an error JSON-ified string
+      std::ostringstream oErrorStream;
+      oErrorStream << "{\"error\": \"Wrong JSON-ified string: "
+                   << "the command is not understood.\"}";
+      return oErrorStream.str();
+    }
+    assert (hasCommandBeenRetrieved == true);
+
+    //
+    // Dispatch the command to the right JSon service handler
+    // 
+    switch (lEN_JSonCommand) {
+    case stdair::JSonCommand::EVENT_LIST:{
+
+    return jsonExportEventQueue ();
+    }
+    default: {
+        // Return an Error string
+        std::ostringstream lErrorCmdMessage;
+        const std::string& lCommandStr =
+          stdair::JSonCommand::getLabel(lEN_JSonCommand);
+        lErrorCmdMessage << "{\"error\": \"The command '" << lCommandStr
+                         << "' is not handled by the DSim service.\"}";
+        return lErrorCmdMessage.str();
+        break;
+      }
+    }
+    
+    // Return an error JSON-ified string
+    assert (false);
+    std::string lJSONDump ("{\"error\": \"Wrong JSON-ified string\"}");
+    return lJSONDump;
+     
+  }
 
   // ////////////////////////////////////////////////////////////////////
   std::string SEVMGR_Service::
