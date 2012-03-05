@@ -88,7 +88,7 @@ namespace SEVMGR {
      *   Thus, the copy returned is the copy of the current first event of
      *   the queue.
      */
-    static bool select (EventQueue&, stdair::EventStruct&, const stdair::DateTime_T&);
+    static bool select (EventQueue&, stdair::EventStruct&, const stdair::DateTime_T&); 
     
     /**
      * Update the status of the given event type with the given count
@@ -139,13 +139,18 @@ namespace SEVMGR {
      */
     static const stdair::Count_T&
     getActualTotalNumberOfEventsToBeGenerated(const EventQueue&,
-                                              const stdair::EventType::EN_EventType&);  
-  
+                                              const stdair::EventType::EN_EventType&);
+
     /**
-     * Set the actual total number of events in the queue
+     * Calculate the progress for an event type.
      */
-    static void setActualTotalNbOfEvents (EventQueue&,
-                                          const stdair::Count_T& iActualTotalNbOfEvents);
+    static stdair::ProgressPercentage_T calculateProgress (const EventQueue&,
+							   const stdair::EventType::EN_EventType&); 
+ 
+    /**
+     * Calculate the total progress.
+     */
+    static stdair::ProgressPercentage_T calculateProgress (const EventQueue&);
 
   };
 

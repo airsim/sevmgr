@@ -220,7 +220,7 @@ namespace SEVMGR {
   void EventQueue::
   addStatus (const stdair::EventType::EN_EventType& iType,
              const stdair::NbOfEvents_T& iExpectedTotalNbOfEvents) {
-    
+
     // Initialise the progress status object
     const stdair::Count_T lExpectedTotalNbOfEventsInt =
       static_cast<const stdair::Count_T> (std::floor (iExpectedTotalNbOfEvents));
@@ -239,11 +239,12 @@ namespace SEVMGR {
       static_cast<const stdair::Count_T> (_progressStatus.getActualNb()
 				  + iExpectedTotalNbOfEvents);
     _progressStatus.setActualNb (lActualNb);
+
   }
 
   // //////////////////////////////////////////////////////////////////////
   void EventQueue::updateStatus (const stdair::EventType::EN_EventType& iType,
-                                 const stdair::NbOfEvents_T& iActualNbOfEvents) {
+                                 const stdair::NbOfEvents_T& iActualNbOfEvents) { 
 
     // Initialise the progress status object for the type key
     stdair:: Count_T lActualNbOfEventsInt =
@@ -253,12 +254,21 @@ namespace SEVMGR {
     ProgressStatusMap_T::iterator itProgressStatus =
       _progressStatusMap.find (iType);
     if (itProgressStatus != _progressStatusMap.end()) {
+
+      // Update the progress status for the whole event queue
+      const stdair::Count_T lOverallActualNb = 
+      static_cast<const stdair::Count_T> (_progressStatus.getActualNb()
+					  + lActualNbOfEventsInt);
+      _progressStatus.setActualNb (lOverallActualNb);
+
+      // Update the progress status for the corresponding content type key
        stdair::ProgressStatus& lProgressStatus = itProgressStatus->second;
       //
       lActualNbOfEventsInt += lProgressStatus.getActualNb();
+
       //
-      lProgressStatus.setActualNb (lActualNbOfEventsInt);
-    }
+      lProgressStatus.setActualNb (lActualNbOfEventsInt); 
+    }  
   }
 
   // //////////////////////////////////////////////////////////////////////
