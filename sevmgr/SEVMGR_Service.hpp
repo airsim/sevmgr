@@ -336,13 +336,30 @@ namespace SEVMGR {
      */
     const stdair::Count_T& 
     getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
-
+  
     /**
-     * Set the actual total number of events (for the whole event queue).
-     *
-     * @param const stdair::Count_T& Total number of events.
+     * Calculate the total progress status.
+     * <br>The progress is status is the ratio of:
+     * <ul>
+     *   <li>the current number of events, summed over all the demand
+     *       streams,</li>
+     *   <li>over the total number of events, also summed over all the demand
+     *       streams.</li>
+     * </ul> 
      */
-    void setActualTotalNbOfEvents (const stdair::Count_T&);
+    stdair::ProgressPercentage_T calculateProgress () const; 
+ 
+    /**
+     * Calculate the progress for an event type.
+     * <br>The progress is status is the ratio of:
+     * <ul>
+     *   <li>the current number of events, summed over all the demand
+     *       streams,</li>
+     *   <li>over the total number of events, also summed over all the demand
+     *       streams.</li>
+     * </ul> 
+     */
+    stdair::ProgressPercentage_T calculateProgress (const stdair::EventType::EN_EventType&) const ;
 
   public:
     // //////////////// Display support methods /////////////////

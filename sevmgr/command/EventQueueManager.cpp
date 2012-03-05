@@ -367,16 +367,28 @@ namespace SEVMGR {
     return lActualTotalNumberOfEvents;
 
   }
-  
-  //////////////////////////////////////////////////////////////////////
-  void EventQueueManager::
-  setActualTotalNbOfEvents (EventQueue& iEventQueue,
-                            const stdair::Count_T& iActualTotalNbOfEvents) {
+
+  //////////////////////////////////////////////////////////////////////   
+
+  stdair::ProgressPercentage_T EventQueueManager::
+  calculateProgress (const EventQueue& iEventQueue,
+		     const stdair::EventType::EN_EventType& iEventType) { 
 
     /**
-     * Calculate the actual total number of events in the queue
+     * Calculate the progress status.
      */
-    iEventQueue.setActualTotalNbOfEvents (iActualTotalNbOfEvents);
+    return iEventQueue.calculateProgress(iEventType);
+    
+  }
+ 
+    /////////////////////////////////////////////////////////////////////   
+  stdair::ProgressPercentage_T EventQueueManager::
+  calculateProgress (const EventQueue& iEventQueue) {  
+
+    /**
+     * Calculate the progress status.
+     */
+    return iEventQueue.calculateProgress();
 
   }
  

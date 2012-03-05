@@ -166,10 +166,6 @@ namespace SEVMGR {
     void setExpectedTotalNbOfEvents (const stdair::Count_T& iExpectedTotalNbOfEvents) {
       _progressStatus.setExpectedNb (iExpectedTotalNbOfEvents);
     }
-    /** Set the actual total number of events (for the whole event queue). */
-    void setActualTotalNbOfEvents (const stdair::Count_T& iActualTotalNbOfEvents) {
-      _progressStatus.setActualNb (iActualTotalNbOfEvents);
-    }
 
     /**
      * Set the progress status for the given event type (e.g., booking

@@ -640,28 +640,6 @@ namespace SEVMGR {
                                                                         iEventType);
 
   }
-  
-  //////////////////////////////////////////////////////////////////////
-  void SEVMGR_Service::
-  setActualTotalNbOfEvents (const stdair::Count_T& iActualTotalNbOfEvents) {
-
-    // Retrieve the SEvMgr service context
-    if (_sevmgrServiceContext == NULL) {
-      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
-                                                    "has not been initialised");
-    }
-    assert (_sevmgrServiceContext != NULL);
-    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
-      *_sevmgrServiceContext;
-    
-    // Retrieve the event queue object instance
-    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
-
-    // Delegate the call to the dedicated function
-    EventQueueManager::setActualTotalNbOfEvents (lQueue,
-                                                 iActualTotalNbOfEvents);
-
-  }
 
   //////////////////////////////////////////////////////////////////////
   const stdair::STDAIR_Service& SEVMGR_Service::getSTDAIR_Service() const {
@@ -677,6 +655,48 @@ namespace SEVMGR {
 
     //
     return lSTDAIR_Service;
+  }  
+
+  //////////////////////////////////////////////////////////////////////
+  stdair::ProgressPercentage_T SEVMGR_Service::calculateProgress() const {  
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+    
+    // Retrieve the event queue object instance
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
+
+    // Delegate the call to the dedicated function
+    return EventQueueManager::calculateProgress(lQueue);
+  
   }
- 
+
+  //////////////////////////////////////////////////////////////////////
+  stdair::ProgressPercentage_T SEVMGR_Service::
+  calculateProgress(const stdair::EventType::EN_EventType& iEventType) const {  
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+    
+    // Retrieve the event queue object instance
+    EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
+
+    // Delegate the call to the dedicated function
+    return EventQueueManager::calculateProgress(lQueue, iEventType);
+  
+  }
+
+
 }
