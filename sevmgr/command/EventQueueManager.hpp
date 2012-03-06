@@ -105,6 +105,13 @@ namespace SEVMGR {
                            const stdair::Count_T&);
 
     /**
+     * Check if the event queue has already a progress status for the given 
+     * event type
+     */
+    static bool hasProgressStatus (const EventQueue&,
+				   const stdair::EventType::EN_EventType&);
+
+    /**
      * Check if the event queue is done
      */
     static bool isQueueDone (const EventQueue&);

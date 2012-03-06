@@ -136,7 +136,11 @@ namespace SEVMGR {
     const stdair::Count_T& getExpectedTotalNbOfEvents (const stdair::EventType::EN_EventType&) const;
 
     /** Get the actual total number of events for the given event type. */
-    const stdair::Count_T& getActualTotalNbOfEvents (const stdair::EventType::EN_EventType&) const;
+    const stdair::Count_T& getActualTotalNbOfEvents (const stdair::EventType::EN_EventType&) const;  
+
+    /** Check if the event queue has already a progress status for the given 
+     *  event type */
+    bool hasProgressStatus (const stdair::EventType::EN_EventType&) const;
 
   public:
     // /////////// Setters ///////////////

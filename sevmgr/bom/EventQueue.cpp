@@ -113,7 +113,27 @@ namespace SEVMGR {
       stdair::ProgressStatus& lProgressStatus = itProgressStatus->second;
       lProgressStatus.reset();
     }
+  }
 
+  // //////////////////////////////////////////////////////////////////////
+  bool EventQueue::
+  hasProgressStatus (const stdair::EventType::EN_EventType& iType) const {
+
+    bool hasProgressStatus = true;
+
+    // Retrieve the ProgressStatus structure corresponding to the
+    // given event type
+    ProgressStatusMap_T::const_iterator itProgressStatus =
+      _progressStatusMap.find (iType);
+    if (itProgressStatus == _progressStatusMap.end()) {
+      //
+      STDAIR_LOG_DEBUG ("No ProgressStatus structure can be retrieved in the "
+                        << "EventQueue: " << display());
+
+      hasProgressStatus = false;
+    }
+    
+    return hasProgressStatus;
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -255,18 +275,15 @@ namespace SEVMGR {
       _progressStatusMap.find (iType);
     if (itProgressStatus != _progressStatusMap.end()) {
 
-      // Update the progress status for the whole event queue
-      const stdair::Count_T lOverallActualNb = 
-      static_cast<const stdair::Count_T> (_progressStatus.getActualNb()
-					  + lActualNbOfEventsInt);
-      _progressStatus.setActualNb (lOverallActualNb);
-
-      // Update the progress status for the corresponding content type key
-       stdair::ProgressStatus& lProgressStatus = itProgressStatus->second;
       //
-      lActualNbOfEventsInt += lProgressStatus.getActualNb();
+      stdair::ProgressStatus& lProgressStatus = itProgressStatus->second;
 
-      //
+      // Update the overall progress status
+      const stdair::Count_T lActualEventTypeNb = lProgressStatus.getActualNb();
+      const stdair::Count_T lActualTotalNb = _progressStatus.getActualNb();
+      _progressStatus.setActualNb (lActualTotalNb + iActualNbOfEvents - lActualEventTypeNb); 
+
+      // Update the progress status for the corresponding type key
       lProgressStatus.setActualNb (lActualNbOfEventsInt); 
     }  
   }
