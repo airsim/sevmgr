@@ -220,7 +220,13 @@ namespace SEVMGR {
      *
      * For now, that method states whether the event queue is empty.
      */
-    bool isQueueDone() const;  
+    bool isQueueDone() const;   
+
+    /**
+     * Check if the event queue has already a progress status for the given 
+     * event type
+     */
+    bool hasProgressStatus(const stdair::EventType::EN_EventType&) const;  
 
     /* @brief Get a reference on the EventQueue object.
      *

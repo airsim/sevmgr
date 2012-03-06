@@ -133,6 +133,20 @@ namespace SEVMGR {
      * Reset the EventQueue object.
      */
     ioEventQueue.reset();
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  bool EventQueueManager::
+  hasProgressStatus (const EventQueue& iEventQueue,
+		     const stdair::EventType::EN_EventType& iEventType) {
+    
+    /**
+     * Check if the event queue is done
+     */
+    const bool hasProgressStatus = iEventQueue.hasProgressStatus(iEventType);
+
+    //
+    return hasProgressStatus;
   }
 
   // ////////////////////////////////////////////////////////////////////

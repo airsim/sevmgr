@@ -482,6 +482,29 @@ namespace SEVMGR {
 
     //
     return isQueueDone;
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  bool SEVMGR_Service::hasProgressStatus(const stdair::EventType::EN_EventType& iEventType) const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service "
+                                                    "has not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext =
+      *_sevmgrServiceContext;
+
+    // Retrieve the event queue object instance
+    const EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
+    
+    // Calculates whether the event queue has been fully emptied
+    const bool hasProgressStatus = 
+       EventQueueManager::hasProgressStatus (lQueue, iEventType);
+
+    //
+    return hasProgressStatus;
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -555,7 +578,7 @@ namespace SEVMGR {
     
     // Delegate the call to the dedicated command
     EventQueueManager::addEvent (lQueue, iEventStruct);
-  }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   const stdair::Count_T& SEVMGR_Service::
