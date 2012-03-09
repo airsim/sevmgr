@@ -57,13 +57,15 @@ namespace SEVMGR {
 
       // Load the JSON formatted string into the property tree.
       // If reading fails (cannot open stream, parse error), an
-      // exception is thrown.  
-      bpt::ptree ptCurrentEvent;  
-      std::istringstream lStrCurrentEvent(lCurrentEvent);
-      read_json (lStrCurrentEvent, ptCurrentEvent);	
+      // exception is thrown. 
+      if (lCurrentEvent.empty () == false) {
+	bpt::ptree ptCurrentEvent;  
+	std::istringstream lStrCurrentEvent(lCurrentEvent);
+	read_json (lStrCurrentEvent, ptCurrentEvent);	
 
-      // Put the current inventory tree in the events array
-      ptEvents.push_back(std::make_pair("", ptCurrentEvent));
+	// Put the current inventory tree in the events array
+	ptEvents.push_back(std::make_pair("", ptCurrentEvent));
+      }
     }
 
     // Store the events array tree into the global tree
