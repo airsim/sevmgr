@@ -252,6 +252,18 @@ namespace SEVMGR {
     EventGenerator& getEventGenerator(const Key& iKey) const;
 
     /**
+     * Check whether the event generator object with the given key exists.
+     * 
+     * Be careful, this method is not implemented: its implementation is
+     * left to the appelant according the EventGenerator type.
+     *
+     * \note An instance of implementation of that method can be found in the
+     *       TraDemGen service.
+     */
+    template<class EventGenerator, class Key>
+    bool hasEventGenerator(const Key& iKey) const;
+
+    /**
      * Extract the event generator list from the map holding the children of the
      * queue.
      * Be careful, this method is not implemented: its implementation is
@@ -264,7 +276,7 @@ namespace SEVMGR {
     const std::list<EventGenerator*> getEventGeneratorList() const;
 
     /**
-     * Check whether there are DemandStream objects.
+     * Check whether there are event generator objects.
      *
      * Be careful, this method is not implemented: its implementation is
      * left to the appelant according the EventGenerator type.
@@ -312,7 +324,7 @@ namespace SEVMGR {
 
     /**
      * Get the actual number of events to be generated for all the
-     * demand streams.
+     * event generators.
      *
      * The getActualTotalNbOfEvents() method is called on the
      * underlying EventQueue object, which keeps track of that number.
@@ -347,10 +359,10 @@ namespace SEVMGR {
      * Calculate the total progress status.
      * <br>The progress is status is the ratio of:
      * <ul>
-     *   <li>the current number of events, summed over all the demand
-     *       streams,</li>
-     *   <li>over the total number of events, also summed over all the demand
-     *       streams.</li>
+     *   <li>the current number of events, summed over all the event generators
+     *      </li>
+     *   <li>over the total number of events, also summed over all the event
+     *       generators.</li>
      * </ul> 
      */
     stdair::ProgressPercentage_T calculateProgress () const; 
@@ -359,13 +371,13 @@ namespace SEVMGR {
      * Calculate the progress for an event type.
      * <br>The progress is status is the ratio of:
      * <ul>
-     *   <li>the current number of events, summed over all the demand
-     *       streams,</li>
-     *   <li>over the total number of events, also summed over all the demand
-     *       streams.</li>
+     *   <li>the current number of events, summed over all the event generators
+     *       </li>
+     *   <li>over the total number of events, also summed over all the event
+     *       generators.</li>
      * </ul> 
      */
-    stdair::ProgressPercentage_T calculateProgress (const stdair::EventType::EN_EventType&) const ;
+    stdair::ProgressPercentage_T calculateProgress (const stdair::EventType::EN_EventType&) const;
 
   public:
     // //////////////// Display support methods /////////////////
