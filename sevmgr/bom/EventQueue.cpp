@@ -74,11 +74,24 @@ namespace SEVMGR {
       const stdair::EventListElement_T& lEventListElement = 
 	*lEventListElement_ptr;
       const stdair::EventStruct& lEvent = lEventListElement.second;
- 
-      // Delegate the JSON export to the dedicated service
-      oStr << lEvent.describe() << "\n";
-    }
+      const stdair::EventType::EN_EventType& lEventType = lEvent.getEventType();
+      
+      switch (lEventType) {
+      case stdair::EventType::BKG_REQ:
+      case stdair::EventType::CX:
+      case stdair::EventType::BRK_PT: {
+        // Delegate the JSON export to the dedicated service
+        oStr << lEvent.describe();
+        break;
+      }
+      case stdair::EventType::OPT_NOT_4_FD:
+      case stdair::EventType::SNAPSHOT:
+      case stdair::EventType::RM: 
+      default: 
+        break;
+      }
     
+    }
     return oStr.str();
   }
 
