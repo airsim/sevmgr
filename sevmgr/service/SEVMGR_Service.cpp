@@ -256,6 +256,26 @@ namespace SEVMGR {
 
     // Delegate the key display to the dedicated command
     return EventQueueManager::list (lEventQueue);
+  } 
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string SEVMGR_Service::
+  list (const stdair::EventType::EN_EventType& iEventType) const {
+
+    // Retrieve the SEvMgr service context
+    if (_sevmgrServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The SEvMgr service has "
+                                                    "not been initialised");
+    }
+    assert (_sevmgrServiceContext != NULL);
+
+    SEVMGR_ServiceContext& lSEVMGR_ServiceContext = *_sevmgrServiceContext;  
+
+    // Retrieve the event queue
+    EventQueue& lEventQueue = lSEVMGR_ServiceContext.getEventQueue ();
+
+    // Delegate the key display to the dedicated command
+    return EventQueueManager::list (lEventQueue, iEventType);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -681,7 +701,7 @@ namespace SEVMGR {
   }  
 
   //////////////////////////////////////////////////////////////////////
-  stdair::ProgressPercentage_T SEVMGR_Service::calculateProgress() const {  
+  const stdair::ProgressStatus& SEVMGR_Service::getStatus() const {  
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
@@ -696,13 +716,13 @@ namespace SEVMGR {
     EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the call to the dedicated function
-    return EventQueueManager::calculateProgress(lQueue);
+    return EventQueueManager::getStatus(lQueue);
   
   }
 
   //////////////////////////////////////////////////////////////////////
-  stdair::ProgressPercentage_T SEVMGR_Service::
-  calculateProgress(const stdair::EventType::EN_EventType& iEventType) const {  
+  const stdair::ProgressStatus& SEVMGR_Service::
+  getStatus(const stdair::EventType::EN_EventType& iEventType) const {  
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {
@@ -717,7 +737,7 @@ namespace SEVMGR {
     EventQueue& lQueue = lSEVMGR_ServiceContext.getEventQueue();
 
     // Delegate the call to the dedicated function
-    return EventQueueManager::calculateProgress(lQueue, iEventType);
+    return EventQueueManager::getStatus(lQueue, iEventType);
   
   }
 
