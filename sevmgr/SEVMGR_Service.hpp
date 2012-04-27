@@ -356,28 +356,15 @@ namespace SEVMGR {
     getActualTotalNumberOfEventsToBeGenerated(const stdair::EventType::EN_EventType&) const;
   
     /**
-     * Calculate the total progress status.
-     * <br>The progress is status is the ratio of:
-     * <ul>
-     *   <li>the current number of events, summed over all the event generators
-     *      </li>
-     *   <li>over the total number of events, also summed over all the event
-     *       generators.</li>
-     * </ul> 
+     * Get the overall progress status (for the whole event queue).
      */
-    stdair::ProgressPercentage_T calculateProgress () const; 
+    const stdair::ProgressStatus& getStatus () const; 
  
     /**
-     * Calculate the progress for an event type.
-     * <br>The progress is status is the ratio of:
-     * <ul>
-     *   <li>the current number of events, summed over all the event generators
-     *       </li>
-     *   <li>over the total number of events, also summed over all the event
-     *       generators.</li>
-     * </ul> 
+     * Get the progress status for the given event type (e.g., booking
+     * request, optimisation notification, schedule change, break point).
      */
-    stdair::ProgressPercentage_T calculateProgress (const stdair::EventType::EN_EventType&) const;
+    const stdair::ProgressStatus& getStatus (const stdair::EventType::EN_EventType&) const;
 
   public:
     // //////////////// Display support methods /////////////////
@@ -396,7 +383,18 @@ namespace SEVMGR {
      * @return std::string Output string in which the events are
      *        logged/dumped.
      */
-    std::string list () const;
+    std::string list () const; 
+
+    /**
+     * Display (dump in the returned string) the event list for the 
+     * given event type (e.g., booking request, optimisation notification, 
+     * schedule change, break point).
+     *  
+     * @param const EventType_T& Event type for which the events are displayed
+     * @return std::string Output string in which the events are
+     *        logged/dumped.
+     */
+    std::string list (const stdair::EventType::EN_EventType&) const;
     
   public:
     // //////////////// Export support methods /////////////////

@@ -170,6 +170,21 @@ namespace SEVMGR {
 
     //
     return lEventListStr;
+  }  
+
+  // //////////////////////////////////////////////////////////////////////
+  const std::string EventQueueManager::
+  list (const EventQueue& iEventQueue,
+	const stdair::EventType::EN_EventType& iEventType) {
+
+    /**
+     * Describe the event queue key
+     */
+    const std::string& lEventListStr =
+      iEventQueue.list(iEventType);
+
+    //
+    return lEventListStr;
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -383,26 +398,25 @@ namespace SEVMGR {
   }
 
   //////////////////////////////////////////////////////////////////////   
-
-  stdair::ProgressPercentage_T EventQueueManager::
-  calculateProgress (const EventQueue& iEventQueue,
-		     const stdair::EventType::EN_EventType& iEventType) { 
+  const stdair::ProgressStatus& EventQueueManager::
+  getStatus (const EventQueue& iEventQueue,
+	     const stdair::EventType::EN_EventType& iEventType) { 
 
     /**
      * Calculate the progress status.
      */
-    return iEventQueue.calculateProgress(iEventType);
+    return iEventQueue.getStatus(iEventType);
     
   }
  
-    /////////////////////////////////////////////////////////////////////   
-  stdair::ProgressPercentage_T EventQueueManager::
-  calculateProgress (const EventQueue& iEventQueue) {  
+  /////////////////////////////////////////////////////////////////////   
+  const stdair::ProgressStatus&  EventQueueManager::
+  getStatus (const EventQueue& iEventQueue) {  
 
     /**
      * Calculate the progress status.
      */
-    return iEventQueue.calculateProgress();
+    return iEventQueue.getStatus();
 
   }
  

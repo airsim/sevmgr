@@ -59,7 +59,13 @@ namespace SEVMGR {
     /**
      * Describe the event list
      */
-    static const std::string list (const EventQueue&);
+    static const std::string list (const EventQueue&);   
+
+    /**
+     * list the events with a given event type
+     */
+    static const std::string list (const EventQueue&,
+				   const stdair::EventType::EN_EventType&);
 
     /**
      * Extract the first event fron the queue
@@ -149,15 +155,16 @@ namespace SEVMGR {
                                               const stdair::EventType::EN_EventType&);
 
     /**
-     * Calculate the progress for an event type.
+     * Get the overall progress status (for the whole event queue).
      */
-    static stdair::ProgressPercentage_T calculateProgress (const EventQueue&,
-							   const stdair::EventType::EN_EventType&); 
- 
+    static const stdair::ProgressStatus& getStatus (const EventQueue&,
+						    const stdair::EventType::EN_EventType&); 
+    
     /**
-     * Calculate the total progress.
+     * Get the progress status for the given event type (e.g., booking
+     * request, optimisation notification, schedule change, break point).
      */
-    static stdair::ProgressPercentage_T calculateProgress (const EventQueue&);
+    static const stdair::ProgressStatus& getStatus (const EventQueue&);
 
   };
 

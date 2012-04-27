@@ -75,11 +75,33 @@ namespace SEVMGR {
 	*lEventListElement_ptr;
       const stdair::EventStruct& lEvent = lEventListElement.second;
  
-      // Delegate the JSON export to the dedicated service
       oStr << lEvent.describe() << "\n";
     }
     
     return oStr.str();
+  } 
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string EventQueue::
+  list (const stdair::EventType::EN_EventType& iType) const {  
+      std::ostringstream oStr;  
+      oStr << describeKey () << "\n" 
+	   << toString() << "\n";
+      
+      // Browse the events
+      for (stdair::EventList_T::const_iterator itEvent = _eventList.begin();
+	   itEvent != _eventList.end(); ++itEvent) {
+	const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
+	assert (lEventListElement_ptr != NULL);
+	const stdair::EventListElement_T& lEventListElement = 
+	  *lEventListElement_ptr;
+	const stdair::EventStruct& lEvent = lEventListElement.second;
+ 
+	if (lEvent.getEventType() == iType) {  
+	  oStr << lEvent.describe() << "\n";
+	}
+      }	
+      return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -304,19 +326,26 @@ namespace SEVMGR {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  stdair::ProgressStatus EventQueue::
+  const stdair::ProgressStatus& EventQueue::
   getStatus (const stdair::EventType::EN_EventType& iType) const {
 
     // Retrieve the ProgressStatus structure corresponding to the
     // given event type
     ProgressStatusMap_T::const_iterator itProgressStatus =
-      _progressStatusMap.find (iType);
-    if (itProgressStatus != _progressStatusMap.end()) {
-      const stdair::ProgressStatus& oProgressStatus = itProgressStatus->second;
-      return oProgressStatus;
+      _progressStatusMap.find (iType);   
+    if (itProgressStatus == _progressStatusMap.end()) {
+      std::ostringstream oStr;
+      oStr << "No ProgressStatus structure can be retrieved in the EventQueue '"
+           << display() << "'. The EventQueue should be initialised, e.g., by "
+           << "calling a buildSampleBom() method.";
+      //
+      STDAIR_LOG_ERROR (oStr.str());
+      throw EventQueueException (oStr.str());
     }
-
-    return stdair::ProgressStatus();
+    assert(itProgressStatus != _progressStatusMap.end());
+    
+    const stdair::ProgressStatus& oProgressStatus = itProgressStatus->second;
+    return oProgressStatus;
   }
 
   // //////////////////////////////////////////////////////////////////////

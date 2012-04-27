@@ -17,6 +17,7 @@
 // SEvMgr
 #include <sevmgr/bom/EventQueueKey.hpp>
 #include <sevmgr/bom/EventQueueTypes.hpp>
+#include <sevmgr/SEVMGR_Types.hpp>
 
 /// Forward declarations
 namespace stdair {
@@ -74,14 +75,6 @@ namespace SEVMGR {
      * Definition allowing to retrieve the associated BOM key type.
      */
     typedef EventQueueKey Key_T;
-
-    /**
-     * Definition of the (STL) map of ProgressStatus structures, one
-     * for each event type (e.g., booking request, optimisation
-     * notification).
-     */
-    typedef std::map<stdair::EventType::EN_EventType,
-                     stdair::ProgressStatus> ProgressStatusMap_T;
     
 
   public:
@@ -127,7 +120,7 @@ namespace SEVMGR {
      * Get the progress status for the given event type (e.g., booking
      * request, optimisation notification, schedule change, break point).
      */
-    stdair::ProgressStatus getStatus (const stdair::EventType::EN_EventType&) const;
+    const stdair::ProgressStatus& getStatus (const stdair::EventType::EN_EventType&) const;
 
     /** Get the current number of events for the given event type. */
     const stdair::Count_T& getCurrentNbOfEvents (const stdair::EventType::EN_EventType&) const;
@@ -205,8 +198,14 @@ namespace SEVMGR {
 
     /**
      * Get the event list decsription.
-     */
+     */ 
     std::string list () const;
+ 
+    /**
+     * Get the event list decsription for a given 
+     * event type
+     */
+    std::string list (const stdair::EventType::EN_EventType&) const;
     
     /**
      * Get a string describing the  key.
