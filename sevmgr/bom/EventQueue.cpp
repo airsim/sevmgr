@@ -69,11 +69,7 @@ namespace SEVMGR {
     // Browse the events
     for (stdair::EventList_T::const_iterator itEvent = _eventList.begin();
 	 itEvent != _eventList.end(); ++itEvent) {
-      const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
-      assert (lEventListElement_ptr != NULL);
-      const stdair::EventListElement_T& lEventListElement = 
-	*lEventListElement_ptr;
-      const stdair::EventStruct& lEvent = lEventListElement.second;
+      const stdair::EventStruct& lEvent = itEvent->second;
  
       oStr << lEvent.describe() << "\n";
     }
@@ -85,17 +81,14 @@ namespace SEVMGR {
   std::string EventQueue::
   list (const stdair::EventType::EN_EventType& iType) const {  
       std::ostringstream oStr;  
-      oStr << describeKey () << "\n" 
-	   << toString() << "\n";
+      oStr << describeKey () << "\n" << toString() << "\n" 
+	   << "List " << stdair::EventType::getLabel(iType) 
+	   << " events:" << std::endl;
       
       // Browse the events
       for (stdair::EventList_T::const_iterator itEvent = _eventList.begin();
 	   itEvent != _eventList.end(); ++itEvent) {
-	const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
-	assert (lEventListElement_ptr != NULL);
-	const stdair::EventListElement_T& lEventListElement = 
-	  *lEventListElement_ptr;
-	const stdair::EventStruct& lEvent = lEventListElement.second;
+	const stdair::EventStruct& lEvent = itEvent->second;
  
 	if (lEvent.getEventType() == iType) {  
 	  oStr << lEvent.describe() << "\n";
@@ -335,9 +328,9 @@ namespace SEVMGR {
       _progressStatusMap.find (iType);   
     if (itProgressStatus == _progressStatusMap.end()) {
       std::ostringstream oStr;
-      oStr << "No ProgressStatus structure can be retrieved in the EventQueue '"
-           << display() << "'. The EventQueue should be initialised, e.g., by "
-           << "calling a buildSampleBom() method.";
+      oStr << "No ProgressStatus structure can be retrieved in the EventQueue '" 
+	   << display() << "' for the following event type: " 
+	   << stdair::EventType::getLabel(iType) << ".";
       //
       STDAIR_LOG_ERROR (oStr.str());
       throw EventQueueException (oStr.str());
