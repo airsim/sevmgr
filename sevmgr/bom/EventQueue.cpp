@@ -63,15 +63,15 @@ namespace SEVMGR {
   // //////////////////////////////////////////////////////////////////////
   std::string EventQueue::list () const {
     std::ostringstream oStr;  
-    oStr << describeKey () << "\n" 
-	 << toString() << "\n";
+    oStr << describeKey () << std::endl;
+    oStr << toString() << std::endl;
 
     // Browse the events
     for (stdair::EventList_T::const_iterator itEvent = _eventList.begin();
 	 itEvent != _eventList.end(); ++itEvent) {
       const stdair::EventStruct& lEvent = itEvent->second;
  
-      oStr << lEvent.describe() << "\n";
+      oStr << lEvent.describe();
     }
     
     return oStr.str();
@@ -81,8 +81,9 @@ namespace SEVMGR {
   std::string EventQueue::
   list (const stdair::EventType::EN_EventType& iType) const {  
       std::ostringstream oStr;  
-      oStr << describeKey () << "\n" << toString() << "\n" 
-	   << "List " << stdair::EventType::getLabel(iType) 
+      oStr << describeKey () << std::endl; 
+      oStr << toString() << std::endl;
+      oStr << "List " << stdair::EventType::getLabel(iType) 
 	   << " events:" << std::endl;
       
       // Browse the events
@@ -91,7 +92,7 @@ namespace SEVMGR {
 	const stdair::EventStruct& lEvent = itEvent->second;
  
 	if (lEvent.getEventType() == iType) {  
-	  oStr << lEvent.describe() << "\n";
+	  oStr << lEvent.describe();
 	}
       }	
       return oStr.str();
