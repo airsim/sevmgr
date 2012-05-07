@@ -15,6 +15,7 @@
 #include <boost/swap.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 // StdAir
+#include <stdair/stdair_exceptions.hpp>
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/service/Logger.hpp>
@@ -155,7 +156,9 @@ void initReadline (swift::SReadline& ioInputReader) {
   // - "identifiers"
   // - special identifier %file - means to perform a file name completion
   Completers.push_back ("help");
-  Completers.push_back ("list");
+  Completers.push_back ("list");  
+  Completers.push_back ("list BookingRequest");
+  Completers.push_back ("list BreakPoint");
   Completers.push_back ("select %date %time");
   Completers.push_back ("display");
   Completers.push_back ("next");
@@ -594,7 +597,13 @@ int main (int argc, char* argv[]) {
       std::cout << "Commands: " << std::endl;
       std::cout << " help" << "\t\t" << "Display this help" << std::endl;
       std::cout << " quit" << "\t\t" << "Quit the application" << std::endl;
-      std::cout << " list" << "\t\t" << "List events in the queue" << std::endl;
+      std::cout << " list" << "\t\t" << "List events in the queue. It is "
+		<< "possible to filter events according to their types" 
+		<< std::endl	
+		<< "\t\t\t\t  'list_event BookingRequest' "
+		<< "list all the booking requests" << std::endl
+		<< "\t\t\t\t  'list_event BreakPoint' "
+		<< "list all the break points" << std::endl;
       std::cout << " select" << "\t\t"
                 << "Select an event into the 'list' to become the current one. For instance, try the command:\n"
                 << "\t\t  'select 2011-May-14 00:00:00'"
@@ -624,12 +633,41 @@ int main (int argc, char* argv[]) {
     }
 
       // ////////////////////////////// List /////////////////////////
-    case Command_T::LIST: {
-      //
-      std::cout << "List" << std::endl;   
+    case Command_T::LIST: { 
 
+      //
       std::ostringstream oEventListStr;
-      oEventListStr << sevmgrService.list ();	
+
+      if (lTokenListByReadline.empty() == true) { 
+
+	// If no parameter is given, list all the events in the queue
+	oEventListStr << sevmgrService.list ();
+
+      } else if (lTokenListByReadline.size() == 1) { 
+
+	assert (lTokenListByReadline.size() > 0);
+	std::string lEventTypeStr (lTokenListByReadline[0]);
+
+	// If exactly one parameter is given, try to convert it into
+	// an event type
+	try {
+	  
+	  const stdair::EventType lEventType (lEventTypeStr);
+	  oEventListStr << sevmgrService.list (lEventType.getType());	
+	  
+	} catch (stdair::CodeConversionException e) {
+	  oEventListStr << "The event type '" << lEventTypeStr
+			<< "' is not known. Try 'help' for "
+			<< "more information on the 'list_event' command."
+			<< std::endl;
+	}
+      } else {
+	
+	// If more than one parameter is given, display an error message	
+	oEventListStr << "The event type is not understood: try 'help' for "
+		      << "more information on the 'list_event' command."
+		      << std::endl;
+      }	
       std::cout << oEventListStr.str() << std::endl;   
       STDAIR_LOG_DEBUG (oEventListStr.str());
 
