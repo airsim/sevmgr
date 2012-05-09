@@ -645,15 +645,17 @@ int main (int argc, char* argv[]) {
 
       } else if (lTokenListByReadline.size() == 1) { 
 
-	assert (lTokenListByReadline.size() > 0);
-	std::string lEventTypeStr (lTokenListByReadline[0]);
+	assert (lTokenListByReadline.empty() == false);
+	const std::string lEventTypeStr (lTokenListByReadline[0]);
 
 	// If exactly one parameter is given, try to convert it into
 	// an event type
 	try {
 	  
 	  const stdair::EventType lEventType (lEventTypeStr);
-	  oEventListStr << sevmgrService.list (lEventType.getType());	
+	  const stdair::EventType::EN_EventType& lActualEventType =
+	    lEventType.getType();
+	  oEventListStr << sevmgrService.list (lActualEventType);	
 	  
 	} catch (stdair::CodeConversionException e) {
 	  oEventListStr << "The event type '" << lEventTypeStr
