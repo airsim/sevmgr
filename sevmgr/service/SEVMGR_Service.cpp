@@ -303,9 +303,20 @@ namespace SEVMGR {
     // Dispatch the command to the right JSon service handler
     // 
     switch (lEN_JSonCommand) {
-    case stdair::JSonCommand::EVENT_LIST:{
+    case stdair::JSonCommand::EVENT_LIST:{ 
 
-    return jsonExportEventQueue ();
+      //
+      // Try to extract the event type from the JSON-ified string
+      //
+      stdair::EventType::EN_EventType lEN_EventType;
+      const bool hasEventTypeBeenRetrieved = 
+	stdair::BomJSONImport::jsonImportEventType (iJSONString,
+						    lEN_EventType);
+
+      if (hasEventTypeBeenRetrieved == true) {
+	return jsonExportEventQueue (lEN_EventType);
+      } 
+      return jsonExportEventQueue ();
     }
     default: {
         // Return an Error string
@@ -328,7 +339,7 @@ namespace SEVMGR {
 
   // ////////////////////////////////////////////////////////////////////
   std::string SEVMGR_Service::
-  jsonExportEventQueue () const {  
+  jsonExportEventQueue (const stdair::EventType::EN_EventType& iEventType) const {  
 
     std::ostringstream oStr;  
 
@@ -351,7 +362,7 @@ namespace SEVMGR {
  
     // Delegate the JSON export to the dedicated command
     BomJSONExport::jsonExportEventQueue (lSTDAIR_Service_ptr, oStr, 
-					 lEventQueue);
+					 lEventQueue, iEventType);
     return oStr.str();
   
   }  
