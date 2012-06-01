@@ -412,7 +412,8 @@ namespace SEVMGR {
      * Dump in the returned string and in JSON format the whole list of events 
      * queue. 
      */
-    std::string jsonExportEventQueue () const; 
+    std::string jsonExportEventQueue (const stdair::EventType::EN_EventType& = 
+				      stdair::EventType::LAST_VALUE) const; 
 
     /**
      * Dump in the returned string and in JSON format the given event. 

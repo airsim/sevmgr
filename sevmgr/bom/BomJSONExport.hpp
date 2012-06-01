@@ -13,6 +13,7 @@
 #endif // BOOST_VERSION >= 104100
 // StdAir
 #include <stdair/stdair_service_types.hpp>
+#include <stdair/bom/EventTypes.hpp>
 
 #if BOOST_VERSION >= 104100
   namespace bpt = boost::property_tree;
@@ -43,10 +44,13 @@ namespace SEVMGR {
      *        logged/dumped.
      * @param const EventQueue& Events queue to be stored in JSON-ified 
      *        format.
+     * @param const stdair::EventType::EN_EventType& Filter to select objects
+     *        with a certain event type.
      */
     static void jsonExportEventQueue (stdair::STDAIR_ServicePtr_T&,
 				      std::ostream&, 
-				      const EventQueue&);
+				      const EventQueue&,
+				      const stdair::EventType::EN_EventType&);
     
   };
 

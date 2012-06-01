@@ -13,7 +13,6 @@
 // StdAir
 #include <stdair/STDAIR_Service.hpp>
 #include <stdair/bom/EventStruct.hpp>
-#include <stdair/bom/EventTypes.hpp>
 // SEVMGR
 #include <sevmgr/bom/EventQueue.hpp>
 #include <sevmgr/bom/BomJSONExport.hpp>
@@ -32,7 +31,8 @@ namespace SEVMGR {
   void BomJSONExport::
   jsonExportEventQueue (stdair::STDAIR_ServicePtr_T& ioSTDAIR_ServicePtr,
 			std::ostream& oStream,
-			const EventQueue& iEventQueue) { 
+			const EventQueue& iEventQueue,
+			const stdair::EventType::EN_EventType& iEventType) { 
 
     // Retrieve the event list
     const stdair::EventList_T& lEventList = iEventQueue.getEventList();
@@ -45,26 +45,29 @@ namespace SEVMGR {
     // Browse the events
     for (stdair::EventList_T::const_iterator itEvent = lEventList.begin();
 	 itEvent != lEventList.end(); ++itEvent) {
-      const stdair::EventListElement_T* lEventListElement_ptr = &(*itEvent);
-      assert (lEventListElement_ptr != NULL);
-      const stdair::EventListElement_T& lEventListElement = 
-	*lEventListElement_ptr;
-      const stdair::EventStruct& lEvent = lEventListElement.second;
+      const stdair::EventStruct& lEvent = itEvent->second;   
+      const stdair::EventType::EN_EventType& lEventType = 
+	lEvent.getEventType();
+
+      const bool isEventTypeLastValue = 
+	(iEventType == stdair::EventType::LAST_VALUE);
+      if (lEventType == iEventType || isEventTypeLastValue == true) {
  
-      // Delegate the JSON export to the dedicated service
-      const std::string lCurrentEvent = 
-	ioSTDAIR_ServicePtr->jsonExportEventObject (lEvent);  
-
-      // Load the JSON formatted string into the property tree.
-      // If reading fails (cannot open stream, parse error), an
-      // exception is thrown. 
-      if (lCurrentEvent.empty () == false) {
-	bpt::ptree ptCurrentEvent;  
-	std::istringstream lStrCurrentEvent(lCurrentEvent);
-	read_json (lStrCurrentEvent, ptCurrentEvent);	
-
-	// Put the current inventory tree in the events array
-	ptEvents.push_back(std::make_pair("", ptCurrentEvent));
+	// Delegate the JSON export to the dedicated service
+	const std::string lCurrentEvent = 
+	  ioSTDAIR_ServicePtr->jsonExportEventObject (lEvent);  
+	
+	// Load the JSON formatted string into the property tree.
+	// If reading fails (cannot open stream, parse error), an
+	// exception is thrown. 
+	if (lCurrentEvent.empty () == false) {
+	  bpt::ptree ptCurrentEvent;  
+	  std::istringstream lStrCurrentEvent(lCurrentEvent);
+	  read_json (lStrCurrentEvent, ptCurrentEvent);	
+	
+	  // Put the current inventory tree in the events array
+	  ptEvents.push_back(std::make_pair("", ptCurrentEvent));
+	}
       }
     }
 
