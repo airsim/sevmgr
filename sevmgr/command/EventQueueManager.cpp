@@ -3,6 +3,8 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+// Boost
+#include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/ProgressStatusSet.hpp>
 #include <stdair/basic/EventType.hpp>
@@ -32,14 +34,8 @@ namespace SEVMGR {
     // Date of the request (15-MAY-2011)
     const stdair::BookingRequestStruct& lBookingRequest =
       buildSampleBookingRequest (lSTDAIR_ServicePtr);
-  
-    // TODO: understand why the following form does not work, knowing
-    // that:
-    // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-    // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-    //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
     const stdair::BookingRequestPtr_T lBookingRequest_ptr =
-      stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequest));
+      boost::make_shared<stdair::BookingRequestStruct> (lBookingRequest);
   
     // Create an event structure
     stdair::EventStruct lEventStruct (stdair::EventType::BKG_REQ,
@@ -53,15 +49,9 @@ namespace SEVMGR {
     const bool isForCRS = true;
     const stdair::BookingRequestStruct& lBookingRequestForCRS =
       buildSampleBookingRequest (lSTDAIR_ServicePtr, isForCRS);
-    
-    // TODO: understand why the following form does not work, knowing
-    // that:
-    // typedef boost::shared_ptr<stdair::BookingRequestStruct> stdair::BookingRequestPtr_T
-    // stdair::BookingRequestPtr_T oBookingRequest_ptr =
-    //   boost::make_shared<stdair::BookingRequestStruct> (lInteractiveBookingRequest);
     const stdair::BookingRequestPtr_T lBookingRequestForCRS_ptr =
-      stdair::BookingRequestPtr_T(new stdair::BookingRequestStruct(lBookingRequestForCRS));
-  
+      boost::make_shared<stdair::BookingRequestStruct> (lBookingRequestForCRS);
+    
     // Create an event structure
     stdair::EventStruct lEventStructForCRS (stdair::EventType::BKG_REQ,
 					    lBookingRequestForCRS_ptr);
@@ -80,11 +70,9 @@ namespace SEVMGR {
     const stdair::Duration_T lBP1Time (0, 0, 0);
     // Date-time of the break point  (made of the date and time above)
     const stdair::DateTime_T lBP1DateTime (lBP1Date, lBP1Time);
-
-    // TODO: understand why the form above does not work.
     const stdair::BreakPointPtr_T lBreakPoint1_ptr =
-      stdair::BreakPointPtr_T(new stdair::BreakPointStruct(lBP1DateTime));
-   
+      boost::make_shared<stdair::BreakPointStruct> (lBP1DateTime);
+
     // Create an event structure
     stdair::EventStruct lEventBreakPoint1 (stdair::EventType::BRK_PT,
 					   lBreakPoint1_ptr);
@@ -102,8 +90,8 @@ namespace SEVMGR {
 
     // TODO: understand why the form above does not work.
     const stdair::BreakPointPtr_T lBreakPoint2_ptr =
-      stdair::BreakPointPtr_T(new stdair::BreakPointStruct(lBP2DateTime));
-   
+      boost::make_shared<stdair::BreakPointStruct> (lBP2DateTime);
+
     // Create an event structure
     stdair::EventStruct lEventBreakPoint2 (stdair::EventType::BRK_PT,
 					   lBreakPoint2_ptr); 
