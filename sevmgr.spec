@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           sevmgr
-Version:        0.2.0
+Version:        1.00.0
 Release:        1%{?dist}
 
 Summary:        C++ Simulation-Oriented Discrete Event Management Library
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 11 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 1.00.0-1
+- Open source release
+
 * Sat Jan 14 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.2.0-1
 - First RPM release
 
