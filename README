@@ -24,7 +24,7 @@ but names may vary according to distributions):
   * cmake
   * gcc-c++
   * boost-devel
-  * readline-devel
+  * readline-devel, ncurses-devel
   * soci-mysql-devel
   * zeromq-devel
   * python-devel
@@ -45,7 +45,7 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-1.00.0 \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-1.00.1 \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
@@ -57,16 +57,16 @@ Then, as usual:
   just type:
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f sevmgr-stable && ln -s sevmgr-1.00.0 sevmgr-stable
+  rm -f sevmgr-stable && ln -s sevmgr-1.00.1 sevmgr-stable
   cd -
 * To package the source files, type:
   make dist
 * To package the binary and the (HTML and PDF) documentation:
   make package
 * To browse the (just installed, if enabled) HTML documentation:
-  midori file://${INSTALL_BASEDIR}/sevmgr-stable/share/doc/sevmgr-1.00.0/html/index.html
+  midori file://${INSTALL_BASEDIR}/sevmgr-stable/share/doc/sevmgr-1.00.1/html/index.html
 * To browse the (just installed, if enabled) PDF documentation:
-  evince ${INSTALL_BASEDIR}/sevmgr-stable/share/doc/sevmgr-1.00.0/html/refman.pdf
+  evince ${INSTALL_BASEDIR}/sevmgr-stable/share/doc/sevmgr-1.00.1/html/refman.pdf
 * To run the local binary version:
   ./sevmgr/sevmgr -b
 * To run the installed version:

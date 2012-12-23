@@ -1,4 +1,7 @@
-* Tue Dec 11 2012 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 1.00.0
+* Sun Dec 23 2012 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 1.00.1
+- Fixed compilation issues on RedHat/CentOS 5.x (e.g., support of ncurses).
+
+* Tue Dec 11 2012 Gabrielle Sabatier <g-sabatier at users dot sourceforge dot net> 1.00.0
 - Works with StdAir-1.00.0.
 	
 * Sat Jan 14 2012 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.0
