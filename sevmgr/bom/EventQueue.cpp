@@ -283,8 +283,8 @@ namespace SEVMGR {
                                  const stdair::NbOfEvents_T& iActualNbOfEvents) { 
 
     // Initialise the progress status object for the type key
-    stdair:: Count_T lActualNbOfEventsInt =
-      static_cast<const  stdair::Count_T> (std::floor (iActualNbOfEvents));
+    const stdair::Count_T lActualNbOfEventsInt =
+      static_cast<const stdair::Count_T> (std::floor (iActualNbOfEvents));
       
     // Update the progress status for the corresponding content type key
     ProgressStatusMap_T::iterator itProgressStatus =
@@ -295,9 +295,12 @@ namespace SEVMGR {
       stdair::ProgressStatus& lProgressStatus = itProgressStatus->second;
 
       // Update the overall progress status
-      const stdair::Count_T lActualEventTypeNb = lProgressStatus.getActualNb();
-      const stdair::Count_T lActualTotalNb = _progressStatus.getActualNb();
-      _progressStatus.setActualNb (lActualTotalNb + iActualNbOfEvents - lActualEventTypeNb); 
+      const stdair::Count_T& lActualEventTypeNb = lProgressStatus.getActualNb();
+      const stdair::Count_T lActualEventTypeNbInt =
+        static_cast<const stdair::Count_T> (std::floor (lActualEventTypeNb));
+      const stdair::Count_T& lActualTotalNb = _progressStatus.getActualNb();
+      const stdair::Count_T lActualDeltaNb = lActualNbOfEventsInt - lActualEventTypeNbInt;
+      _progressStatus.setActualNb (lActualTotalNb + lActualDeltaNb);
 
       // Update the progress status for the corresponding type key
       lProgressStatus.setActualNb (lActualNbOfEventsInt); 
