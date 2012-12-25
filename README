@@ -15,7 +15,7 @@ stand-alone mode.
 Building the library and test binary from Git repository:
 ----------------------------------------------------------------
 The Sourceforge Git repository may be cloned as following:
-git clone ssh://denis_arnaud@git.code.sf.net/p/sevmgr/code sevmgrgit
+git clone ssh://git.code.sf.net/p/sevmgr/code sevmgrgit
 cd sevmgrgit
 git checkout trunk
 
