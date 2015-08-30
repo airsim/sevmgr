@@ -16,6 +16,7 @@
 #define BOOST_TEST_MODULE EventQueueManagementTest
 #include <boost/test/unit_test.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/version.hpp>
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_date_time_types.hpp>
@@ -43,7 +44,11 @@ struct UnitTestConfig {
   /** Constructor. */
   UnitTestConfig() {
     boost_utf::unit_test_log.set_stream (utfReportStream);
+#if BOOST_VERSION >= 105900
+    boost_utf::unit_test_log.set_format (boost_utf::OF_XML);
+#else
     boost_utf::unit_test_log.set_format (boost_utf::XML);
+#endif
     boost_utf::unit_test_log.set_threshold_level (boost_utf::log_test_units);
     //boost_utf::unit_test_log.set_threshold_level (boost_utf::log_successful_tests);
   }
