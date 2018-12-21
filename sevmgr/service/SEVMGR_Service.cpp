@@ -539,7 +539,7 @@ namespace SEVMGR {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  const stdair::Count_T& SEVMGR_Service::getQueueSize() const {
+  const stdair::Count_T SEVMGR_Service::getQueueSize() const {
 
     // Retrieve the SEvMgr service context
     if (_sevmgrServiceContext == NULL) {

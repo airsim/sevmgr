@@ -237,7 +237,7 @@ namespace SEVMGR {
     /**
      * Get the size of the queue.
      */
-    const stdair::Count_T& getQueueSize() const;
+    const stdair::Count_T getQueueSize() const;
 
     /**
      * Extract an event generator from the map holding the children of the

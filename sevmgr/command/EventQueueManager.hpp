@@ -124,9 +124,9 @@ namespace SEVMGR {
 
 
     /**
-     * Calculateswhether the size of the event queue
+     * Calculate whether the size of the event queue
      */
-    static const stdair::Count_T& getQueueSize(const EventQueue&); 
+    static const stdair::Count_T getQueueSize(const EventQueue&); 
 
     /**
      * Calculate the expected total number of events
