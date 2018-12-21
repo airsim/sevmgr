@@ -313,13 +313,13 @@ namespace SEVMGR {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  const stdair::Count_T& EventQueueManager::
+  const stdair::Count_T EventQueueManager::
   getQueueSize (const EventQueue& iEventQueue) {
 
     /**
      * Calculates the size of the event queue
      */
-    const stdair::Count_T& lQueueSize = iEventQueue.getQueueSize();
+    const stdair::Count_T lQueueSize = iEventQueue.getQueueSize();
 
     //
     return lQueueSize;
