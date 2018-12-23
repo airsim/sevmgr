@@ -657,7 +657,7 @@ int main (int argc, char* argv[]) {
 	    lEventType.getType();
 	  oEventListStr << sevmgrService.list (lActualEventType);	
 	  
-	} catch (stdair::CodeConversionException e) {
+	} catch (stdair::CodeConversionException& e) {
 	  oEventListStr << "The event type '" << lEventTypeStr
 			<< "' is not known. Try 'help' for "
 			<< "more information on the 'list_event' command."
