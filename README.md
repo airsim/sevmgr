@@ -56,7 +56,7 @@ https://sourceforge.net/projects/sevmgr/files/
 To customise the following to your environment, you can alter the path
 to the installation directory:
 export INSTALL_BASEDIR=/home/user/dev/deliveries
-export SEVMGR_VER=1.00.2
+export SEVMGR_VER=1.00.3
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
@@ -75,7 +75,7 @@ Then, as usual:
   just type:
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f sevmgr-stable && ln -s sevmgr-1.00.1 sevmgr-stable
+  rm -f sevmgr-stable && ln -s sevmgr-1.00.3 sevmgr-stable
   cd -
 * To package the source files, type:
   make dist
