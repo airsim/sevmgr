@@ -50,42 +50,64 @@ but names may vary according to distributions):
 
 Building the library and test binary from the tarball:
 ------------------------------------------------------
-The latest stable source tarball (sevmgr*.tar.gz or .bz2) can be found here:
-https://sourceforge.net/projects/sevmgr/files/
+The latest stable source tarball (`sevmgr*.tar.gz` or `.bz2`) can be
+found on GitHub: http://github.com/airsim/sevmgr/releases
 
 To customise the following to your environment, you can alter the path
 to the installation directory:
+```bash
 export INSTALL_BASEDIR=/home/user/dev/deliveries
 export SEVMGR_VER=99.99.99
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
+```
 
 Then, as usual:
 * To configure the project, type something like:
+```bash
   mkdir build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-${SEVMGR_VER} \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+```
 * To build the project, type:
+```bash
   make
+```
 * To test the project, type:
+```bash
   make check
+```
 * To install the library (libsevmgr*.so*) and the binary (sevmgr),
   just type:
+```bash
   make install
+```
 * To package the source files, type:
+```bash
   make dist
+```
 * To package the binary and the (HTML and PDF) documentation:
+```bash
   make package
+```
 * To browse the (just installed, if enabled) HTML documentation:
+```bash
   midori file://${INSTALL_BASEDIR}/sevmgr-$SEVMGR_VER/share/doc/sevmgr/html/index.html
+```
 * To browse the (just installed, if enabled) PDF documentation:
+```bash
   evince ${INSTALL_BASEDIR}/sevmgr-$SEVMGR_VER/share/doc/sevmgr/html/refman.pdf
+```
 * To run the local binary version:
+```bash
   ./sevmgr/sevmgr -b
+```
 * To run the installed version:
+```bash
   ${INSTALL_BASEDIR}/sevmgr-$SEVMGR_VER/bin/sevmgr -b
+```
 
 Denis Arnaud (June 2015)
 
