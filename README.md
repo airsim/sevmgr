@@ -79,7 +79,7 @@ Then, as usual:
 ```bash
   make check
 ```
-* To install the library (libsevmgr*.so*) and the binary (sevmgr),
+* To install the library (`libsevmgr*.so*`) and the binary (`sevmgr`),
   just type:
 ```bash
   make install
