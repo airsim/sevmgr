@@ -9,7 +9,7 @@ include (config/project_config_embeddable.cmake)
 # Project info
 set_project_names (sevmgr SEvMgr)
 set_project_brief ("C++ Simulation-Oriented Discrete Event Management Library")
-set_project_versions (1 00 3)
+set_project_versions (1 00 4)
 
 ##
 # Project options
