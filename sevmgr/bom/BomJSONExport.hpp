@@ -6,22 +6,25 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <iosfwd>
+#include <string>
 // Boost Property Tree
-#if BOOST_VERSION >= 104100
+#if BOOST_VERSION_MACRO >= 104100
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#endif // BOOST_VERSION >= 104100
+#endif // BOOST_VERSION_MACRO >= 104100
 // StdAir
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/bom/EventTypes.hpp>
 
-#if BOOST_VERSION >= 104100
+#if BOOST_VERSION_MACRO >= 104100
   namespace bpt = boost::property_tree;
-#else // BOOST_VERSION >= 104100
-  namespace bpt {
-    typedef char ptree;
+#else // BOOST_VERSION_MACRO >= 104100
+  namespace boost {
+    namespace property_tree {
+      typedef std::string ptree;
+    }
   }
-#endif // BOOST_VERSION >= 104100
+#endif // BOOST_VERSION_MACRO >= 104100
 
 namespace SEVMGR {
 

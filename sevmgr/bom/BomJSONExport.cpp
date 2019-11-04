@@ -4,12 +4,12 @@
 // STL
 #include <cassert>
 #include <ostream>
-#if BOOST_VERSION >= 104100
+#if BOOST_VERSION_MACRO >= 104100
 // Boost Property Tree
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/regex.hpp>
-#endif // BOOST_VERSION >= 104100
+#endif // BOOST_VERSION_MACRO >= 104100
 // StdAir
 #include <stdair/STDAIR_Service.hpp>
 #include <stdair/bom/EventStruct.hpp>
@@ -17,13 +17,13 @@
 #include <sevmgr/bom/EventQueue.hpp>
 #include <sevmgr/bom/BomJSONExport.hpp>
 
-#if BOOST_VERSION >= 104100
+#if BOOST_VERSION_MACRO >= 104100
 namespace bpt = boost::property_tree;
-#else // BOOST_VERSION >= 104100
+#else // BOOST_VERSION_MACRO >= 104100
 namespace bpt {
   typedef char ptree;
 }
-#endif // BOOST_VERSION >= 104100
+#endif // BOOST_VERSION_MACRO >= 104100
 
 namespace SEVMGR { 
 
@@ -37,7 +37,7 @@ namespace SEVMGR {
     // Retrieve the event list
     const stdair::EventList_T& lEventList = iEventQueue.getEventList();
  
-#if BOOST_VERSION >= 104100  
+#if BOOST_VERSION_MACRO >= 104100  
     // Create empty property tree objects
     bpt::ptree ptEvents;   
     bpt::ptree pt;  
@@ -77,7 +77,7 @@ namespace SEVMGR {
     // Write the property tree into the JSON stream.
     write_json (oStream, pt);
 
-#endif // BOOST_VERSION >= 104100  
+#endif // BOOST_VERSION_MACRO >= 104100  
   }
 
 }
