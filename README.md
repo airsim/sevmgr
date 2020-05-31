@@ -1,35 +1,39 @@
+C++ Simulation-Oriented Discrete Event Management Library
+=========================================================
 
-Summary:
----------
+# Summary
 SEvMgr is a C++ library of discrete event queue management classes and
 functions, exclusively targeting simulation purposes.
 
 SEvMgr makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the 
-Boost (C++ Standard Extensions: http://www.boost.org) library is used.
+Boost (C++ Standard Extensions: https://www.boost.org) library is used.
 
 SEvMgr is the one of the components of the Travel Market Simulator
-(http://www.travel-market-simulator). However, it may be used in a
+(https://travel-sim.org). However, it may be used in a
 stand-alone mode.
 
-Getting and installing from the Fedora/CentOS/RedHat distribution:
-------------------------------------------------------------------
-Just use Yum:
-yum -y install sevmgr-devel sevmgr-doc
+# Installation
+
+## On Fedora/CentOS/RedHat distribution:
+Just use DNF (or Yum on older distributions):
+```bash
+$ dnf -y install sevmgr-devel sevmgr-doc
+```
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 22, 
-http://fr2.rpmfind.net/linux/fedora/releases/22/Everything/)
+(_e.g._, for Fedora 32, 
+https://fr2.rpmfind.net/linux/RPM/fedora/32/x86_64/)
 
 
-Building the library and test binary from Git repository:
-----------------------------------------------------------------
+## Building the library and test binary from Git repository
 The Git repository may be cloned as following:
+```bash
 $ git clone git@github.com:airsim/sevmgr.git sevmgrgit # through SSH
 $ git clone https://github.com/airsim/sevmgr.git # if the firewall filters SSH
-cd sevmgrgit
-git checkout trunk
+$ cd sevmgrgit
+```
 
 Then, you need the following packages (Fedora/RedHat/CentOS names here, 
 but names may vary according to distributions):
@@ -48,17 +52,17 @@ but names may vary according to distributions):
 * rpm-build (optional)
 
 
-Building the library and test binary from the tarball:
-------------------------------------------------------
+## Building the library and test binary from the tarball
 The latest stable source tarball (`sevmgr*.tar.gz` or `.bz2`) can be
-found on GitHub: http://github.com/airsim/sevmgr/releases
+found on GitHub: http://github.com/airsim/sevmgr/releases, _e.g._,
+https://github.com/airsim/stdair/archive/sevmgr-1.00.5.tar.gz
 
 To customise the following to your environment, you can alter the path
 to the installation directory:
 ```bash
-export INSTALL_BASEDIR=/home/user/dev/deliveries
-export SEVMGR_VER=1.00.4
-if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
+export INSTALL_BASEDIR="${HOME}/dev/deliveries"
+export SEVMGR_VER="1.00.5"
+if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
 
