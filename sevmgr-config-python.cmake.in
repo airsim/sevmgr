@@ -1,0 +1,19 @@
+#
+# Config file for the SEvMgr Python package. It defines the following variables:
+#  SEVMGR_PY_LIBRARY_DIRS - Python library directories for SEvMgr
+#  SEVMGR_PY_LIBRARIES    - Python libraries to link against
+#  SEVMGR_PY_EXECUTABLES  - Python binaries/executables
+
+# Tell the user project where to find SEvMgr Python libraries
+set (SEVMGR_LIBRARY_DIRS "@SEVMGR_PY_LIB_DIR@")
+
+# Library dependencies for SEvmgr (contains definitions for the SEvMgr IMPORTED
+# targets)
+include ("@SEVMGR_CMAKE_DIR@/sevmgr-library-depends.cmake")
+include ("@SEVMGR_CMAKE_DIR@/sevmgr-python-library-depends.cmake")
+
+# These are the SEvMgr IMPORTED targets, created by sevmgr-library-depends.cmake
+#set (SEVMGR_PY_LIBRARIES pysevmgrlib)
+#set (SEVMGR_PY_EXECUTABLES pysevmgr)
+set (SEVMGR_PY_LIBRARIES)
+set (SEVMGR_PY_EXECUTABLES)

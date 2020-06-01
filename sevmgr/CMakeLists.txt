@@ -26,8 +26,3 @@ module_library_add_standard (".;basic;bom;factory;command;service")
 module_binary_add (batches sevmgr_demo)
 module_binary_add (ui/cmdline sevmgr)
 
-##
-# Install the CMake import helper, so that third party projects can refer to it
-# (for libraries, header files and binaries)
-module_export_install ()
-
