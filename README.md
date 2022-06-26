@@ -54,14 +54,13 @@ but names may vary according to distributions):
 
 ## Building the library and test binary from the tarball
 The latest stable source tarball (`sevmgr*.tar.gz` or `.bz2`) can be
-found on GitHub: http://github.com/airsim/sevmgr/releases, _e.g._,
-https://github.com/airsim/stdair/archive/sevmgr-1.00.6.tar.gz
+found on GitHub: http://github.com/airsim/sevmgr/releases
 
 To customise the following to your environment, you can alter the path
 to the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export SEVMGR_VER="1.00.6"
+export SEVMGR_VER="1.00.7"
 if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
