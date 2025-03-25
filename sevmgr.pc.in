@@ -13,6 +13,7 @@ infodir=@infodir@
 Name: @PACKAGE_PRETTY_NAME@
 Description: C++ Simulation-Oriented Discrete Event Management Library
 Version: @PACKAGE_VERSION@
-URL: http://sourceforge.net/projects/@PACKAGE@/
+URL: https://github.com/airsim/@PACKAGE@/
 Libs: -L${libdir} -l@PACKAGE@ @LDFLAGS@ @LIBS@
 Cflags: -I${includedir}
+

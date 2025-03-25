@@ -1,3 +1,5 @@
+@PACKAGE_INIT@
+
 #
 # Config file for the SEvMgr package. It defines the following variables:
 #  SEVMGR_VERSION      - version of SEvMgr
@@ -10,14 +12,14 @@
 
 # Tell the user project where to find SEvMgr headers and libraries
 set (SEVMGR_VERSION "@PACKAGE_VERSION@")
-set (SEVMGR_BINARY_DIRS "@SEVMGR_BIN_DIR@")
-set (SEVMGR_INCLUDE_DIRS "@SEVMGR_INCLUDE_DIRS@")
-set (SEVMGR_LIBRARY_DIRS "@SEVMGR_LIB_DIR@")
-set (SEVMGR_LIBEXEC_DIR "@SEVMGR_LIBEXEC_DIR@")
+set (SEVMGR_BINARY_DIRS "@PACKAGE_SEVMGR_BIN_DIR@")
+set (SEVMGR_INCLUDE_DIRS "@PACKAGE_SEVMGR_INCLUDE_DIRS@")
+set (SEVMGR_LIBRARY_DIRS "@PACKAGE_SEVMGR_LIB_DIR@")
+set (SEVMGR_LIBEXEC_DIR "@PACKAGE_SEVMGR_LIBEXEC_DIR@")
 
 # Library dependencies for SEvmgr (contains definitions for the SEvMgr IMPORTED
 # targets)
-include ("@SEVMGR_CMAKE_DIR@/sevmgr-library-depends.cmake")
+include ("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-library-depends.cmake")
 
 # These are the SEvMgr IMPORTED targets, created by sevmgr-library-depends.cmake
 set (SEVMGR_LIBRARIES sevmgrlib)
