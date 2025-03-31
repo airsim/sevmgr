@@ -69,8 +69,8 @@ Then, as usual:
 ```bash
   mkdir build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-${SEVMGR_VER} \
-   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
-   -DRUN_GCOV:BOOL=OFF ..
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
+   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ..
 ```
   * When dependencies are installed in non-standard directories (_e.g._,
     in the same base directory as of RMOL, that is, `${INSTALL_BASEDIR}`):
@@ -78,8 +78,8 @@ Then, as usual:
   mkdir build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/sevmgr-${SEVMGR_VER} \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
-   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
-   -DRUN_GCOV:BOOL=OFF ..
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
+   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ..
 ```
 * To build the project, type:
 ```bash
